@@ -4,13 +4,11 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Document</title>
+	<title>Camagru Home</title>
 </head>
 <body>
-	<form action="../controller/controller.php?page=signup" method="post">
-	<input type="text" name="mail">
-	<input type="password" name="passwd">
-	<input type="submit" value="Sign In">
-	</form>
+	<h1>Ceci est la page d'acceuil de camagru.</h1>
+	<a href="index.php?page=signup">Sign Up</a><br>
+	<a href="index.php?page=flushusers">Flush Users Table</a><br>
 </body>
 </html>
