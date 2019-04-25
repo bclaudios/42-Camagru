@@ -1,17 +1,15 @@
 <?php
-require("controllers/controller.php");
-if (isset($_GET['page']))	{
+require_once("controllers/userController.php");
+
+if (isset($_GET['page']) || isset($_GET['action']))	{
 	$page = $_GET['page'];
+	$action = $_GET['action'];
 	if ($page === "signup")	{
-		SignUp();
+		view_SignUp();
 	}
-	if ($page === "register")	{
-		CreateUser();
-	}
-	// DEV ROUTE //
-	if ($page === "flushusers")	{
-		DelUsersTable();
+	if ($action === "adduser")	{
+		
 	}
 } else {
-	Home();
+	view_Home();
 }
