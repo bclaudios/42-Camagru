@@ -13,6 +13,20 @@ function view_SignUp()	{
 	require_once("views/signup.php");
 }
 
+function view_SignIn()	{
+	$title = "Sign In";
+	require_once("views/signin.php");
+}
+
+function view_Profil()	{
+	$title = "Profil";
+	require_once("views/profil.php");
+}
+
+function view_EditUserInfos()	{
+	$title = "Edit Infos";
+	require_once("views/editprofil.php");
+}
 ##### ACTIONS #####
 
 function CheckSignUpInfos()	{
@@ -29,5 +43,51 @@ function CheckSignUpInfos()	{
 	if ($error)	{
 		die ($error);
 	}
-
 }
+
+// E-mail verification missing
+function RegisterUser()	{
+	CheckSignUpInfos();
+	$_POST['passwd'] = hash('sha256', $_POST['passwd']);
+	db_AddUser();
+	header("Location: index.php");
+	exit();
+}
+
+function LogUser()	{
+	$passwd = hash("sha256", $_POST['passwd']);
+	$user = db_GetUser($_POST['login']);
+	if ($user === FALSE)	{
+		die("This user does not exist.");
+	}
+	if ($user['passwd'] !== $passwd)	{
+		die ("Wrong password.");
+	}
+	$_SESSION['logguedUser'] = $user;
+	$alertTitle = "Welcome " . $user['login'];
+	$alertMessage = "You have successfully logged in.";
+	require("elements/alert.php");
+}
+
+function LogOutUser()	{
+	unset($_SESSION['logguedUser']);
+	view_Home();
+}
+
+function UpdateUserProfil()	{
+	if ($_SESSION['logguedUser']['login'] !== $_POST['newLogin'])	{
+		if (db_GetUser($_POST['newLogin']))
+			die ("Login is already used.");
+		$_SESSION['logguedUser']['login'] = $_POST['newLogin'];
+	}
+	if ($_SESSION['logguedUser']['email'] !== $_POST['newEmail'])	{
+		if (db_GetUser($_POST['newEmail']))
+			die ("E-mail address already used.");
+		$_SESSION['logguedUser']['email'] = $_POST['newEmail'];
+	}
+	db_UpdateUser();
+	$alertTitle = "Informations changed";
+	$alertMessage = "Your informations has been successfully updated.";
+	require("elements/alert.php");
+}
+##### TOOLS #####

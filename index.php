@@ -1,15 +1,36 @@
 <?php
 require_once("controllers/userController.php");
+session_start();
+$LogUser = $_SESSION['logguedUser'];
 
-if (isset($_GET['page']) || isset($_GET['action']))	{
+if (isset($_GET['page']))	{
+	// PAGES
 	$page = $_GET['page'];
-	$action = $_GET['action'];
 	if ($page === "signup")	{
 		view_SignUp();
 	}
-	if ($action === "adduser")	{
-		
+	if ($page === "signin")	{
+		view_SignIn();
 	}
-} else {
-	view_Home();
+	if($page === "profil")	{
+		view_Profil();
+	}
+	if ($page === "changeinfo")	{
+		view_EditUserInfos();
+	}
+} elseif (isset($_GET['action'])) {
+	$action = $_GET['action'];
+	if ($action === "adduser")	{
+		RegisterUser();
+	}
+	if ($action === "loguser")	 {
+		LogUser();
+	}
+	if ($action === "logout")	{
+		LogOutUser();
+	}
+	if ($action === "editprofil")	{
+		UpdateUserProfil();
+	}
 }
+view_Home();

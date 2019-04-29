@@ -11,5 +11,6 @@
 		<input type="password" name="passwd" value="test" required><br>
 		Password confirmation : <br>
 		<input type="password" name="passwdConf" value="test" required><br>
+		<input type="submit" value="Register">
 	</form>
 </body>
