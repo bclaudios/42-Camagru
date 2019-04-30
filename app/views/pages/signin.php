@@ -1,11 +1,12 @@
 <?php require_once("app/views/layouts/header.php"); ?>
 <body>
-    <form action="index.php?action=loguser" method="post">
+    <form method="post">
         Login : <br>
-        <input type="text" name="login"><br>
+        <input type="text" id="input_login"><br>
         Password :
-        <input type="password" name="passwd"><br>
-        <input type="submit" value="login"><br>
+        <input type="password" id="input_passwd"><br>
+        <input type="submit" value="login" id="signin_btn"><br>
     </form>
+	<script src="/app/assets/js/signin.js"></script>
 </body>
 </html>

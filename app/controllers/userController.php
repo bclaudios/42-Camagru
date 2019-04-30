@@ -1,6 +1,12 @@
 <?php
 require_once("app/models/userModel.php");
 
+##### CONTROLLER #####
+
+if (isset($_POST['action']))	{
+	if ($_POST['action'] === "signin")
+		LogUser();
+}
 ##### VIEWS #####
 
 function view_Home()	{
@@ -54,16 +60,19 @@ function RegisterUser()	{
 }
 
 function LogUser()	{
+	print_r($_POST);
+	die;
 	$passwd = hash("sha256", $_POST['passwd']);
 	$user = db_GetUser($_POST['login']);
-	if ($user === FALSE)
-		die("This user does not exist.");
-	if ($user['passwd'] !== $passwd)
-		die ("Wrong password.");
+	if ($user === FALSE)	{
+		http_response_code(400);
+		echo "Login or password incorrect.";
+	}
+	if ($user['passwd'] !== $passwd)	{
+		http_response_code(400);
+		echo "Login or password incorrect.";
+	}
 	$_SESSION['user'] = $user['login'];
-	$alertTitle = "Welcome " . $user['login'];
-	$alertMessage = "You have successfully logged in.";
-	require("app/views/pages/alert.php");
 }
 
 function LogOutUser()	{
