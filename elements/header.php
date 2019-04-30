@@ -10,7 +10,7 @@
 	<a href="index.php">
 		<h1>Camagru</h1>
 	</a>
-	<?php if (empty($_SESSION['logguedUser']))	{?>
+	<?php if (empty($_SESSION['user']))	{?>
 		<a href="index.php?page=signup">Sign Up</a>
 		<a href="index.php?page=signin">Sign In</a>
 	<?php } else {?>

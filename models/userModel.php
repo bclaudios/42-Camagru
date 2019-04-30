@@ -2,7 +2,7 @@
 
 function db_Connect()	{
 	try {
-		$db = new PDO("mysql:host=localhost;dbname=camagru", "root", "root", [
+		$db = new PDO("mysql:host=localhost;dbname=camagru", "root", "rqiden", [
 			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 			PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 		]);
@@ -86,7 +86,7 @@ function db_UpdateUser()	{
 		$req->execute([
 			"newLogin" => $_POST['newLogin'],
 			"newEmail" => $_POST['newEmail'],
-			"login" => $_SESSION['logguedUser']['login']
+			"login" => $_SESSION['user']
 		]);
 	} catch (PDOException $e)	{
 		die ("Error in db_UpdateUser(): " . $e->getMessage());
