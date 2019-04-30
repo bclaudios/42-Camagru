@@ -24,9 +24,8 @@ function db_UserExist()	{
 			'email' => $_POST['email']
 			]);
 		$user = $req->fetch();
-		if (empty($user))	{
+		if (empty($user))
 			return false;
-		}
 		if ($user['login'] === $_POST['login'])	{
 			return "Login is already used.";
 		}
@@ -90,5 +89,18 @@ function db_UpdateUser()	{
 		]);
 	} catch (PDOException $e)	{
 		die ("Error in db_UpdateUser(): " . $e->getMessage());
+	}
+}
+
+function db_UpdateUserPasswd($newPasswd)	{
+	$db = db_Connect();
+	try	{
+		$req = $db->prepare("UPDATE users SET `passwd` = :newPasswd WHERE `login` = :login");
+		$req->execute([
+			"newPasswd" => $newPasswd,
+			"login" => $_SESSION['user']
+		]);
+	} catch (PDOExcpetion $e)	{
+		die ("Error in db_UpdateUserPasswd(): " . $e->getMessage());
 	}
 }

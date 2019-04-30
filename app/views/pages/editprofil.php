@@ -1,5 +1,5 @@
 <?php 
-require_once("elements/header.php");
+require_once("app/views/layouts/header.php");
 ?>
 <body>
     <h2>Edit personnal informations</h2>

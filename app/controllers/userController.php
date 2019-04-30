@@ -1,33 +1,33 @@
 <?php
-require_once("models/userModel.php");
+require_once("app/models/userModel.php");
 
 ##### VIEWS #####
 
 function view_Home()	{
 	$title = "Home";
-	require_once("views/main.php");
+	require_once("app/views/pages/main.php");
 }
 
 function view_SignUp()	{
 	$title = "Sign Up";
-	require_once("views/signup.php");
+	require_once("app/views/pages/signup.php");
 }
 
 function view_SignIn()	{
 	$title = "Sign In";
-	require_once("views/signin.php");
+	require_once("app/views/pages/signin.php");
 }
 
 function view_Profil()	{
 	$title = "Profil";
 	$user = db_GetUser($_SESSION['user']);
-	require_once("views/profil.php");
+	require_once("app/views/pages/profil.php");
 }
 
 function view_EditUserInfos()	{
 	$title = "Edit Infos";
 	$user = db_GetUser($_SESSION['user']);
-	require_once("views/editprofil.php");
+	require_once("app/views/pages/editprofil.php");
 }
 
 ##### ACTIONS #####
@@ -63,7 +63,7 @@ function LogUser()	{
 	$_SESSION['user'] = $user['login'];
 	$alertTitle = "Welcome " . $user['login'];
 	$alertMessage = "You have successfully logged in.";
-	require("elements/alert.php");
+	require("app/views/pages/alert.php");
 }
 
 function LogOutUser()	{
@@ -85,5 +85,14 @@ function UpdateUserProfil()	{
 	$alertTitle = "Informations changed";
 	$_SESSION['user'] = $_POST['newLogin'];
 	$alertMessage = "Your informations has been successfully updated.";
-	require("elements/alert.php");
+	require("app/views/pages/alert.php");
+}
+
+function UpdateUserPasswd()	{
+	$user = db_GetUser($_SESSION['user']);
+	$passwdConf = hash("sha256", $_POST['currentPasswd']);
+	$newPasswd = hash("sha256", $_POST['newPasswd']);
+	if ($passwdConf !== $user['passwd'])
+		die ("Wrong password");
+	db_UpdateUserPasswd($newPasswd);
 }

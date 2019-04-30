@@ -1,4 +1,4 @@
-<?php require_once("elements/header.php"); ?>
+<?php require_once("app/views/layouts/header.php"); ?>
 <body>
     <h2><?=$alertTitle?></h2>
     <p><?=$alertMessage?></p>
