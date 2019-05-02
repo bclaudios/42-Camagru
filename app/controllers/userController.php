@@ -1,11 +1,13 @@
 <?php
-require_once("app/models/userModel.php");
+require_once __DIR__.'/../models/userModel.php';
 
 ##### CONTROLLER #####
-
 if (isset($_POST['action']))	{
-	if ($_POST['action'] === "signin")
+	$action = $_POST['action'];
+	if ($action === "signin")
 		LogUser();
+	if ($action === "signup")
+		RegisterUser();
 }
 ##### VIEWS #####
 
@@ -60,15 +62,10 @@ function RegisterUser()	{
 }
 
 function LogUser()	{
-	print_r($_POST);
-	die;
+	session_start();
 	$passwd = hash("sha256", $_POST['passwd']);
 	$user = db_GetUser($_POST['login']);
-	if ($user === FALSE)	{
-		http_response_code(400);
-		echo "Login or password incorrect.";
-	}
-	if ($user['passwd'] !== $passwd)	{
+	if ($user === FALSE || $user['passwd'] !== $passwd)	{
 		http_response_code(400);
 		echo "Login or password incorrect.";
 	}

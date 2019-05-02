@@ -13,7 +13,7 @@
 	<?php if (empty($_SESSION['user']))	{?>
 		<a href="index.php?page=signup">Sign Up</a>
 		<a href="index.php?page=signin">Sign In</a>
-	<?php } else {?>
+	<?php } else { ?>
 		<a href="index.php?page=profil">Profil</a>
 		<a href="index.php?action=logout">Disconnect</a>
 	<?php } ?>
