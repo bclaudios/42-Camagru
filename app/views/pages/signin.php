@@ -7,6 +7,6 @@
         <input type="password" id="input_passwd" required><br>
 		<button type="submit" id="signin_btn">Log in</button>
 	</form>
-	<script type="text/javascript" src="/app/assets/js/signin.js"></script>
+	<script type="text/javascript" src="/app/assets/js/signIn.js"></script>
 </body>
 </html>

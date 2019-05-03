@@ -4,13 +4,14 @@ require_once __DIR__.'/../models/userModel.php';
 ##### CONTROLLER #####
 if (isset($_POST['action']))	{
 	$action = $_POST['action'];
-	if ($action === "signin")
-		LogUser();
-	if ($action === "signup")
-		RegisterUser();
+	if ($action === "signIn")
+		UserSignIn();
+	if ($action === "signUp")
+		UserSignUp();
+	if ($action === "updateProfil")
+		UserUpdateProfil();
 }
 ##### VIEWS #####
-
 function view_Home()	{
 	$title = "Home";
 	require_once("app/views/pages/main.php");
@@ -18,12 +19,12 @@ function view_Home()	{
 
 function view_SignUp()	{
 	$title = "Sign Up";
-	require_once("app/views/pages/signup.php");
+	require_once("app/views/pages/signUp.php");
 }
 
 function view_SignIn()	{
 	$title = "Sign In";
-	require_once("app/views/pages/signin.php");
+	require_once("app/views/pages/signIn.php");
 }
 
 function view_Profil()	{
@@ -32,52 +33,64 @@ function view_Profil()	{
 	require_once("app/views/pages/profil.php");
 }
 
-function view_EditUserInfos()	{
+function view_EditProfil()	{
 	$title = "Edit Infos";
 	$user = db_GetUser($_SESSION['user']);
-	require_once("app/views/pages/editprofil.php");
+	require_once("app/views/pages/editProfil.php");
 }
 
 ##### ACTIONS #####
-
 function CheckSignUpInfos()	{
 	if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
-		die ("Wrong email format.");
+		$errorLogs[] = "Wrong email format.";
 	if ($_POST['email'] !== $_POST['emailConf'])
-		die ("Email adresses not matching.");
+		$errorLogs[] = "Email adresses not matching.";
 	if ($_POST['passwd'] !== $_POST['passwdConf'])
-		die ("Passwords not matching.");
-	$error = db_UserExist();
-	if ($error)
-		die ($error);
+		$errorLogs[] = "Passwords not matching.";
+	$userExist = db_UserExist($_POST['login'], $_POST['email']);
+	if ($userExist)
+		$errorLogs[] = $userExist;
+	if (!isset($errorLogs))
+		return NULL;
+	return implode("\n", $errorLogs);
 }
 
 // E-mail verification missing
-function RegisterUser()	{
-	CheckSignUpInfos();
-	$_POST['passwd'] = hash('sha256', $_POST['passwd']);
-	db_AddUser();
-	header("Location: index.php");
-	exit();
+function UserSignUp()	{
+	$errorLogs = CheckSignUpInfos();
+	if ($errorLogs)	{
+		http_response_code(400);
+		echo $errorLogs;
+	} else {
+		$user = array(
+			"login" => $_POST['login'],
+			"email" => $_POST['email'],
+			"passwd" => hash('sha256', $_POST['passwd'])
+		);
+		db_CreateUser($user);
+		echo "Registration complete.\nPlease confirm your address by clicking on the link sent at the one you specified.";
+	}
 }
 
-function LogUser()	{
+function UserSignIn()	{
 	session_start();
 	$passwd = hash("sha256", $_POST['passwd']);
 	$user = db_GetUser($_POST['login']);
 	if ($user === FALSE || $user['passwd'] !== $passwd)	{
 		http_response_code(400);
 		echo "Login or password incorrect.";
+	} else {
+		$_SESSION['user'] = $user['login'];
+		echo "You are now logged in.";
 	}
-	$_SESSION['user'] = $user['login'];
 }
 
-function LogOutUser()	{
+function UserLogOut()	{
 	unset($_SESSION['user']);
 	view_Home();
 }
 
-function UpdateUserProfil()	{
+function UserUpdateProfil()	{
 	$user = db_GetUser($_SESSION['user']);
 	if ($user['login'] !== $_POST['newLogin'])	{
 		if (db_GetUser($_POST['newLogin']))
@@ -94,11 +107,11 @@ function UpdateUserProfil()	{
 	require("app/views/pages/alert.php");
 }
 
-function UpdateUserPasswd()	{
+function UserUpdatePasswd()	{
 	$user = db_GetUser($_SESSION['user']);
 	$passwdConf = hash("sha256", $_POST['currentPasswd']);
 	$newPasswd = hash("sha256", $_POST['newPasswd']);
 	if ($passwdConf !== $user['passwd'])
 		die ("Wrong password");
-	db_UpdateUserPasswd($newPasswd);
+	db_UserUpdatePasswd($newPasswd);
 }

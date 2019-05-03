@@ -4,23 +4,17 @@ session_start();
 
 if (isset($_GET['page']))	{
 	$page = $_GET['page'];
-	if ($page === "signup")	
+	if ($page === "signUp")	
 		view_SignUp();
-	if ($page === "signin")	
+	if ($page === "signIn")	
 		view_SignIn();
 	if($page === "profil")	
 		view_Profil();
-	if ($page === "changeinfo")	
-		view_EditUserInfos();
+	if ($page === "editProfil")	
+		view_EditProfil();
 } elseif (isset($_GET['action'])) {
 	$action = $_GET['action'];
-	if ($action === "adduser")
-		RegisterUser();
-	if ($action === "loguser")	
-		LogUser();
-	if ($action === "logout")
-		LogOutUser();
-	if ($action === "editprofil")
-		UpdateUserProfil();
+	if ($action === "logOut")
+		UserLogOut();
 }
 view_Home();

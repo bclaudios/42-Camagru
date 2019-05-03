@@ -5,6 +5,6 @@
         <?php foreach ($user as $key => $value)  {
             echo "<p>" . $key . " : " . $value . "</p><br>";
         } ?>
-        <a href="index.php?page=changeinfo">Edit informations</a>
+        <a href="index.php?page=editProfil">Edit informations</a>
     </main>
 </body>

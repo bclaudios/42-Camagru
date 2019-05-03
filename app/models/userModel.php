@@ -12,7 +12,7 @@ function db_Connect()	{
 	}
 }
 
-function db_UserExist()	{
+function db_UserExist($login, $email)	{
 	$db = db_Connect();
 	try {
 		$req = $db->prepare("SELECT * FROM users WHERE 
@@ -20,24 +20,24 @@ function db_UserExist()	{
 							OR 
 							`email` LIKE :email;");
 		$req->execute([
-			'login' => $_POST['login'],
-			'email' => $_POST['email']
+			'login' => $login,
+			'email' => $email
 			]);
 		$user = $req->fetch();
 		if (empty($user))
-			return false;
-		if ($user['login'] === $_POST['login'])	{
+			return NULL;
+		if ($user['login'] === $login)	{
 			return "Login is already used.";
 		}
-		if ($user['email'] === $_POST['email'])	{
-			return "Email adress is already used.";
+		if ($user['email'] === $email)	{
+			return "Email address is already used.";
 		}
 	} catch (PDOException $e) {
 		die ("Error in db_UserExist(): " . $e->getMessage());
 	}
 }
 
-function db_AddUser()	{
+function db_CreateUser($user)	{
 	$db = db_Connect();
 	try	{
 		$req = $db->prepare("INSERT INTO users 
@@ -45,12 +45,12 @@ function db_AddUser()	{
 							VALUES 
 							(:login, :email, :passwd)");
 		$req->execute([
-			"login" => $_POST["login"],
-			"email" => $_POST["email"],
-			"passwd" => $_POST["passwd"]
+			"login" => $user["login"],
+			"email" => $user["email"],
+			"passwd" => $user["passwd"]
 		]);
 	} catch (PDOException $e)	{
-		die ("Error in db_AddUser(): " . $e->getMessage());
+		die ("Error in db_CreateUser(): " . $e->getMessage());
 	}
 }
 
@@ -67,7 +67,7 @@ function db_GetUser($user)	{
 		]);
 		$user = $req->fetch();
 		if (empty($user))	{
-			return (false);
+			return (NULL);
 		}
 		return ($user);
 	} catch (PDOException $e)	{
@@ -75,7 +75,7 @@ function db_GetUser($user)	{
 	}
 }
 
-function db_UpdateUser()	{
+function db_UpdateProfil($newLogin, $newPasswd)	{
 	$db = db_Connect();
 	try {
 		$req = $db->prepare("UPDATE users SET 
@@ -83,8 +83,8 @@ function db_UpdateUser()	{
 							`email` = :newEmail
 							WHERE `login` LIKE :login");
 		$req->execute([
-			"newLogin" => $_POST['newLogin'],
-			"newEmail" => $_POST['newEmail'],
+			"newLogin" => $newLogin,
+			"newEmail" => $newEmail,
 			"login" => $_SESSION['user']
 		]);
 	} catch (PDOException $e)	{
@@ -92,7 +92,7 @@ function db_UpdateUser()	{
 	}
 }
 
-function db_UpdateUserPasswd($newPasswd)	{
+function db_UpdatePasswd($newPasswd)	{
 	$db = db_Connect();
 	try	{
 		$req = $db->prepare("UPDATE users SET `passwd` = :newPasswd WHERE `login` = :login");
