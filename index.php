@@ -1,6 +1,5 @@
 <?php
 require_once("app/controllers/userController.php");
-session_start();
 
 if (isset($_GET['page']))	{
 	$page = $_GET['page'];
@@ -15,6 +14,6 @@ if (isset($_GET['page']))	{
 } elseif (isset($_GET['action'])) {
 	$action = $_GET['action'];
 	if ($action === "logOut")
-		UserLogOut();
+		LogOut();
 }
 view_Home();

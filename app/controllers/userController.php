@@ -1,16 +1,21 @@
 <?php
 require_once __DIR__.'/../models/userModel.php';
-
+session_start();
 ##### CONTROLLER #####
 if (isset($_POST['action']))	{
 	$action = $_POST['action'];
 	if ($action === "signIn")
-		UserSignIn();
+		SignIn();
 	if ($action === "signUp")
-		UserSignUp();
-	if ($action === "updateProfil")
-		UserUpdateProfil();
+		SignUp();
+	if ($action === "editLogin")
+		UpdateLogin();
+	if ($action === "editEmail")
+		UpdateEmail();
+	if ($action === "editPasswd")
+		UpdatePasswd();
 }
+
 ##### VIEWS #####
 function view_Home()	{
 	$title = "Home";
@@ -29,17 +34,19 @@ function view_SignIn()	{
 
 function view_Profil()	{
 	$title = "Profil";
-	$user = db_GetUser($_SESSION['user']);
+	$user = GetCurrentUser();
 	require_once("app/views/pages/profil.php");
 }
 
 function view_EditProfil()	{
 	$title = "Edit Infos";
-	$user = db_GetUser($_SESSION['user']);
+	$user = GetCurrentUser();
 	require_once("app/views/pages/editProfil.php");
 }
 
 ##### ACTIONS #####
+
+//		SIGNUP/SIGNIN/LOGOUT
 function CheckSignUpInfos()	{
 	if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
 		$errorLogs[] = "Wrong email format.";
@@ -55,8 +62,7 @@ function CheckSignUpInfos()	{
 	return implode("\n", $errorLogs);
 }
 
-// E-mail verification missing
-function UserSignUp()	{
+function SignUp()	{
 	$errorLogs = CheckSignUpInfos();
 	if ($errorLogs)	{
 		http_response_code(400);
@@ -71,9 +77,9 @@ function UserSignUp()	{
 		echo "Registration complete.\nPlease confirm your address by clicking on the link sent at the one you specified.";
 	}
 }
+// E-mail verification missing
 
-function UserSignIn()	{
-	session_start();
+function SignIn()	{
 	$passwd = hash("sha256", $_POST['passwd']);
 	$user = db_GetUser($_POST['login']);
 	if ($user === FALSE || $user['passwd'] !== $passwd)	{
@@ -85,13 +91,60 @@ function UserSignIn()	{
 	}
 }
 
-function UserLogOut()	{
+function LogOut()	{
 	unset($_SESSION['user']);
 	view_Home();
 }
 
+
+//		PROFIL UPDATES
+
+function UpdateLogin()	{
+	$user = GetCurrentUser();
+	$newLogin = $_POST['newLogin'];
+	if ($user["login"] !== $newLogin)	{
+		if (db_GetUser($newLogin))	{
+			http_response_code(400);
+			echo "This username is already used.";
+		} else	{
+			db_UpdateLogin($newLogin);
+			$_SESSION['user'] = $newLogin;
+			echo "Your username has been set to : " . $newLogin . ".";
+		}
+	} else {
+		http_response_code(400);
+		echo "Same username.";
+	}
+}
+
+function UpdateEmail()	{
+	$user = GetCurrentUser();
+	$newEmail = $_POST['newEmail'];
+	$newEmailConf = $_POST['newEmailConf'];
+	if ($user["email"] !== $newEmail)	{
+		if (!filter_var($newEmail, FILTER_VALIDATE_EMAIL))	{
+			http_response_code(400);
+			echo "Wrong email format.";
+		}
+		elseif ($newEmail !== $newEmailConf)	{
+			http_response_code(400);
+			echo "Email adresses not matching with each other.";
+		}
+		elseif (db_CheckEmail($newEmail))	{
+			http_response_code(400);
+			echo "This email address is already used.";
+		} else {
+			db_UpdateEmail($newEmail);
+			echo "Your email address has been set to : " . $newEmail . ".\nA new confirmation is required. Please check you inbox.";
+		}
+	} else {
+		http_response_code(400);
+		echo "Same email address.";
+	}
+}
+
 function UserUpdateProfil()	{
-	$user = db_GetUser($_SESSION['user']);
+	$user = GetCurrentUser();
 	if ($user['login'] !== $_POST['newLogin'])	{
 		if (db_GetUser($_POST['newLogin']))
 			die ("Login is already used.");
@@ -102,16 +155,19 @@ function UserUpdateProfil()	{
 		}
 	db_UpdateUser();
 	$alertTitle = "Informations changed";
-	$_SESSION['user'] = $_POST['newLogin'];
 	$alertMessage = "Your informations has been successfully updated.";
 	require("app/views/pages/alert.php");
 }
 
 function UserUpdatePasswd()	{
-	$user = db_GetUser($_SESSION['user']);
+	$user = GetCurrentUser();
 	$passwdConf = hash("sha256", $_POST['currentPasswd']);
 	$newPasswd = hash("sha256", $_POST['newPasswd']);
 	if ($passwdConf !== $user['passwd'])
 		die ("Wrong password");
 	db_UserUpdatePasswd($newPasswd);
+}
+
+function GetCurrentUser()	{
+	return db_GetUser($_SESSION['user']);
 }

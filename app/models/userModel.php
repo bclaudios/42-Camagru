@@ -2,7 +2,7 @@
 
 function db_Connect()	{
 	try {
-		$db = new PDO("mysql:host=localhost;dbname=camagru", "root", "rqiden", [
+		$db = new PDO("mysql:host=localhost;dbname=camagru", "root", "root", [
 			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 			PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 		]);
@@ -54,36 +54,56 @@ function db_CreateUser($user)	{
 	}
 }
 
-function db_GetUser($user)	{
+function db_GetUser($login)	{
 	$db = db_Connect();
 	try {
-		$req = $db->prepare("SELECT * FROM users WHERE 
-							`login` LIKE :login
-							OR
-							`email` LIKE :email");
-		$req->execute([
-			"login" => $user,
-			"email" => $user
-		]);
+		$req = $db->prepare("SELECT * FROM users WHERE `login` LIKE :login");
+		$req->execute(["login" => $login]);
 		$user = $req->fetch();
-		if (empty($user))	{
+		if (empty($user))
 			return (NULL);
-		}
 		return ($user);
 	} catch (PDOException $e)	{
 		die ("Error in db_GetUSer(): " . $e->getMessage());
 	}
 }
 
-function db_UpdateProfil($newLogin, $newPasswd)	{
+function db_CheckEmail($email)	{
+	$db = db_Connect();
+	try {
+		$req = $db->prepare("SELECT * FROM users WHERE `email` LIKE :email");
+		$req->execute(["email" => $login]);
+		$user = $req->fetch();
+		if (empty($user))
+			return (NULL);
+		return ($user);
+	} catch (PDOException $e)	{
+		die ("Error in db_GetUSer(): " . $e->getMessage());
+	}
+}
+
+function db_UpdateLogin($newLogin)	{
 	$db = db_Connect();
 	try {
 		$req = $db->prepare("UPDATE users SET 
-							`login` = :newLogin,
-							`email` = :newEmail
+							`login` = :newLogin
 							WHERE `login` LIKE :login");
 		$req->execute([
 			"newLogin" => $newLogin,
+			"login" => $_SESSION['user']
+		]);
+	} catch (PDOException $e)	{
+		die ("Error in db_UpdateUser(): " . $e->getMessage());
+	}
+}
+
+function db_UpdateEmail($newEmail)	{
+	$db = db_Connect();
+	try {
+		$req = $db->prepare("UPDATE users SET 
+							`email` = :newEmail
+							WHERE `login` LIKE :login");
+		$req->execute([
 			"newEmail" => $newEmail,
 			"login" => $_SESSION['user']
 		]);
@@ -95,7 +115,9 @@ function db_UpdateProfil($newLogin, $newPasswd)	{
 function db_UpdatePasswd($newPasswd)	{
 	$db = db_Connect();
 	try	{
-		$req = $db->prepare("UPDATE users SET `passwd` = :newPasswd WHERE `login` = :login");
+		$req = $db->prepare("UPDATE users SET 
+							`passwd` = :newPasswd 
+							WHERE `login` = :login");
 		$req->execute([
 			"newPasswd" => $newPasswd,
 			"login" => $_SESSION['user']
