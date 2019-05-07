@@ -1,7 +1,7 @@
 <?php require_once("app/views/layouts/header.php"); ?>
 <body>
 	<p>Ceci est la page de post</p>
-	<video id="video"></video>
+	<video id="video" autoplay></video>
 	<button id="startButton">Take a snapshot</button>
 	<canvas id="canvas"></canvas>
 	<img src="/app/assets/img" id="photo" alt="photo">

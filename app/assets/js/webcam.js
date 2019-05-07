@@ -1,18 +1,15 @@
-(function()	{
-	const video = document.getElementById("video"),
-			vendorUrl = window.URL || window.webkitURL;
+const video = document.getElementById("video");
 
-	navigator.getMedia =	navigator.GetUserMedia ||
-							navigator.webkitGetUserMedia ||
-							navigator.mowGetUserMedia ||
-							navigator.msGetUserMedia;
-	navigator.getMedia ({
-		video : true,
-		audio : false
-	}, function (stream)	{
-		video.src = vendorUrl.createObjectUrl(stream);
-		video.play();
-	}, function (error)	{
-		//error
-	});
-})();
+const constraints = {
+	audio: false,
+	video: {
+		width: 800,
+		height: 600
+	}
+}
+async function Stream() {
+	const stream = await navigator.mediaDevices.getUserMedia(constraints);
+	window.stream = stream;
+	video.srcObject = stream;
+}
+Stream();

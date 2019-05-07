@@ -4,8 +4,8 @@ document.addEventListener("click", function(e) {
 		const login = document.getElementById("input_login").value;
 		const passwd = document.getElementById("input_passwd").value;
 		const post = "action=signIn"
-		+"&login="+login
-		+"&passwd="+passwd;
+					+"&login="+login
+					+"&passwd="+passwd;
 		const xhr = new XMLHttpRequest();
 		xhr.onreadystatechange = function()	{
 			if (xhr.readyState === 4)	{
