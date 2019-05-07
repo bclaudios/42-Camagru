@@ -19,8 +19,10 @@ document.addEventListener("click", function(e)	{
 	if (event.target.matches("#editEmail_btn"))	{
 		e.preventDefault();
 		const newEmail = document.getElementById("newEmail").value;
+		const newEmailConf = document.getElementById("newEmailConf").value;
 		const post = "action=editEmail"
-					+"&newEmail="+newEmail;
+					+"&newEmail="+newEmail
+					+"&newEmailConf="+newEmailConf;
 		const xhr = new XMLHttpRequest();
 		xhr.onreadystatechange = function()	{
 			if (xhr.readyState === 4)
@@ -30,17 +32,17 @@ document.addEventListener("click", function(e)	{
 		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xhr.send(post);
 	}
-	g
+	
 	// Password Update
 	if (event.target.matches("#editPasswd_btn"))	{
 		e.preventDefault();
 		const currentPasswd = document.getElementById("edit_currentPasswd").value;
 		const newPasswd = document.getElementById("edit_newPasswd").value;
 		const newPasswdConf = document.getElementById("edit_newPasswdConf").value;
-		const post = "aciton=updatePasswd"
-		+"&currentPasswd="+currentPasswd
-		+"&newPasswd="+newPasswd
-		+"&newPasswdConf"+newPasswdConf;
+		const post = "action=editPasswd"
+					+"&currentPasswd="+currentPasswd
+					+"&newPasswd="+newPasswd
+					+"&newPasswdConf="+newPasswdConf;
 		const xhr = new XMLHttpRequest();
 		xhr.onreadystatechange = function()	{
 			xhr.onreadystatechange = function() {
@@ -52,5 +54,5 @@ document.addEventListener("click", function(e)	{
 		xhr.open("POST", "app/controllers/userController.php");
 		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xhr.send(post);
-	})
-})
+	}
+});

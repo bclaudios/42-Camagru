@@ -10,6 +10,7 @@ require_once("app/views/layouts/header.php");
         <input type="text" id="newLogin" placeholder="<?=$user['login']?>" required><br>
 		<button type="submit" id="editLogin_btn">Change username</button><br>
 	</form>
+
 	<h3>Change e-mail address</h3><br>
     <form>
         New e-mail :
@@ -18,6 +19,7 @@ require_once("app/views/layouts/header.php");
 		<input type="text" id="newEmailConf" required><br>
         <button type="submit" id="editEmail_btn">Change e-mail address</button><br>
     </form>
+	
     <h3>Change password</h3>
     <form>
         Current Password :

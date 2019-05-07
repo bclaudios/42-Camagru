@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__.'/../models/userModel.php';
 session_start();
+
 ##### CONTROLLER #####
 if (isset($_POST['action']))	{
 	$action = $_POST['action'];
@@ -44,6 +45,11 @@ function view_EditProfil()	{
 	require_once("app/views/pages/editProfil.php");
 }
 
+function view_newPost()	{
+	$title = "New Post";
+	require_once("app/views/pages/newPost.php");
+}
+
 ##### ACTIONS #####
 
 //		SIGNUP/SIGNIN/LOGOUT
@@ -52,6 +58,8 @@ function CheckSignUpInfos()	{
 		$errorLogs[] = "Wrong email format.";
 	if ($_POST['email'] !== $_POST['emailConf'])
 		$errorLogs[] = "Email adresses not matching.";
+	if (!CheckPasswdSecurity($_POST['passwd']))
+		$errorLogs[] = "Password security error. Must contain at least 8 chars, 1 lowercase, 1 uppercase and 1 digit.";
 	if ($_POST['passwd'] !== $_POST['passwdConf'])
 		$errorLogs[] = "Passwords not matching.";
 	$userExist = db_UserExist($_POST['login'], $_POST['email']);
@@ -73,8 +81,15 @@ function SignUp()	{
 			"email" => $_POST['email'],
 			"passwd" => hash('sha256', $_POST['passwd'])
 		);
-		db_CreateUser($user);
-		echo "Registration complete.\nPlease confirm your address by clicking on the link sent at the one you specified.";
+		//ADD EMAIL VERIFICATION HERE
+		$mail = mail("claudios.barthelemy@gmail.com", "Test d'inscription", "Vous etes inscris sur Camagru, bravo !");
+		if (!$mail)	{
+			http_response_code(400);
+			echo "Cannot send verification mail.";
+		} else {
+			db_CreateUser($user);
+			echo "Registration complete.\nPlease confirm your address by clicking on the link sent at the one you specified.";
+		}
 	}
 }
 // E-mail verification missing
@@ -135,6 +150,7 @@ function UpdateEmail()	{
 			echo "This email address is already used.";
 		} else {
 			db_UpdateEmail($newEmail);
+			//ADD EMAIL VERIFICATION HERE
 			echo "Your email address has been set to : " . $newEmail . ".\nA new confirmation is required. Please check you inbox.";
 		}
 	} else {
@@ -159,13 +175,30 @@ function UserUpdateProfil()	{
 	require("app/views/pages/alert.php");
 }
 
-function UserUpdatePasswd()	{
+function UpdatePasswd()	{
 	$user = GetCurrentUser();
-	$passwdConf = hash("sha256", $_POST['currentPasswd']);
+	$currentPasswd = hash("sha256", $_POST['currentPasswd']);
 	$newPasswd = hash("sha256", $_POST['newPasswd']);
-	if ($passwdConf !== $user['passwd'])
-		die ("Wrong password");
-	db_UserUpdatePasswd($newPasswd);
+	$newPasswdConf = hash("sha256", $_POST['newPasswdConf']);
+	if ($currentPasswd !== $user['passwd'])	{
+		http_response_code(400);
+		echo "Wrong current password.";
+	} elseif ($newPasswd !== $newPasswdConf)	{
+		http_response_code(400);
+		echo "Passwords not matching.";
+	} elseif (!CheckPasswdSecurity($_POST['newPasswd'])) {
+		http_response_code(400);
+		echo "New password security too low.";
+	} else {
+		db_UpdatePasswd($newPasswd);
+		echo "You're password has been changed.";
+	}
+}
+
+function CheckPasswdSecurity($passwd)	{
+	if (!preg_match("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$^", $passwd))
+		return FALSE;
+	return TRUE;
 }
 
 function GetCurrentUser()	{
