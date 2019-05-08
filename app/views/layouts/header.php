@@ -14,7 +14,7 @@
 		<a href="index.php?page=signUp">Sign Up</a>
 		<a href="index.php?page=signIn">Sign In</a>
 	<?php } else { ?>
-		<a href="index.php?page=newPost">New Post</a>
+		<a href="index.php?page=montage">New Post</a>
 		<a href="index.php?page=profil">Profil</a>
 		<a href="index.php?action=logOut">Disconnect</a>
 	<?php } ?>

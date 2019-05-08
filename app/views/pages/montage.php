@@ -10,5 +10,5 @@
 	<div>
 		
 	</div>
-	<script type="text/javascript" src="/app/assets/js/webcam.js"></script>
+	<script type="text/javascript" src="/app/assets/js/montage.js"></script>
 </body>

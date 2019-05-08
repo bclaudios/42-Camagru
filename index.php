@@ -1,8 +1,11 @@
 <?php
 require_once("app/controllers/userController.php");
+require_once("app/controllers/postController.php");
 
 if (isset($_GET['page']))	{
 	$page = $_GET['page'];
+
+	//	USER ROUTEUR
 	if ($page === "signUp")
 		view_SignUp();
 	if ($page === "signIn")
@@ -11,8 +14,10 @@ if (isset($_GET['page']))	{
 		view_Profil();
 	if ($page === "editProfil")
 		view_EditProfil();
-	if ($page === "newPost")
-		view_newPost();
+
+	//	POST ROUTEUR
+	if ($page === "montage")
+		view_Montage();
 } elseif (isset($_GET['action'])) {
 	$action = $_GET['action'];
 	if ($action === "logOut")

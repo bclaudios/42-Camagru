@@ -45,11 +45,6 @@ function view_EditProfil()	{
 	require_once("app/views/pages/editProfil.php");
 }
 
-function view_newPost()	{
-	$title = "New Post";
-	require_once("app/views/pages/newPost.php");
-}
-
 ##### ACTIONS #####
 
 //		SIGNUP/SIGNIN/LOGOUT
