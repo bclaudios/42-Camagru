@@ -56,6 +56,7 @@
 		const context = canvas.getContext('2d');
 		context.drawImage(video, 0, 0, width, height);
 		const data = canvas.toDataURL('image/png');
+		console.log(data);
 		photo.setAttribute('src', data);
 	}
 

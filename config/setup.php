@@ -40,7 +40,17 @@ try	{
 				`email` VARCHAR(255) NOT NULL UNIQUE,
 				`passwd` VARCHAR(255) NOT NULL,
 				`valid` BOOLEAN DEFAULT FALSE)");
-	print($TABLE_NAME. " Created.");
+	print($TABLE_NAME. " Created.\n");
+	//	CREATE POSTS TABLE
+	$TABLE_NAME = "posts";
+	$db->exec("CREATE TABLE ".$TABLE_NAME." 
+				(`post_id` INT PRIMARY KEY AUTO_INCREMENT NOT NULL UNIQUE,
+				`user_id` INT NOT NULL,
+				`date` DATE NOT NULL,
+				`time` TIME NOT NULL,
+				`path` CHAR NOT NULL UNIQUE,
+				`likes` INT)");
+	print($TABLE_NAME. " Created.\n");
 } catch (PDOException $ex)	{
 	die("Database init error: ".$ex->getMessage());
 }

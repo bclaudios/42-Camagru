@@ -57,7 +57,7 @@ function CheckSignUpInfos()	{
 		$errorLogs[] = "Password security error. Must contain at least 8 chars, 1 lowercase, 1 uppercase and 1 digit.";
 	if ($_POST['passwd'] !== $_POST['passwdConf'])
 		$errorLogs[] = "Passwords not matching.";
-	$userExist = db_UserExist($_POST['login'], $_POST['email']);
+	$userExist = UserModel::db_UserExist($_POST['login'], $_POST['email']);
 	if ($userExist)
 		$errorLogs[] = $userExist;
 	if (!isset($errorLogs))
@@ -77,21 +77,17 @@ function SignUp()	{
 			"passwd" => hash('sha256', $_POST['passwd'])
 		);
 		//ADD EMAIL VERIFICATION HERE
-		$mail = mail("claudios.barthelemy@gmail.com", "Test d'inscription", "Vous etes inscris sur Camagru, bravo !");
-		if (!$mail)	{
-			http_response_code(400);
-			echo "Cannot send verification mail.";
-		} else {
-			db_CreateUser($user);
-			echo "Registration complete.\nPlease confirm your address by clicking on the link sent at the one you specified.";
-		}
+		UserModel::db_CreateUser($user);
+		echo "Registration complete.\nPlease confirm your address by clicking on the link sent at the one you specified.";
 	}
 }
 // E-mail verification missing
 
 function SignIn()	{
 	$passwd = hash("sha256", $_POST['passwd']);
-	$user = db_GetUser($_POST['login']);
+	$user = UserModel::db_GetUser($_POST['login']);
+	var_dump($user);
+	die;
 	if ($user === FALSE || $user['passwd'] !== $passwd)	{
 		http_response_code(400);
 		echo "Login or password incorrect.";
@@ -113,11 +109,11 @@ function UpdateLogin()	{
 	$user = GetCurrentUser();
 	$newLogin = $_POST['newLogin'];
 	if ($user["login"] !== $newLogin)	{
-		if (db_GetUser($newLogin))	{
+		if (UserModel::db_GetUser($newLogin))	{
 			http_response_code(400);
 			echo "This username is already used.";
 		} else	{
-			db_UpdateLogin($newLogin);
+			UserModel::db_UpdateLogin($newLogin);
 			$_SESSION['user'] = $newLogin;
 			echo "Your username has been set to : " . $newLogin . ".";
 		}
@@ -140,11 +136,11 @@ function UpdateEmail()	{
 			http_response_code(400);
 			echo "Email adresses not matching with each other.";
 		}
-		elseif (db_CheckEmail($newEmail))	{
+		elseif (UserModel::db_CheckEmail($newEmail))	{
 			http_response_code(400);
 			echo "This email address is already used.";
 		} else {
-			db_UpdateEmail($newEmail);
+			UserModel::db_UpdateEmail($newEmail);
 			//ADD EMAIL VERIFICATION HERE
 			echo "Your email address has been set to : " . $newEmail . ".\nA new confirmation is required. Please check you inbox.";
 		}
@@ -157,14 +153,14 @@ function UpdateEmail()	{
 function UserUpdateProfil()	{
 	$user = GetCurrentUser();
 	if ($user['login'] !== $_POST['newLogin'])	{
-		if (db_GetUser($_POST['newLogin']))
+		if (UserModel::db_GetUser($_POST['newLogin']))
 			die ("Login is already used.");
 		}
 		if ($user['email'] !== $_POST['newEmail'])	{
-			if (db_GetUser($_POST['newEmail']))
+			if (UserModel::db_GetUser($_POST['newEmail']))
 			die ("E-mail address already used.");
 		}
-	db_UpdateUser();
+	UserModel::db_UpdateUser();
 	$alertTitle = "Informations changed";
 	$alertMessage = "Your informations has been successfully updated.";
 	require("app/views/pages/alert.php");
@@ -185,7 +181,7 @@ function UpdatePasswd()	{
 		http_response_code(400);
 		echo "New password security too low.";
 	} else {
-		db_UpdatePasswd($newPasswd);
+		UserModel::db_UpdatePasswd($newPasswd);
 		echo "You're password has been changed.";
 	}
 }
@@ -197,5 +193,5 @@ function CheckPasswdSecurity($passwd)	{
 }
 
 function GetCurrentUser()	{
-	return db_GetUser($_SESSION['user']);
+	return UserModel::db_GetUser($_SESSION['user']);
 }
