@@ -5,7 +5,7 @@ session_start();
 ##### CONTROLLER #####
 if (isset($_POST['action']))	{
 	$action = $_POST['action'];
-	if ($action === "signin")
+	if ($action === "signIn")
 		SignIn();
 	if ($action === "signUp")
 		SignUp();
