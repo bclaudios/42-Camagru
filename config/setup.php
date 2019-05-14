@@ -48,9 +48,15 @@ try	{
 				`user_id` INT NOT NULL,
 				`date` DATE NOT NULL,
 				`time` TIME NOT NULL,
-				`path` CHAR NOT NULL UNIQUE,
+				`path` VARCHAR(255) NOT NULL UNIQUE,
 				`likes` INT)");
 	print($TABLE_NAME. " Created.\n");
+	$TABLE_NAME = "likes";
+	$db->exec("CREATE TABLE ".$TABLE_NAME." 
+				(`like_id` INT PRIMARY KEY AUTO_INCREMENT NOT NULL UNIQUE,
+				`user_id` INT NOT NULL,
+				`post_id` INT NOT NULL)");
+	print($TABLE_NAME. " Created.\n");	
 } catch (PDOException $ex)	{
 	die("Database init error: ".$ex->getMessage());
 }
