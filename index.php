@@ -16,8 +16,13 @@ if (isset($_GET['page']))	{
 		view_EditProfil();
 
 	//	POST ROUTEUR
-	if ($page === "montage")
+	if ($page === "montage")	{
+		if (isset($_FILES['photo']))	{
+			print_r($_FILES);
+			die;
+		}
 		view_Montage();
+	}
 } elseif (isset($_GET['action'])) {
 	$action = $_GET['action'];
 	if ($action === "logOut")

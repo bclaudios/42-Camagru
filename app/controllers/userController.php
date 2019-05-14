@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__.'/../models/userModel.php';
+require_once __DIR__.'/../models/UserModel.php';
 session_start();
 
 ##### CONTROLLER #####
@@ -86,8 +86,6 @@ function SignUp()	{
 function SignIn()	{
 	$passwd = hash("sha256", $_POST['passwd']);
 	$user = UserModel::db_GetUser($_POST['login']);
-	var_dump($user);
-	die;
 	if ($user === FALSE || $user['passwd'] !== $passwd)	{
 		http_response_code(400);
 		echo "Login or password incorrect.";

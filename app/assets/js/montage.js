@@ -52,11 +52,26 @@
 		photo.setAttribute('src', data);
 	}
 
+	function SendPicture(pic)	{
+		console.log(pic);
+		const post = "action=createPost"
+					+"&img="+pic;
+		const xhr = new XMLHttpRequest();
+		xhr.onreadystatechange = function ()	{
+			if (xhr.readyState === 4)	{
+				alert(xhr.responseText);
+			}
+		}
+		xhr.open("POST", "/app/controllers/postController.php");
+		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhr.send(post);
+	}
+
 	function TakePicture()	{
 		const context = canvas.getContext('2d');
 		context.drawImage(video, 0, 0, width, height);
 		const data = canvas.toDataURL('image/png');
-		console.log(data);
+		SendPicture(data);
 		photo.setAttribute('src', data);
 	}
 

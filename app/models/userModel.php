@@ -1,11 +1,11 @@
 <?php
 
-require_once("Database.php");
+require_once("Model.php");
 
 class UserModel {
 
 	public static function db_UserExist($login, $email)	{
-		$db = Database::db_Connect();
+		$db = Model::db_Connect();
 		try {
 			$req = $db->prepare("SELECT * FROM users WHERE 
 							`login` LIKE :login 
@@ -28,7 +28,7 @@ class UserModel {
 	}
 	
 	public static function db_CreateUser($user)	{
-		$db = Database::db_Connect();
+		$db = Model::db_Connect();
 		try	{
 			$req = $db->prepare("INSERT INTO users 
 							(login, email, passwd) 
@@ -45,7 +45,7 @@ class UserModel {
 	}
 	
 	public static function db_GetUser($login)	{
-		$db = Database::db_Connect();
+		$db = Model::db_Connect();
 		try {
 			$req = $db->prepare("SELECT * FROM users WHERE `login` LIKE :login");
 			$req->execute(["login" => $login]);
@@ -60,7 +60,7 @@ class UserModel {
 	}
 	
 	public static function db_CheckEmail($email)	{
-		$db = Database::db_Connect();
+		$db = Model::db_Connect();
 		try {
 			$req = $db->prepare("SELECT * FROM users WHERE `email` LIKE :email");
 			$req->execute(["email" => $email]);
@@ -74,7 +74,7 @@ class UserModel {
 	}
 	
 	public static function db_UpdateLogin($newLogin)	{
-		$db = Database::db_Connect();
+		$db = Model::db_Connect();
 		try {
 			$req = $db->prepare("UPDATE users SET 
 							`login` = :newLogin
@@ -89,7 +89,7 @@ class UserModel {
 	}
 	
 	public static function db_UpdateEmail($newEmail)	{
-		$db = Database::db_Connect();
+		$db = Model::db_Connect();
 		try {
 			$req = $db->prepare("UPDATE users SET 
 							`email` = :newEmail
@@ -104,7 +104,7 @@ class UserModel {
 	}
 	
 	public static function db_UpdatePasswd($newPasswd)	{
-		$db = Database::db_Connect();
+		$db = Model::db_Connect();
 		try	{
 			$req = $db->prepare("UPDATE users SET 
 							`passwd` = :newPasswd 
