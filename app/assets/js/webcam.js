@@ -61,7 +61,7 @@
 		xhr.onreadystatechange = function ()	{
 			if (xhr.readyState === 4)	{
 				if (xhr.status === 200)
-					alert(xhr.responseText);
+					DisplayPicture(xhr.responseText);
 				else
 					alert(xhr.responseText);
 			}
@@ -71,13 +71,17 @@
 		xhr.send(post);
 	}
 
+	function DisplayPicture(fileName)	{
+		alert("../img/posts/" + fileName);
+		photo.setAttribute("src", "app/assets/img/posts/" + fileName);
+	}
+
 	function TakePicture()	{
 		const sticker = document.getElementById("sticker").firstChild.id;
 		const context = canvas.getContext('2d');
 		context.drawImage(video, 0, 0, width, height);
 		const data = canvas.toDataURL('image/png');
 		SendPicture(data, sticker);
-		photo.setAttribute('src', data);
 	}
 
 	window.addEventListener('load', StartStream, false);
