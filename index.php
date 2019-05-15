@@ -2,10 +2,10 @@
 require_once("app/controllers/userController.php");
 require_once("app/controllers/postController.php");
 
+##### PAGES ROUTEUR #####
 if (isset($_GET['page']))	{
 	$page = $_GET['page'];
-
-	//	USER ROUTEUR
+	//	USER VIEWS
 	if ($page === "signUp")
 		view_SignUp();
 	if ($page === "signIn")
@@ -14,15 +14,13 @@ if (isset($_GET['page']))	{
 		view_Profil();
 	if ($page === "editProfil")
 		view_EditProfil();
+	//	POST VIEWS
+	if ($page === "webcamPost")
+		view_WebcamPost();
+	if ($page === "filePost")
+		view_FilePost();
 
-	//	POST ROUTEUR
-	if ($page === "montage")	{
-		if (isset($_FILES['photo']))	{
-			print_r($_FILES);
-			die;
-		}
-		view_Montage();
-	}
+##### ACTIONS ROUTEUR #####
 } elseif (isset($_GET['action'])) {
 	$action = $_GET['action'];
 	if ($action === "logOut")

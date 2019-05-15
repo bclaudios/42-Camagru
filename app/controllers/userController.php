@@ -2,7 +2,7 @@
 require_once __DIR__.'/../models/UserModel.php';
 session_start();
 
-##### CONTROLLER #####
+########## CONTROLLER ##########
 if (isset($_POST['action']))	{
 	$action = $_POST['action'];
 	if ($action === "signIn")
@@ -17,7 +17,7 @@ if (isset($_POST['action']))	{
 		UpdatePasswd();
 }
 
-##### VIEWS #####
+########## VIEWS ##########
 function view_Home()	{
 	$title = "Home";
 	require_once("app/views/pages/main.php");
@@ -45,9 +45,7 @@ function view_EditProfil()	{
 	require_once("app/views/pages/editProfil.php");
 }
 
-##### ACTIONS #####
-
-//		SIGNUP/SIGNIN/LOGOUT
+########## ACTIONS ##########
 function CheckSignUpInfos()	{
 	if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
 		$errorLogs[] = "Wrong email format.";
@@ -101,8 +99,7 @@ function LogOut()	{
 }
 
 
-//		PROFIL UPDATES
-
+#####	Profil updates
 function UpdateLogin()	{
 	$user = GetCurrentUser();
 	$newLogin = $_POST['newLogin'];
@@ -184,6 +181,7 @@ function UpdatePasswd()	{
 	}
 }
 
+#####	Tools
 function CheckPasswdSecurity($passwd)	{
 	if (!preg_match("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$^", $passwd))
 		return FALSE;

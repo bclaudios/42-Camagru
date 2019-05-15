@@ -25,7 +25,7 @@
 				console.log("Error in getUserMedia(): " + err);
 			});
 
-		// Set the width/height when de stream is launched
+		// Set the width/height when the stream is launched
 		video.addEventListener('canplay', function(ev)	{
 			if (!streaming)	{
 				video.setAttribute('width', width);
@@ -35,7 +35,7 @@
 				streaming = true;
 			}
 		}, false);
-
+		// Button trigger
 		startButton.addEventListener("click", function(ev) {
 			TakePicture();
 			ev.preventDefault();
@@ -43,6 +43,7 @@
 		ClearPhoto();
 	}
 
+	// Clear temporary canvas
 	function ClearPhoto()	{
 		const context = canvas.getContext('2d');
 		context.fillStyle = "#AAA";
@@ -52,14 +53,17 @@
 		photo.setAttribute('src', data);
 	}
 
-	function SendPicture(pic)	{
-		console.log(pic);
+	function SendPicture(pic, sticker)	{
 		const post = "action=createPost"
-					+"&img="+pic;
+					+"&img="+pic
+					+"&sticker="+sticker;
 		const xhr = new XMLHttpRequest();
 		xhr.onreadystatechange = function ()	{
 			if (xhr.readyState === 4)	{
-				alert(xhr.responseText);
+				if (xhr.status === 200)
+					alert(xhr.responseText);
+				else
+					alert(xhr.responseText);
 			}
 		}
 		xhr.open("POST", "/app/controllers/postController.php");
@@ -68,10 +72,11 @@
 	}
 
 	function TakePicture()	{
+		const sticker = document.getElementById("sticker").firstChild.id;
 		const context = canvas.getContext('2d');
 		context.drawImage(video, 0, 0, width, height);
 		const data = canvas.toDataURL('image/png');
-		SendPicture(data);
+		SendPicture(data, sticker);
 		photo.setAttribute('src', data);
 	}
 

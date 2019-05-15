@@ -49,7 +49,7 @@ try	{
 				`date` DATE NOT NULL,
 				`time` TIME NOT NULL,
 				`path` VARCHAR(255) NOT NULL UNIQUE,
-				`likes` INT)");
+				`likes` INT DEFAULT 0)");
 	print($TABLE_NAME. " Created.\n");
 	$TABLE_NAME = "likes";
 	$db->exec("CREATE TABLE ".$TABLE_NAME." 
