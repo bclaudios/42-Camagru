@@ -4,10 +4,11 @@
 	<main>
 		<div>
 			<h2>Your Webcam</h2>
-			<p>No webcam ? <a href="index.php?page=uploadPost">Click here !</a></p>
+			<p>No webcam ? Upload a picture <a href="index.php?page=filePost">here</a></p>
 		</div>
 		<div id="overlay">
-			<div id="sticker" style="position:absolute;"></div>
+			<div id="sticker" style="position:absolute;">
+			</div>
 			<video id="video" autoplay></video>
 		</div>
 		<button id="startButton">Take a snapshot</button><br>

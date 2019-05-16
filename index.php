@@ -19,7 +19,6 @@ if (isset($_GET['page']))	{
 		view_WebcamPost();
 	if ($page === "filePost")
 		view_FilePost();
-
 ##### ACTIONS ROUTEUR #####
 } elseif (isset($_GET['action'])) {
 	$action = $_GET['action'];
