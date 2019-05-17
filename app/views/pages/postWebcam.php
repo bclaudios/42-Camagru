@@ -22,8 +22,12 @@
 	<h2>Your picture</h2>
 	<canvas id="canvas" hidden></canvas>
 	<img id="photo" alt="La photo de ma webcam">
-	<div>
-		
+	<div style="display:flex;">
+		<?php 
+			foreach ($lastPosts as $post)	{
+				echo "<img src='/app/assets/img/posts/".$post['path']."' style='height:120px;width:160px;'><br>";
+			}
+		?>
 	</div>
 	<script type="text/javascript" src="/app/assets/js/postWebcam.js"></script>
 	<script type="text/javascript" src="/app/assets/js/stickers.js"></script>

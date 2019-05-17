@@ -39,7 +39,7 @@
 		// Button trigger
 		postBtn.addEventListener("click", function(ev) {
 			stickerSelected = document.getElementById("sticker").firstChild;
-			if (stickerSelected.tagName == "undefined")
+			if (stickerSelected.tagName == "IMG")
 				TakePicture();
 			else
 				alert("Please choose a frame before taking a picture.");

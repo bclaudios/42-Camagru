@@ -7,7 +7,7 @@ require_once __DIR__.'/../controllers/userController.php';
 if (isset($_POST['action']))	{
 	$action = $_POST['action'];
 	if ($action === "createPost")
-	CreatePost();
+		CreatePost();
 } else {
 	view_Home();
 }
@@ -16,6 +16,8 @@ if (isset($_POST['action']))	{
 function view_WebcamPost()	{
 	$title = "New Post";
 	$stickers = ["frame1.png", "frame2.png", "frame3.png", "frame4.png", "frame5.png", "frame6.png", "frame7.png", "frame8.png", "frame9.png", "frame10.png"];
+	$user = GetCurrentUser();
+	$lastPosts = PostModel::db_GetLastPosts($user['user_id'], 5);
 	require_once("app/views/pages/postWebcam.php");
 }
 
@@ -60,7 +62,7 @@ function CreateMontageFile($img)	{
 		echo "Image creation failed.";
 		die;
 	};
-	PostModel::db_CreatePost($path, $user['user_id']);
+	PostModel::db_CreatePost($fileName, $user['user_id']);
 	return $fileName;
 }
 
