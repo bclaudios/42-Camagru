@@ -7,13 +7,13 @@
 	let video = null;
 	let canvas = null;
 	let photo = null;
-	let startButton = null;
+	let postBtn = null;
 
 	function StartStream()	{
-		video = document.getElementById("video");
+		video = document.getElementById("webcam");
 		canvas = document.getElementById("canvas");
 		photo = document.getElementById("photo");
-		startButton = document.getElementById("startButton");
+		postBtn = document.getElementById("post_btn");
 
 		// Get the webcam stream
 		navigator.mediaDevices.getUserMedia({ video: true, audio: false})
@@ -30,15 +30,16 @@
 			if (!streaming)	{
 				video.setAttribute('width', width);
 				video.setAttribute('height', height);
+				video.style.transform = 'scaleX(-1)';
 				canvas.setAttribute('width', width);
 				canvas.setAttribute('height', height);
 				streaming = true;
 			}
 		}, false);
 		// Button trigger
-		startButton.addEventListener("click", function(ev) {
+		postBtn.addEventListener("click", function(ev) {
 			stickerSelected = document.getElementById("sticker").firstChild;
-			if (stickerSelected)
+			if (stickerSelected.tagName == "undefined")
 				TakePicture();
 			else
 				alert("Please choose a frame before taking a picture.");
@@ -59,7 +60,8 @@
 	function SendPicture(pic, sticker)	{
 		const post = "action=createPost"
 					+"&img="+pic
-					+"&sticker="+sticker;
+					+"&sticker="+sticker
+					+"&source=webcam";
 		const xhr = new XMLHttpRequest();
 		xhr.onreadystatechange = function ()	{
 			if (xhr.readyState === 4)	{
@@ -80,7 +82,7 @@
 	}
 
 	function TakePicture()	{
-		const sticker = document.getElementById("sticker").firstChild.id;
+		const sticker = document.getElementById("sticker").firstChild.src;
 		const context = canvas.getContext('2d');
 		context.drawImage(video, 0, 0, width, height);
 		const data = canvas.toDataURL('image/png');

@@ -15,34 +15,36 @@ if (isset($_POST['action']))	{
 		UpdateEmail();
 	if ($action === "editPasswd")
 		UpdatePasswd();
+} else {
+	view_Home();
 }
 
 ########## VIEWS ##########
 function view_Home()	{
 	$title = "Home";
-	require_once("app/views/pages/main.php");
+	require_once(__DIR__."/../views/pages/gallery.php");
 }
 
 function view_SignUp()	{
 	$title = "Sign Up";
-	require_once("app/views/pages/signUp.php");
+	require_once(__DIR__."/../views/pages/signUp.php");
 }
 
 function view_SignIn()	{
 	$title = "Sign In";
-	require_once("app/views/pages/signIn.php");
+	require_once(__DIR__."/../views/pages/signIn.php");
 }
 
 function view_Profil()	{
 	$title = "Profil";
 	$user = GetCurrentUser();
-	require_once("app/views/pages/profil.php");
+	require_once(__DIR__."/../views/pages/profil.php");
 }
 
 function view_EditProfil()	{
 	$title = "Edit Infos";
 	$user = GetCurrentUser();
-	require_once("app/views/pages/editProfil.php");
+	require_once(__DIR__."/../views/pages/profilEdit.php");
 }
 
 ########## ACTIONS ##########
