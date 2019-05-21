@@ -48,15 +48,23 @@ try	{
 				`user_id` INT NOT NULL,
 				`date` DATE NOT NULL,
 				`time` TIME NOT NULL,
-				`path` VARCHAR(255) NOT NULL UNIQUE,
-				`likes` INT DEFAULT 0)");
+				`path` VARCHAR(255) NOT NULL UNIQUE)");
 	print($TABLE_NAME. " Created.\n");
+	//	CREATE LIKES TABLE
 	$TABLE_NAME = "likes";
 	$db->exec("CREATE TABLE ".$TABLE_NAME." 
 				(`like_id` INT PRIMARY KEY AUTO_INCREMENT NOT NULL UNIQUE,
 				`user_id` INT NOT NULL,
 				`post_id` INT NOT NULL)");
-	print($TABLE_NAME. " Created.\n");	
+	print($TABLE_NAME. " Created.\n");
+	//	CREATE COMMENT TABLE
+	$TABLE_NAME = "comments";
+	$db->exec("CREATE TABLE ".$TABLE_NAME." 
+				(`comment_id` INT PRIMARY KEY AUTO_INCREMENT NOT NULL UNIQUE,
+				`user_id` INT NOT NULL,
+				`post_id` INT NOT NULL,
+				`comment` VARCHAR(255) NOT NULL)");
+	print($TABLE_NAME. " Created.\n");
 } catch (PDOException $ex)	{
 	die("Database init error: ".$ex->getMessage());
 }

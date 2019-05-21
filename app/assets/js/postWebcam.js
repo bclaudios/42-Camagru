@@ -77,8 +77,12 @@
 	}
 
 	function DisplayPicture(fileName)	{
+		const postView = document.getElementById("postView");
 		alert("../img/posts/" + fileName);
 		photo.setAttribute("src", "app/assets/img/posts/" + fileName);
+		const newView = document.createElement("img");
+		newView.setAttribute("src", "app/assets/img/posts/" + fileName);
+		postView.prepend(newView);
 	}
 
 	function TakePicture()	{

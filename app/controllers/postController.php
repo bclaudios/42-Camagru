@@ -8,8 +8,21 @@ if (isset($_POST['action']))	{
 	$action = $_POST['action'];
 	if ($action === "createPost")
 		CreatePost();
+	
 } else {
 	view_Home();
+}
+
+if ($_GET['action'] === "addLike")	{
+		echo "<br>";
+		// PostModel::db_AddLike(2, 1);
+		$posts = PostModel::db_GetAllPosts();
+		print_r($posts);
+		echo "<br>";
+		foreach ($posts as $post)	{
+			echo "<br>";
+			print_r($post);
+		}
 }
 
 ##### VIEWS #####

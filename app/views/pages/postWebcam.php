@@ -22,7 +22,8 @@
 	<h2>Your picture</h2>
 	<canvas id="canvas" hidden></canvas>
 	<img id="photo" alt="La photo de ma webcam">
-	<div style="display:flex;">
+	<div id="postView" style="display:flex;">
+		<h2>Your previous posts</h2>
 		<?php 
 			foreach ($lastPosts as $post)	{
 				echo "<img src='/app/assets/img/posts/".$post['path']."' style='height:120px;width:160px;'><br>";
