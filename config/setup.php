@@ -47,15 +47,15 @@ try	{
 				`date` DATE NOT NULL,
 				`time` TIME NOT NULL,
 				`path` VARCHAR(255) NOT NULL UNIQUE,
-				FOREIGN KEY (user_id) REFERENCES users(user_id))");
+				FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE)");
 	print("Posts Table Created.\n");
 	//	CREATE LIKES TABLE
 	$db->exec("CREATE TABLE likes
 				(`like_id` INT PRIMARY KEY AUTO_INCREMENT NOT NULL, 
 				`user_id` INT NOT NULL,
 				`post_id` INT NOT NULL,
-				FOREIGN KEY (user_id) REFERENCES users(user_id), 
-				FOREIGN KEY (post_id) REFERENCES posts(post_id))");
+				FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE, 
+				FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE)");
 	print("Likes Table Created.\n");
 	//	CREATE COMMENT TABLE
 	$db->exec("CREATE TABLE comments 
@@ -65,8 +65,8 @@ try	{
 				`date` DATE NOT NULL,
 				`time` TIME NOT NULL,
 				`comment` VARCHAR(255) NOT NULL,
-				FOREIGN KEY (user_id) REFERENCES users(user_id),
-				FOREIGN KEY (post_id) REFERENCES posts(post_id))");
+				FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+				FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE)");
 	print("Comments Table Created.\n");
 } catch (PDOException $ex)	{
 	die("Database init error: ".$ex->getMessage());
