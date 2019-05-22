@@ -4,6 +4,7 @@ require_once __DIR__."/Model.php";
 
 class PostModel	{
 
+	//	POST
 	public static function db_CreatePost($path, $user_id)	{
 		$db = Model::db_Connect();
 		try {
@@ -20,6 +21,104 @@ class PostModel	{
 		}
 	}
 
+	public static function db_DeletePost($post_id)	{
+		$db = Model::db_Connect();
+		try {
+			$req = $db->prepare("DELETE FROM posts
+								WHERE post_id = :post_id");
+			$req->execute([
+				"post_id" => $post_id,
+			]);
+		} catch(PDOException $ex) {
+			die("Error in db_DeletePost(): " . $ex->getMessage());
+		}
+	}
+		
+	public static function db_GetPost($post_id)	{
+		$db = Model::db_Connect();
+		try	{
+			$req = $db->prepare("SELECT posts.post_id, users.login, posts.date, posts.time, posts.path, (SELECT COUNT(*) FROM likes 	WHERE post_id = :post_id) AS likesCount, (SELECT comment FROM comments WHERE comments.post_id = :post_id LIMIT 1) AS 	lastComment
+					FROM posts
+					LEFT JOIN users ON users.user_id = posts.user_id
+					LEFT JOIN likes ON likes.post_id = posts.post_id
+					WHERE posts.post_id = :post_id 
+					GROUP BY post_id");
+			$req->execute([
+				"post_id" => $post_id
+			]);
+			$post = $req->fetchAll();
+			return $post;
+		} catch (PDOExcpetion $ex) {
+			die("Error in db_GetPost(): " . $ex->getMessage());
+		}
+	}
+	
+	public static function db_GetAllPosts()	{
+		$db = Model::db_Connect();
+		try	{
+			$req = $db->prepare("SELECT posts.post_id, users.login, posts.date, posts.time, posts.path, likesCount, 
+				(SELECT comment FROM comments WHERE comments.post_id = posts.post_id ORDER BY comment_id DESC LIMIT	1) AS lastComment 
+				FROM posts 
+				LEFT JOIN users ON posts.user_id = users.user_id
+				LEFT JOIN (SELECT post_id, COUNT(*) AS likesCount
+					FROM likes
+					GROUP BY post_id)
+				likesCount ON likesCount.post_id = posts.post_id
+				ORDER BY post_id DESC");
+			$req->execute();
+			$posts = $req->fetchAll();
+			return $posts;
+		} catch (PDOException $ex) {
+			die ("Error in db_GetAllPosts(): " . $ex->getMessage());
+		}
+	}
+
+	public static function db_GetNLastPosts($count)	{
+		$db = Model::db_Connect();
+		try	{
+			$req = $db->prepare("SELECT posts.post_id, users.login, posts.date, posts.time, posts.path, likesCount, 
+				(SELECT comment FROM comments WHERE comments.post_id = posts.post_id ORDER BY comment_id DESC LIMIT	1) AS lastComment 
+				FROM posts 
+				LEFT JOIN users ON posts.user_id = users.user_id
+				LEFT JOIN (SELECT post_id, COUNT(*) AS likesCount
+					FROM likes
+					GROUP BY post_id)
+				likesCount ON likesCount.post_id = posts.post_id
+				ORDER BY post_id DESC
+				LIMIT ".$count);
+			$req->execute();
+			$posts = $req->fetchAll();
+			return $posts;
+		} catch (PDOException $ex) {
+			die ("Error in db_GetAllPosts(): " . $ex->getMessage());
+		}
+	}
+	
+	public static function db_GetNLastPostsFromUser($user_id, $count)	{
+		$db = Model::db_Connect();
+		try	{
+			$req = $db->prepare("SELECT posts.post_id, users.login, posts.date, posts.time, posts.path, likesCount, 
+				(SELECT comment FROM comments WHERE comments.post_id = posts.post_id ORDER BY comment_id DESC LIMIT	1) AS lastComment 
+				FROM posts 
+				LEFT JOIN users ON posts.user_id = users.user_id
+				LEFT JOIN (SELECT post_id, COUNT(*) AS likesCount
+					FROM likes
+					GROUP BY post_id)
+				likesCount ON likesCount.post_id = posts.post_id
+				WHERE posts.user_id = :user_id
+				ORDER BY post_id DESC
+				LIMIT ".$count);
+			$req->execute([
+				"user_id" => $user_id,
+			]);
+			$posts = $req->fetchAll();
+			return $posts;
+		} catch (PDOException $ex) {
+			die ("Error in db_GetAllPosts(): " . $ex->getMessage());
+		}
+	}
+
+	//	LIKES
 	public static function db_AddLike($user_id, $post_id)	{
 		$db = Model::db_Connect();
 		try	{
@@ -35,6 +134,13 @@ class PostModel	{
 			die("Error in db_AddLike(): " . $ex->getMessage());
 		}
 	}
+
+	// public static function db_DeleteLike($user_id, $post_id)	{
+	// 	$db = Model::db_Connect();
+	// 	try	{
+	// 		$req = $db
+	// 	}
+	// }
 
 	public static function db_GetLastPosts($user_id, $count)	{
 		$db = Model::db_Connect();
@@ -53,38 +159,5 @@ class PostModel	{
 		}
 	}
 
-	public static function db_GetPost($post_id)	{
-		$db = Model::db_Connect();
-		try	{
-			$req = $db->prepare("SELECT posts.post_id, users.login, posts.date, posts.time, posts.path, (SELECT COUNT(*) FROM likes WHERE post_id = :post_id) AS likesCount, (SELECT comment FROM comments WHERE comments.post_id = :post_id LIMIT 1) as comment
-								FROM posts
-								LEFT JOIN users ON users.user_id = posts.user_id
-								LEFT JOIN likes ON likes.post_id = posts.post_id
-								WHERE posts.post_id = :post_id 
-								GROUP BY post_id");
-			$req->execute([
-				"post_id" => $post_id
-			]);
-			$post = $req->fetchAll();
-			return $post;
-		} catch (PDOExcpetion $ex) {
-			die("Error in db_GetPost(): " . $ex->getMessage());
-		}
-	}
 
-	public static function db_GetAllPosts()	{
-		$db = Model::db_Connect();
-		try	{
-			$req = $db->prepare("SELECT posts.post_id, users.login, posts.date, posts.time, posts.path, likesCount FROM posts
-								LEFT JOIN users ON posts.user_id = users.user_id
-								LEFT JOIN (SELECT post_id, COUNT(*) AS likesCount
-									FROM likes
-									GROUP BY post_id)
-								likesCount ON likesCount.post_id = posts.post_id");
-			$posts = $req->fetchAll();
-			return $posts;
-		} catch (PDOException $ex) {
-			die ("Error in db_GetAllPosts(): " . $ex->getMessage());
-		}
-	}
 }

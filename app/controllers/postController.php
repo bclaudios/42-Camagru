@@ -13,16 +13,15 @@ if (isset($_POST['action']))	{
 	view_Home();
 }
 
-if ($_GET['action'] === "addLike")	{
-		echo "<br>";
-		// PostModel::db_AddLike(2, 1);
-		$posts = PostModel::db_GetAllPosts();
-		print_r($posts);
-		echo "<br>";
-		foreach ($posts as $post)	{
+if (isset($_GET['action']))	{
+	if ($_GET['action'] === "test")	{
+		$results = PostModel::db_GetNLastPosts(5);
+		foreach($results as $result)	{
 			echo "<br>";
-			print_r($post);
+			print_r($result);
+			echo "<br>";
 		}
+	}
 }
 
 ##### VIEWS #####
