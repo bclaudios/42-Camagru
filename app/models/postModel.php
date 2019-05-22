@@ -5,6 +5,7 @@ require_once __DIR__."/Model.php";
 class PostModel	{
 
 	//	POST
+	//	Add update post if description added to posts
 	public static function db_CreatePost($path, $user_id)	{
 		$db = Model::db_Connect();
 		try {
@@ -90,7 +91,7 @@ class PostModel	{
 			$posts = $req->fetchAll();
 			return $posts;
 		} catch (PDOException $ex) {
-			die ("Error in db_GetAllPosts(): " . $ex->getMessage());
+			die ("Error in db_GetNLastPosts(): " . $ex->getMessage());
 		}
 	}
 	
@@ -114,11 +115,12 @@ class PostModel	{
 			$posts = $req->fetchAll();
 			return $posts;
 		} catch (PDOException $ex) {
-			die ("Error in db_GetAllPosts(): " . $ex->getMessage());
+			die ("Error in db_GetNLastPostsFromUser(): " . $ex->getMessage());
 		}
 	}
 
 	//	LIKES
+	//	Get which user liked a post ???
 	public static function db_AddLike($user_id, $post_id)	{
 		$db = Model::db_Connect();
 		try	{
@@ -135,29 +137,89 @@ class PostModel	{
 		}
 	}
 
-	// public static function db_DeleteLike($user_id, $post_id)	{
-	// 	$db = Model::db_Connect();
-	// 	try	{
-	// 		$req = $db
-	// 	}
-	// }
-
-	public static function db_GetLastPosts($user_id, $count)	{
+	public static function db_DeleteLike($user_id, $post_id)	{
 		$db = Model::db_Connect();
-		try {
-			$req = $db->prepare("SELECT * FROM posts WHERE
-								`user_id` LIKE :user_id
-								ORDER BY post_id DESC
-								LIMIT 5");
+		try	{
+			$req = $db->prepare("DELETE FROM likes
+								WHERE 
+								user_id = :user_id
+								AND
+								post_id = :post_id");
 			$req->execute([
-				"user_id" => $user_id
-				]);
-			$posts = $req->fetchAll();
-			return $posts;
-		} catch (PDOException $ex) {
-			die("Error in db_GetLastPosts: " . $ex->getMessage());
+				"user_id" => $user_id,
+				"post_id" => $post_id
+			]);
+		}	catch (PDOException $ex) {
+			die("Error in db_DeleteLike(): " . $ex->getMessage());
 		}
 	}
 
+	public static function db_UserLiked($user_id, $post_id)	{
+		$db = Model::db_Connect();
+		try	{
+			$req = $db->prepare("SELECT *
+								FROM likes
+								WHERE
+								user_id = :user_id
+								AND
+								post_id = :post_id");
+			$req->execute([
+				"user_id" => $user_id,
+				"post_id" => $post_id
+			]);
+			$like = $req->fetch();
+			if (empty($like))
+				return FALSE;
+			return TRUE;
+		} catch (PDOException $ex) {
+			die("Error in db_UserLiked(): " . $ex->getMessage());
+		}
+	}
 
+	//	COMMENTS
+	public static function db_AddComment($user_id, $post_id, $comment)	{
+		$db = Model::db_Connect();
+		try	{
+			$req = $db->prepare("INSERT INTO comments
+								(`user_id`, `post_id`, `date`, `time`, `comment`)
+								VALUES
+								(:user_id, :post_id, NOW(), NOW(), :comment)");
+			$req->execute([
+				"user_id" => $user_id,
+				"post_id" => $post_id,
+				"comment" => $comment
+			]);
+		} catch (PDOException $ex) {
+			die("Error in db_AddComment(): " . $ex->getMessage());
+		}
+	}
+
+	public static function db_DeleteComment($comment_id)	{
+		$db = Model::db_Connect();
+		try	{
+			$req = $db->prepare("DELETE FROM comments
+								WHERE comment_id = :comment_id");
+			$req->execute([
+				"comment_id" => $comment_id
+			]);
+		} catch (PDOException $ex) {
+			die("Error in db_DeleteComment(): " . $ex->getMessage());
+		}
+	}
+
+	public static function db_GetAllCommentsFromPost($post_id)	{
+		$db = Model::db_Connect();
+		try	{
+			$req = $db->prepare("SELECT *
+								FROM comments
+								WHERE post_id = :post_id");
+			$req->execute([
+				"post_id" => $post_id
+			]);
+			$comments = $req->fetchAll();
+			return $comments;
+		} catch (PDOException $ex) {
+			die("Error in db_GetAllCommentsFromPost(): " . $ex->getMessage());
+		}
+	}
 }

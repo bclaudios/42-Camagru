@@ -15,6 +15,7 @@ if (isset($_POST['action']))	{
 
 if (isset($_GET['action']))	{
 	if ($_GET['action'] === "test")	{
+		UserModel::db_DeleteUser("bclaudio");
 		$results = PostModel::db_GetNLastPosts(5);
 		foreach($results as $result)	{
 			echo "<br>";

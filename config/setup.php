@@ -71,3 +71,5 @@ try	{
 } catch (PDOException $ex)	{
 	die("Database init error: ".$ex->getMessage());
 }
+
+// Setup UNIQUE constraint on two columns (ex: likes[user_id, post_id])

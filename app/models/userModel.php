@@ -4,10 +4,42 @@ require_once("Model.php");
 
 class UserModel {
 
+	// Valid User Function
+	public static function db_CreateUser($user)	{
+		$db = Model::db_Connect();
+		try	{
+			$req = $db->prepare("INSERT INTO users 
+							(login, email, passwd) 
+							VALUES 
+							(:login, :email, :passwd)");
+			$req->execute([
+				"login" => $user["login"],
+				"email" => $user["email"],
+				"passwd" => $user["passwd"]
+			]);
+		} catch (PDOException $ex)	{
+			die ("Error in db_CreateUser(): " . $ex->getMessage());
+		}
+	}
+
+	public static function db_DeleteUser($login)	{
+		$db = Model::db_Connect();
+		try {
+			$req = $db->prepare("DELETE FROM users
+								WHERE login = :login");
+			$req->execute([
+				"login" => $login
+			]);
+		} catch (PDOException $ex) {
+			die ("Error in db_DeleteUser(): " . $ex->getMessage());
+		}
+	}
+
 	public static function db_UserExist($login, $email)	{
 		$db = Model::db_Connect();
 		try {
-			$req = $db->prepare("SELECT * FROM users WHERE 
+			$req = $db->prepare("SELECT * FROM users 
+							WHERE 
 							`login` LIKE :login 
 							OR 
 							`email` LIKE :email;");
@@ -27,52 +59,27 @@ class UserModel {
 		}
 	}
 	
-	public static function db_CreateUser($user)	{
-		$db = Model::db_Connect();
-		try	{
-			$req = $db->prepare("INSERT INTO users 
-							(login, email, passwd) 
-							VALUES 
-							(:login, :email, :passwd)");
-		$req->execute([
-			"login" => $user["login"],
-			"email" => $user["email"],
-			"passwd" => $user["passwd"]
-			]);
-		} catch (PDOException $e)	{
-			die ("Error in db_CreateUser(): " . $e->getMessage());
-		}
-	}
-	
 	public static function db_GetUser($login)	{
 		$db = Model::db_Connect();
 		try {
-			$req = $db->prepare("SELECT * FROM users WHERE `login` LIKE :login");
-			$req->execute(["login" => $login]);
+			$req = $db->prepare("SELECT * FROM users 
+								WHERE 
+								`login` LIKE :login");
+			$req->execute([
+				"login" => $login
+			]);
 			$user = $req->fetch();
 			if (empty($user))	{
 				return (NULL);
 			}
 			return ($user);
 		} catch (PDOException $e)	{
-			die ("Error in db_GetUSer(): " . $e->getMessage());
+			die ("Error in db_GetUser(): " . $e->getMessage());
 		}
 	}
 	
-	public static function db_CheckEmail($email)	{
-		$db = Model::db_Connect();
-		try {
-			$req = $db->prepare("SELECT * FROM users WHERE `email` LIKE :email");
-			$req->execute(["email" => $email]);
-			$user = $req->fetch();
-			if (empty($user))
-			return (NULL);
-			return ($user);
-		} catch (PDOException $e)	{
-			die ("Error in db_CheckEmail(): " . $e->getMessage());
-		}
-	}
 	
+	//	UPDATES FUNCTION
 	public static function db_UpdateLogin($newLogin)	{
 		$db = Model::db_Connect();
 		try {
@@ -100,6 +107,24 @@ class UserModel {
 			]);
 		} catch (PDOException $e)	{
 			die ("Error in db_UpdateEmail(): " . $e->getMessage());
+		}
+	}
+	
+	public static function db_CheckEmailExist($email)	{
+		$db = Model::db_Connect();
+		try {
+			$req = $db->prepare("SELECT * FROM users 
+								WHERE 
+								`email` LIKE :email");
+			$req->execute([
+				"email" => $email
+			]);
+			$user = $req->fetch();
+			if (empty($user))
+				return (FALSE);
+			return (TRUE);
+		} catch (PDOException $e)	{
+			die ("Error in db_CheckEmailExist(): " . $e->getMessage());
 		}
 	}
 	

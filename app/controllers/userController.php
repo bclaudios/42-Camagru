@@ -54,7 +54,7 @@ function CheckSignUpInfos()	{
 	if ($_POST['email'] !== $_POST['emailConf'])
 		$errorLogs[] = "Email adresses not matching.";
 	if (!CheckPasswdSecurity($_POST['passwd']))
-		$errorLogs[] = "Password security error. Must contain at least 8 chars, 1 lowercase, 1 uppercase and 1 digit.";
+		$errorLogs[] = "Password security is too low. Must contain at least 8 chars, 1 lowercase, 1 uppercase and 1 digit.";
 	if ($_POST['passwd'] !== $_POST['passwdConf'])
 		$errorLogs[] = "Passwords not matching.";
 	$userExist = UserModel::db_UserExist($_POST['login'], $_POST['email']);
@@ -97,7 +97,7 @@ function SignIn()	{
 
 function LogOut()	{
 	unset($_SESSION['user']);
-	view_Home();
+	header("Location: index.php");
 }
 
 
@@ -133,34 +133,18 @@ function UpdateEmail()	{
 			http_response_code(400);
 			echo "Email adresses not matching with each other.";
 		}
-		elseif (UserModel::db_CheckEmail($newEmail))	{
+		elseif (UserModel::db_CheckEmailExist($newEmail))	{
 			http_response_code(400);
 			echo "This email address is already used.";
 		} else {
 			UserModel::db_UpdateEmail($newEmail);
 			//ADD EMAIL VERIFICATION HERE
-			echo "Your email address has been set to : " . $newEmail . ".\nA new confirmation is required. Please check you inbox.";
+			echo "Your email address has been set to : " . $newEmail . ".\nA new confirmation is required. Please check your inbox.";
 		}
 	} else {
 		http_response_code(400);
 		echo "Same email address.";
 	}
-}
-
-function UserUpdateProfil()	{
-	$user = GetCurrentUser();
-	if ($user['login'] !== $_POST['newLogin'])	{
-		if (UserModel::db_GetUser($_POST['newLogin']))
-			die ("Login is already used.");
-		}
-		if ($user['email'] !== $_POST['newEmail'])	{
-			if (UserModel::db_GetUser($_POST['newEmail']))
-			die ("E-mail address already used.");
-		}
-	UserModel::db_UpdateUser();
-	$alertTitle = "Informations changed";
-	$alertMessage = "Your informations has been successfully updated.";
-	require("app/views/pages/alert.php");
 }
 
 function UpdatePasswd()	{
