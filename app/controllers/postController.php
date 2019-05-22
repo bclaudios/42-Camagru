@@ -30,7 +30,7 @@ function view_WebcamPost()	{
 	$title = "New Post";
 	$stickers = ["frame1.png", "frame2.png", "frame3.png", "frame4.png", "frame5.png", "frame6.png", "frame7.png", "frame8.png", "frame9.png", "frame10.png"];
 	$user = GetCurrentUser();
-	$lastPosts = PostModel::db_GetLastPosts($user['user_id'], 5);
+	$lastPosts = PostModel::db_GetNLastPostsFromUser($user['user_id'], 5);
 	require_once("app/views/pages/postWebcam.php");
 }
 
