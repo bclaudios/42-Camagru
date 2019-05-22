@@ -83,6 +83,7 @@ try	{
 				"comment" => RandomString()
 			]);
 		}
+		$user_id++;
 	}
 	print($likesCount . " commentary successfully created.\n");
 } catch(PDOException $ex) {
