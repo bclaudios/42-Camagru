@@ -33,38 +33,41 @@ try	{
 	]);
 	print($database." Connection granted.\n");
 	//	CREATE USER TABLE
-	$TABLE_NAME = "users";
-	$db->exec("CREATE TABLE ".$TABLE_NAME." 
-				(`user_id` INT PRIMARY KEY AUTO_INCREMENT NOT NULL UNIQUE,
+	$db->exec("CREATE TABLE users 
+				(`user_id` INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 				`login` VARCHAR(40) NOT NULL UNIQUE,
 				`email` VARCHAR(255) NOT NULL UNIQUE,
 				`passwd` VARCHAR(255) NOT NULL,
 				`valid` BOOLEAN DEFAULT FALSE)");
-	print($TABLE_NAME. " Created.\n");
+	print("Users Table Created.\n");
 	//	CREATE POSTS TABLE
-	$TABLE_NAME = "posts";
-	$db->exec("CREATE TABLE ".$TABLE_NAME." 
-				(`post_id` INT PRIMARY KEY AUTO_INCREMENT NOT NULL UNIQUE,
+	$db->exec("CREATE TABLE posts 
+				(`post_id` INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 				`user_id` INT NOT NULL,
 				`date` DATE NOT NULL,
 				`time` TIME NOT NULL,
-				`path` VARCHAR(255) NOT NULL UNIQUE)");
-	print($TABLE_NAME. " Created.\n");
+				`path` VARCHAR(255) NOT NULL UNIQUE,
+				FOREIGN KEY (user_id) REFERENCES users(user_id))");
+	print("Posts Table Created.\n");
 	//	CREATE LIKES TABLE
-	$TABLE_NAME = "likes";
-	$db->exec("CREATE TABLE ".$TABLE_NAME." 
-				(`like_id` INT PRIMARY KEY AUTO_INCREMENT NOT NULL UNIQUE,
-				`user_id` INT NOT NULL,
-				`post_id` INT NOT NULL)");
-	print($TABLE_NAME. " Created.\n");
-	//	CREATE COMMENT TABLE
-	$TABLE_NAME = "comments";
-	$db->exec("CREATE TABLE ".$TABLE_NAME." 
-				(`comment_id` INT PRIMARY KEY AUTO_INCREMENT NOT NULL UNIQUE,
+	$db->exec("CREATE TABLE likes
+				(`like_id` INT PRIMARY KEY AUTO_INCREMENT NOT NULL, 
 				`user_id` INT NOT NULL,
 				`post_id` INT NOT NULL,
-				`comment` VARCHAR(255) NOT NULL)");
-	print($TABLE_NAME. " Created.\n");
+				FOREIGN KEY (user_id) REFERENCES users(user_id), 
+				FOREIGN KEY (post_id) REFERENCES posts(post_id))");
+	print("Likes Table Created.\n");
+	//	CREATE COMMENT TABLE
+	$db->exec("CREATE TABLE comments 
+				(`comment_id` INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+				`user_id` INT NOT NULL,
+				`post_id` INT NOT NULL,
+				`date` DATE NOT NULL,
+				`time` TIME NOT NULL,
+				`comment` VARCHAR(255) NOT NULL,
+				FOREIGN KEY (user_id) REFERENCES users(user_id),
+				FOREIGN KEY (post_id) REFERENCES posts(post_id))");
+	print("Comments Table Created.\n");
 } catch (PDOException $ex)	{
 	die("Database init error: ".$ex->getMessage());
 }
