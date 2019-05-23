@@ -24,5 +24,6 @@ if (isset($_GET['page']))	{
 	$action = $_GET['action'];
 	if ($action === "logOut")
 		LogOut();
+} else {
+	view_Gallery();
 }
-view_Home();

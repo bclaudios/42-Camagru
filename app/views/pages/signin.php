@@ -1,5 +1,4 @@
 <?php require_once(__DIR__."/../layouts/header.php"); ?>
-<body>
 	<form>
         Login : <br>
         <input type="text" id="input_login" required><br>

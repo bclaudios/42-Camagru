@@ -1,6 +1,7 @@
 <?php
-require_once __DIR__.'/../models/UserModel.php';
 session_start();
+require_once __DIR__.'/../models/UserModel.php';
+require_once __DIR__.'/postController.php';
 
 ########## CONTROLLER ##########
 if (isset($_POST['action']))	{
@@ -15,15 +16,9 @@ if (isset($_POST['action']))	{
 		UpdateEmail();
 	if ($action === "editPasswd")
 		UpdatePasswd();
-} else {
-	view_Home();
 }
 
 ########## VIEWS ##########
-function view_Home()	{
-	$title = "Home";
-	require_once(__DIR__."/../views/pages/gallery.php");
-}
 
 function view_SignUp()	{
 	$title = "Sign Up";

@@ -8,15 +8,14 @@ if (isset($_POST['action']))	{
 	$action = $_POST['action'];
 	if ($action === "createPost")
 		CreatePost();
-	
-} else {
-	view_Home();
+	if ($action === "addComment")
+		AddComment();
 }
 
 if (isset($_GET['action']))	{
 	if ($_GET['action'] === "test")	{
 		UserModel::db_DeleteUser("bclaudio");
-		$results = PostModel::db_GetNLastPosts(5);
+		$results = PostModel::db_GetAllPosts();
 		foreach($results as $result)	{
 			echo "<br>";
 			print_r($result);
@@ -26,6 +25,13 @@ if (isset($_GET['action']))	{
 }
 
 ##### VIEWS #####
+
+function view_Gallery()	{
+	$title = "Gallery";
+	$lastsPosts = PostModel::db_GetAllPosts();
+	require_once(__DIR__."/../views/pages/gallery.php");
+}
+
 function view_WebcamPost()	{
 	$title = "New Post";
 	$stickers = ["frame1.png", "frame2.png", "frame3.png", "frame4.png", "frame5.png", "frame6.png", "frame7.png", "frame8.png", "frame9.png", "frame10.png"];
@@ -121,4 +127,14 @@ function DownloadUserImage($img)	{
 	imagecopyresampled($imgDst, $imgSrc, 0, 0, 0, 0, 800, 600, $srcSize[0], $srcSize[1]); // Resize and paste source image on destination image
 	imagepng($imgDst, $relPath); // Create png file with the result
 	return $tmpPath;
+}
+
+###### COMMENTS ######
+
+function AddComment() {
+	$comment = $_POST['comment'];
+	$post_id = $_POST['post_id'];
+	$user = GetCurrentUser();
+	PostModel::db_AddComment($user['user_id'], $post_id, $comment);
+	echo "un commentaire a bien ete ajoute";
 }
