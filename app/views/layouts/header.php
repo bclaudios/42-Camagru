@@ -30,11 +30,24 @@
 				<div class="navbar-menu">
 					<div class="navbar-end">
 						<?php if (!empty($_SESSION['user'])) { ?>
-							<a href="/index.php?page=webcamPost" class="navbar-item">New Post</a>
-							<a href="/index.php?page=profil" class="navbar-item">Profil</a>
-							<div class="navbar-item">
-									<a href="/index.php?action=logOut" class="button is-primary">Disconnect</a>
-							</div>
+							<!-- NEW POST BUTTON -->
+							<a href="/index.php?page=webcamPost" class="navbar-item">
+								<span class="icon is-large">
+									<img class="like-btn" src="app/assets/img/icon/add.png">
+								</span>
+							</a>
+							<!-- PROFIL BUTTON -->
+							<a href="/index.php?page=profil" class="navbar-item">
+								<span class="icon is-large">
+									<img class="like-btn" src="app/assets/img/icon/profil.png">
+								</span>
+							</a>
+							<!-- LOGOUT BUTTON -->
+							<a href="/index.php?action=logOut" class="navbar-item">
+								<span class="icon is-large">
+									<img class="like-btn" src="app/assets/img/icon/logout.png">
+								</span>
+							</a>
 					<!-- IF USER IS NOT LOG -->
 						<?php } else { ?>
 							<div class="navbar-item">
