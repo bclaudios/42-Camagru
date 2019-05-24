@@ -12,18 +12,8 @@ if (isset($_POST['action']))	{
 		AddComment();
 	if($action === "getComments")
 		GetAllCommentsFromPost();
-}
-
-if (isset($_GET['action']))	{
-	if ($_GET['action'] === "test")	{
-		UserModel::db_DeleteUser("bclaudio");
-		$results = PostModel::db_GetAllPosts();
-		foreach($results as $result)	{
-			echo "<br>";
-			print_r($result);
-			echo "<br>";
-		}
-	}
+	if ($action === "addLike")
+		AddLike();
 }
 
 ##### VIEWS #####
@@ -138,6 +128,7 @@ function DownloadUserImage($img)	{
 
 function AddComment() {
 	$user = GetCurrentUser();
+	date_default_timezone_set("Europe/Paris");
 	$comment = [
 		"post_id" => $_POST['post_id'],
 		"login" => $user['login'],
@@ -152,7 +143,14 @@ function AddComment() {
 function GetAllCommentsFromPost() {
 	$post_id = $_POST['post_id'];
 	$comments = PostModel::db_GetAllCommentsFromPost($post_id);
-	array_shift($comments);
 	$comments = json_encode($comments);
 	echo $comments;
+}
+
+###### LIKES #######
+
+function AddLike() {
+	$user = GetCurrentUser();
+	$post_id = $_POST['post_id'];
+	PostModel::db_AddLike($user['user_id'], $post_id);
 }

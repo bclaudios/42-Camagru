@@ -214,7 +214,7 @@ class PostModel	{
 								FROM comments
 								LEFT JOIN users ON comments.user_id = users.user_id
 								WHERE post_id = :post_id
-								ORDER BY comment_id DESC");
+								ORDER BY comment_id ASC");
 			$req->execute(["post_id" => $post_id]);
 			$comments = $req->fetchAll();
 			return $comments;

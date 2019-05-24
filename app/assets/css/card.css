@@ -3,6 +3,7 @@
 	max-width: 50em;
 	line-height: 1;
 	margin: 0 auto 1.5em auto;
+	border-radius:2px;
 }
 
 .gallery-card .card-content {
@@ -24,6 +25,10 @@
 	margin:0;
 }
 
+.gallery-card .comment-input .media-right {
+	margin:0;
+}
+
 .gallery-card .comment-input .button {
 	border:none;
 }
@@ -31,10 +36,27 @@
 .gallery-card .input {
 	border:none;
 	box-shadow:none;
+	border-radius: 0;
 }
 
 .show_comments, .hide_comments {
 	padding:0em 0.5em;
 	font-size: 0.90em;
 	border: none;
+}
+
+.gallery-card .profil-pic {
+	height: 50px;
+	width: 50px;
+	border: 2px solid #6a6a6a;
+	padding:3px;
+}
+
+.gallery-card .card-header-title {
+	padding:0.5rem;
+}
+
+.gallery-card .card-infos {
+	padding:0.5em;
+	margin:0;
 }

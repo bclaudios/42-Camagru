@@ -7,6 +7,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.css">
 	<link rel="stylesheet" href="app/assets/css/main.css">
 	<link rel="stylesheet" href="app/assets/css/card.css">
+	<link href="https://fonts.googleapis.com/css?family=Kaushan+Script&display=swap" rel="stylesheet"> 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title><?=$title?></title>
 </head>
@@ -16,7 +17,8 @@
 			<nav class="navbar">
 				<div class="navbar-brand">
 					<a class="navbar-item" href="index.php">
-						<h1>Camagru</h1>
+						<img src="app/assets/img/icon/logo-camagru.png" id="main_logo">
+						<h1 class="title">Camagru</h1>
 					</a>
 					<a class="navbar-burger burger">
 						<span aria-hidden="true"></span>
