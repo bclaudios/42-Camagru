@@ -3,7 +3,7 @@
 		<div class="container">
 			<?php foreach ($lastsPosts as $post) { ?>
 				<!-- CARD -->
-				<div class="card">
+				<div class="card gallery-card" id="<?= $post['post_id']?>">
 					<!-- CARD HEADER -->
 					<div class="card-header">
 						<div class="card-header-title">
@@ -27,37 +27,34 @@
 					</div>
 					<!-- CARD COMMENT -->
 					<article class="media">
-						<div class="media-content" comment_id="<?=$post['post_id']?>">
-							<div class="content">
+						<div class="comment_list media-content">
+						<?php	if (!empty($post['comments'])) { // [modif] Try to send the last comment directly in postController
+							$comment = $post['comments'][0]; ?> 
+							<div class="comment content">
 								<p>
-									<strong>Login</strong>
-									<small>02/10/2019 14:05</small>
+									<strong><?= $comment['login'] ?></strong>
+									<small><?= $comment['date'] . " " . $comment['time'] ?></small>
 									<br>
-									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean efficitur sit amet massa fringilla egestas Nullam condimentum luctus turpis.
+									<?= $comment['comment'] ?>
 								</p>
 							</div>
-							<div class="content">
-								<p>
-									<strong>Login</strong>
-									<small>02/10/2019 14:05</small>
-									<br>
-									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean efficitur sit amet massa fringilla egestas Nullam condimentum luctus turpis.
-								</p>
-							</div>
+						<?php } ?>
 						</div>
+						<br>
 					</article>
+					<button class="button show_comments">Show more</button>
 					<!-- CARD ADD COMMENT -->
 					<div class="comment-input media">
 						<div class="media-content">
-							<form action="">
+							<form>
 							<div class="field">
 								<div class="control">
-									<input type="text" class="input" placeholder="Add commentary" input_id="<?=$post['post_id']?>">
+									<input type="text" class="input" placeholder="Add commentary">
 								</div>
 							</div>
 						</div>
 						<div class="media-right">
-							<button type="submit" class="button comment_btn" btn_id="<?=$post['post_id']?>">Post</button>
+							<button type="submit" class="button comment_btn">Post</button>
 						</div>
 					</form>
 					</div>

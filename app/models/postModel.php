@@ -38,7 +38,7 @@ class PostModel	{
 	public static function db_GetPost($post_id)	{
 		$db = Model::db_Connect();
 		try	{
-			$req = $db->prepare("SELECT posts.post_id, users.login, posts.date, posts.time, posts.path, (SELECT COUNT(*) FROM likes 	WHERE post_id = :post_id) AS likesCount, (SELECT comment FROM comments WHERE comments.post_id = :post_id LIMIT 1) AS 	lastComment
+			$req = $db->prepare("SELECT posts.post_id, users.login, posts.date, posts.time, posts.path, (SELECT COUNT(*) FROM likes WHERE post_id = :post_id) AS likesCount, (SELECT comment FROM comments WHERE comments.post_id = :post_id LIMIT 1) AS 	lastComment
 					FROM posts
 					LEFT JOIN users ON users.user_id = posts.user_id
 					LEFT JOIN likes ON likes.post_id = posts.post_id
@@ -78,7 +78,7 @@ class PostModel	{
 		$db = Model::db_Connect();
 		try	{
 			$req = $db->prepare("SELECT posts.post_id, users.login, posts.date, posts.time, posts.path, likesCount, 
-				(SELECT comment FROM comments WHERE comments.post_id = posts.post_id ORDER BY comment_id DESC LIMIT	1) AS lastComment 
+				(SELECT comment FROM comments WHERE comments.post_id = posts.post_id ORDER BY comment_id DESC LIMIT 1) AS lastComment 
 				FROM posts 
 				LEFT JOIN users ON posts.user_id = users.user_id
 				LEFT JOIN (SELECT post_id, COUNT(*) AS likesCount
@@ -210,12 +210,12 @@ class PostModel	{
 	public static function db_GetAllCommentsFromPost($post_id)	{
 		$db = Model::db_Connect();
 		try	{
-			$req = $db->prepare("SELECT *
+			$req = $db->prepare("SELECT comments.comment_id, users.login, comments.post_id, comments.date, comments.time, comments.comment
 								FROM comments
-								WHERE post_id = :post_id");
-			$req->execute([
-				"post_id" => $post_id
-			]);
+								LEFT JOIN users ON comments.user_id = users.user_id
+								WHERE post_id = :post_id
+								ORDER BY comment_id DESC");
+			$req->execute(["post_id" => $post_id]);
 			$comments = $req->fetchAll();
 			return $comments;
 		} catch (PDOException $ex) {

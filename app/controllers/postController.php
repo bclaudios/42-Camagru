@@ -10,6 +10,8 @@ if (isset($_POST['action']))	{
 		CreatePost();
 	if ($action === "addComment")
 		AddComment();
+	if($action === "getComments")
+		GetAllCommentsFromPost();
 }
 
 if (isset($_GET['action']))	{
@@ -28,7 +30,10 @@ if (isset($_GET['action']))	{
 
 function view_Gallery()	{
 	$title = "Gallery";
-	$lastsPosts = PostModel::db_GetAllPosts();
+	$lastsPosts = PostModel::db_GetNLastPosts(10);
+	foreach ($lastsPosts as &$post) {
+		$post['comments'] = PostModel::db_GetAllCommentsFromPost($post['post_id']);
+	}
 	require_once(__DIR__."/../views/pages/gallery.php");
 }
 
@@ -132,9 +137,22 @@ function DownloadUserImage($img)	{
 ###### COMMENTS ######
 
 function AddComment() {
-	$comment = $_POST['comment'];
-	$post_id = $_POST['post_id'];
 	$user = GetCurrentUser();
-	PostModel::db_AddComment($user['user_id'], $post_id, $comment);
-	echo "un commentaire a bien ete ajoute";
+	$comment = [
+		"post_id" => $_POST['post_id'],
+		"login" => $user['login'],
+		"comment" => $_POST['comment'],
+		"date" => date("Y-m-d"),
+		"time" => date("H:i:s")];
+	PostModel::db_AddComment($user['user_id'], $comment['post_id'], $comment['comment']);
+	$comment = json_encode($comment);
+	echo $comment;
+}
+
+function GetAllCommentsFromPost() {
+	$post_id = $_POST['post_id'];
+	$comments = PostModel::db_GetAllCommentsFromPost($post_id);
+	array_shift($comments);
+	$comments = json_encode($comments);
+	echo $comments;
 }

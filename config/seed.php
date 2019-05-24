@@ -33,7 +33,6 @@ try	{
 	print(sizeof($users)." users successfully created.\n");
 
 	//	POSTS SEEDING
-	$path = "path/de/test/";
 	$user_id = 1;
 	$req = $db->prepare("INSERT INTO posts
 						(user_id, date, time, path)
@@ -43,7 +42,7 @@ try	{
 		for ($i = 1; $i < 6; $i++)	{
 			$req->execute([
 				"user_id" => $user_id,
-				"path" => $path . $user . "/" . $i
+				"path" => $user . "/" . $i . ".png"
 			]);
 		}
 		$user_id++;
