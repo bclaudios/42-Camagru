@@ -1,4 +1,4 @@
-body	{
+html, body	{
 	background-color:#fafafa;
 	color:white;
 }
@@ -6,7 +6,6 @@ body	{
 header {
 	background-color:white;
 	border-bottom:1px solid #e6e6e6;
-	box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -20,11 +19,21 @@ header + * {
 
 #main_logo {
 	padding-right:15px;
-	margin-right:15px;
+	margin-right:12px;
 	border-right:solid 1px black;
 }
 
-.title {
+header .title {
 	font-family: 'Kaushan Script', cursive;
 	font-size:1.75rem;
+}
+
+.media + .media {
+    border-top: 1px solid rgba(219, 219, 219, 0.5);
+    margin-top: 0rem;
+    padding-top: 0rem;
+}
+
+.navbar-item {
+	padding: 0rem 0.75rem;
 }

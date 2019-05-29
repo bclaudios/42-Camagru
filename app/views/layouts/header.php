@@ -4,10 +4,11 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.css">
 	<link rel="stylesheet" href="app/assets/css/main.css">
 	<link rel="stylesheet" href="app/assets/css/card.css">
 	<link href="https://fonts.googleapis.com/css?family=Kaushan+Script&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet"> 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title><?=$title?></title>
 </head>
@@ -37,7 +38,7 @@
 								</span>
 							</a>
 							<!-- PROFIL BUTTON -->
-							<a href="/index.php?page=profil" class="navbar-item">
+							<a href="/index.php?page=profil&login=<?=$_SESSION['user']?>" class="navbar-item">
 								<span class="icon is-large">
 									<img class="like-btn" src="app/assets/img/icon/profil.png">
 								</span>

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__.'/../models/PostModel.php';
+require_once __DIR__.'/../models/UserModel.php';
 require_once __DIR__.'/../controllers/userController.php';
 
 
@@ -14,15 +15,20 @@ if (isset($_POST['action']))	{
 		GetAllCommentsFromPost();
 	if ($action === "addLike")
 		AddLike();
+	if ($action === "removeLike")
+		RemoveLike();
 }
 
 ##### VIEWS #####
 
 function view_Gallery()	{
 	$title = "Gallery";
+	$user = GetCurrentUser();
 	$lastsPosts = PostModel::db_GetNLastPosts(10);
 	foreach ($lastsPosts as &$post) {
 		$post['comments'] = PostModel::db_GetAllCommentsFromPost($post['post_id']);
+		if ($user)
+			$post['liked'] = PostModel::db_UserLiked($user['user_id'], $post['post_id']);
 	}
 	require_once(__DIR__."/../views/pages/gallery.php");
 }
@@ -49,6 +55,15 @@ function view_FilePost()	{
 	require_once("app/views/pages/postFile.php");
 }
 
+function view_Post() {
+	$title = "Post";
+	$user = GetCurrentUser();
+	$post_id = $_GET['post_id'];
+	$post = PostModel::db_GetPost($post_id);
+	$post['comments'] = PostModel::db_GetAllCommentsFromPost($post['post_id']);
+	$post['liked'] = PostModel::db_UserLiked($user['user_id'], $post['post_id']);
+	require_once("app/views/pages/post.php");
+}
 /*********** ACTIONS ***********/
 
 ###### POST CREATION ######
@@ -153,4 +168,12 @@ function AddLike() {
 	$user = GetCurrentUser();
 	$post_id = $_POST['post_id'];
 	PostModel::db_AddLike($user['user_id'], $post_id);
+	echo "Like ajoute";
+}
+
+function RemoveLike() {
+	$user = GetCurrentUser();
+	$post_id = $_POST['post_id'];
+	PostModel::db_DeleteLike($user['user_id'], $post_id);
+	echo "Like removed";
 }

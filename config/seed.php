@@ -20,14 +20,15 @@ try	{
 	$users = ["bclaudio", "bboucher", "julaurai", "axelgerv", "alstupin", "pimichau", "salibert"];
 	$password = hash("sha256", "Qwerty123");
 	$req = $db->prepare("INSERT INTO users 
-						(login, email, passwd) 
+						(login, email, passwd, profilPic) 
 						VALUES 
-						(:login, :email, :passwd)");
+						(:login, :email, :passwd, :profilPic)");
 	foreach ($users as $user)	{
 		$req->execute([
 			"login" => $user,
 			"email" => $user."@monzbi.com",
-			"passwd" => $password
+			"passwd" => $password,
+			"profilPic" => $user.".JPG"
 		]);
 	}
 	print(sizeof($users)." users successfully created.\n");

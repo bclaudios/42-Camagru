@@ -32,7 +32,9 @@ function view_SignIn()	{
 
 function view_Profil()	{
 	$title = "Profil";
-	$user = GetCurrentUser();
+	$login = $_GET['login'];
+	$user = UserModel::db_GetUser($login);
+	$posts = PostModel::db_GetPostsFromUser($user['user_id']);
 	require_once(__DIR__."/../views/pages/profil.php");
 }
 

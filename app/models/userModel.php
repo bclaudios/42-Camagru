@@ -142,4 +142,19 @@ class UserModel {
 			die ("Error in db_UpdatePasswd(): " . $e->getMessage());
 		}
 	}
+
+	public static function db_UpdateProfilPic($picPath) {
+		$db = Model::db_Connect();
+		try	{
+			$req = $db->prepare("UPDATE users SET 
+							`profilPic` = :picPath 
+							WHERE `login` = :login");
+		$req->execute([
+			"path" => $picPath,
+			"login" => $_SESSION['user']
+			]);
+		} catch (PDOExcpetion $e)	{
+			die ("Error in db_UpdateProfilPic(): " . $e->getMessage());
+		}
+	}
 }

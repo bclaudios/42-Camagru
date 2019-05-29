@@ -38,6 +38,7 @@ try	{
 				`login` VARCHAR(40) NOT NULL UNIQUE,
 				`email` VARCHAR(255) NOT NULL UNIQUE,
 				`passwd` VARCHAR(255) NOT NULL,
+				`profilPic` VARCHAR(255) NOT NULL UNIQUE,
 				`valid` BOOLEAN DEFAULT FALSE)");
 	print("Users Table Created.\n");
 	//	CREATE POSTS TABLE
