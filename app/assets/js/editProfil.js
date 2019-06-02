@@ -1,18 +1,7 @@
 document.addEventListener("click", function(e)	{
 	// Login Update
-	if (event.target.matches("#editLogin_btn"))	{
-		e.preventDefault();
-		const newLogin = document.getElementById("newLogin").value;
-		const post = "action=editLogin"
-					+"&newLogin="+newLogin;
-		const xhr = new XMLHttpRequest();
-		xhr.onreadystatechange = function() {
-			if (xhr.readyState === 4)
-				alert(xhr.responseText);
-		}
-		xhr.open("POST", "app/controllers/userController.php");
-		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		xhr.send(post);
+	if (event.target.matches("#update-infos"))	{
+		UpdateInfos();
 	}
 	
 	//	Email Update
@@ -56,3 +45,31 @@ document.addEventListener("click", function(e)	{
 		xhr.send(post);
 	}
 });
+
+function UpdateInfos() {
+	const login = document.getElementById("input-login").value;
+	const email = document.getElementById("input-email").value;
+	const notif = document.getElementById("input-notif").value;
+	const post = "action=updateInfos"
+				+"&login="+login
+				+"&email="+email
+				+"&notif="+notif;
+	const xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState === 4)
+			if (xhr.status === 200) {
+
+			}
+	}
+	xhr.open("POST", "app/controllers/userController.php");
+	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhr.send(post);
+}
+
+function DisplayError(targetID, errorLogs) {
+	const target = document.getElementById(targetID);
+	const box = document.createElement("div");
+	box.setAttribute("class", "notification is-danger");
+	box.innerHTML = errorLogs;
+	target.prepend(box);
+}

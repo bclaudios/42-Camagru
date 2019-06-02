@@ -53,12 +53,37 @@ document.addEventListener("click", function(e) {
 		xhr.send(post);
 	}
 
+	if (event.target.matches(".delete-comment")) {
+		const comment = event.target.closest(".comment");
+		const post = "action=delComment"
+					+"&commentID="+comment.id;
+		const xhr = new XMLHttpRequest();
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState === 4) {
+				if (xhr.status === 200) {
+					alert(xhr.responseText);
+					DeleteCommentBox(comment);
+				} else {
+					alert(xhr.responseText);
+				}
+			}
+		}
+		xhr.open("POST", "app/controllers/postController.php");
+		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhr.send(post);
+	}
+
 	if (event.target.matches(".hide_comments")) {
 		const post_id = event.target.closest(".card").id;
 		const hide_btn = event.target;
 		HideAllComments(post_id);
 		hide_btn.innerHTML = "Show more";
 		hide_btn.setAttribute("class", "button show_comments");
+	}
+
+	function DeleteCommentBox(comment) {
+		const commentList = comment.closest(".comment_list");
+		commentList.removeChild(comment);
 	}
 
 	function DisplayComment(comment) {

@@ -1,0 +1,53 @@
+.webcam-container {
+    background-color:white;
+	border:1px solid #e6e6e6;
+    text-align: center;
+    max-width: 800px;
+}
+
+.last-post-container {
+	border:1px solid #e6e6e6;
+    padding: 1em;
+    background-color:white;
+    height: 100%;
+}
+
+#overlay {
+    max-height: 600px;
+}
+
+.sticker {
+    width: 800px;
+}
+
+.stickers:hover {
+    cursor: pointer;
+}
+
+.sticker-container {
+    margin:0.5em;
+    padding: 0.5em 0.5em 0.3em 0.5em;
+	border-bottom:1px solid #e6e6e6;
+	border-top:1px solid #e6e6e6;
+}
+
+.sticker-preview {
+    height: 60px;
+    width: 80px;
+}
+
+video {
+    width: 800px;
+}
+
+.webcam-container .control {
+    text-align:center;
+}
+
+#post_btn {
+    border:none;
+    min-width: 36px;
+    max-height: 36px;
+    padding: 0;
+    margin-bottom: 0.5em;
+}

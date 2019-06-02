@@ -17,6 +17,8 @@ if (isset($_POST['action']))	{
 		AddLike();
 	if ($action === "removeLike")
 		RemoveLike();
+	if ($action === "delComment")
+		DeleteComment();
 }
 
 ##### VIEWS #####
@@ -160,6 +162,18 @@ function GetAllCommentsFromPost() {
 	$comments = PostModel::db_GetAllCommentsFromPost($post_id);
 	$comments = json_encode($comments);
 	echo $comments;
+}
+
+function DeleteComment() {
+	$commentID = $_POST['commentID'];
+	$user = GetCurrentUser();
+	if (PostModel::db_CheckCommentAuthor($commentID, $user['user_id'])) {
+		PostModel::db_DeleteComment($commentID);
+		echo "Comment deleted.";
+	} else {
+		http_response_code(403);
+		echo "You're not the author of this comment.";
+	}
 }
 
 ###### LIKES #######

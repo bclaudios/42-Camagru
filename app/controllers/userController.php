@@ -99,22 +99,22 @@ function LogOut()	{
 
 
 #####	Profil updates
-function UpdateLogin()	{
+
+function UpdateInfos() {
 	$user = GetCurrentUser();
-	$newLogin = $_POST['newLogin'];
-	if ($user["login"] !== $newLogin)	{
-		if (UserModel::db_GetUser($newLogin))	{
-			http_response_code(400);
-			echo "This username is already used.";
-		} else	{
-			UserModel::db_UpdateLogin($newLogin);
-			$_SESSION['user'] = $newLogin;
-			echo "Your username has been set to : " . $newLogin . ".";
-		}
-	} else {
-		http_response_code(400);
-		echo "Same username.";
-	}
+	$newLogin = $_POST['login'];
+	$newEmail = $_POST['email'];
+	$notif = $_POST['notif'];
+	if (!empty($newLogin) && $newLogin !== $user['login'])
+		$errorLogs[] = CheckNewLogin($newLogin);
+	if (!empty($newEmail) && $newEmail !== $ûser['email'])
+		$errorLogs[] = CheckNewEmail($newEmail);
+	
+}
+
+function CheckNewLogin($newLogin)	{
+	if (UserModel::db_GetUser($newLogin))	{
+		return "This username is already used.";
 }
 
 function UpdateEmail()	{

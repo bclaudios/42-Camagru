@@ -1,0 +1,16 @@
+.form_container {
+	background-color:white;
+	border:1px solid #e6e6e6;
+	box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
+	padding:1.5em;
+	max-width: 600px;
+	text-align: center;
+}
+
+.form_container .control {
+	text-align: center;
+}
+
+.form_container .button {
+	width: 200px;
+}

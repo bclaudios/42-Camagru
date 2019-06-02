@@ -7,6 +7,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.css">
 	<link rel="stylesheet" href="app/assets/css/main.css">
 	<link rel="stylesheet" href="app/assets/css/card.css">
+	<link rel="stylesheet" href="app/assets/css/profilEdit.css">
 	<link href="https://fonts.googleapis.com/css?family=Kaushan+Script&display=swap" rel="stylesheet"> 
 	<link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet"> 
 	<meta name="viewport" content="width=device-width, initial-scale=1">

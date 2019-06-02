@@ -248,4 +248,25 @@ class PostModel	{
 			die("Error in db_GetAllCommentsFromPost(): " . $ex->getMessage());
 		}
 	}
+
+	public static function db_CheckCommentAuthor($comment_id, $user_id) {
+		$db = Model::db_Connect();
+		try	{
+			$req = $db->prepare("SELECT * FROM comments
+								WHERE
+								comment_id = :comment_id
+								AND
+								user_id = :user_id");
+			$req->execute([
+				"comment_id" => $comment_id,
+				"user_id" => $user_id
+				]);
+			$comment = $req->fetch();
+			if (!empty($comment))
+				return TRUE;
+			return FALSE;
+		} catch (PDOException $ex) {
+			die("Error in db_GetAllCommentsFromPost(): " . $ex->getMessage());
+		}
+	}
 }

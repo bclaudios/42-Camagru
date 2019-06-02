@@ -54,16 +54,8 @@
 		<article class="media">
 			<div class="comment_list media-content">
 				<?php foreach ($post['comments'] as $comment) {
-				$comment = $post['comments'][0]; ?> 
-					<div class="comment content">
-						<p>
-						<a href="index.php?page=profil&login=<?=$comment['login']?>"><strong><?= $comment['login'] ?></strong></a>
-							<small><i><?= $comment['date'] . " " . $comment['time'] ?></i></small>
-							<br>
-							<?= $comment['comment'] ?>
-						</p>
-					</div>
-				<?php } ?>
+					require("app/views/layouts/commentBox.php");
+				} ?>
 			</div>
 		</article>
 		<!-- CARD ADD COMMENT -->

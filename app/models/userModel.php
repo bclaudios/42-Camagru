@@ -9,13 +9,14 @@ class UserModel {
 		$db = Model::db_Connect();
 		try	{
 			$req = $db->prepare("INSERT INTO users 
-							(login, email, passwd) 
+							(login, email, passwd, profilPic) 
 							VALUES 
-							(:login, :email, :passwd)");
+							(:login, :email, :passwd, :profilPic)");
 			$req->execute([
 				"login" => $user["login"],
 				"email" => $user["email"],
-				"passwd" => $user["passwd"]
+				"passwd" => $user["passwd"],
+				"profilPic" => "placeholderPic.jpg"
 			]);
 		} catch (PDOException $ex)	{
 			die ("Error in db_CreateUser(): " . $ex->getMessage());
@@ -143,14 +144,14 @@ class UserModel {
 		}
 	}
 
-	public static function db_UpdateProfilPic($picPath) {
+	public static function db_UpdateProfilPic() {
 		$db = Model::db_Connect();
 		try	{
 			$req = $db->prepare("UPDATE users SET 
 							`profilPic` = :picPath 
 							WHERE `login` = :login");
 		$req->execute([
-			"path" => $picPath,
+			"path" => $_SESSION['user']."jpg",
 			"login" => $_SESSION['user']
 			]);
 		} catch (PDOExcpetion $e)	{
