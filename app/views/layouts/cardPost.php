@@ -38,10 +38,12 @@
 			<div class="level-left">
 	    		<a class="level-item">
 	      			<span class="icon is-small">
-					<?php if ($post['liked']) {?>
+					  <?php if (isset($_SESSION['user']) && $post['liked']) {?>
 						<img class="unlike-btn" src="app/assets/img/icon/heart-filled.png"></span>
-					<?php } else { ?>
+					<?php } elseif (isset($_SESSION['user']) && !$post['liked']) { ?>
 						<img class="like-btn" src="app/assets/img/icon/heart-empty.png"></span>
+					<?php } else { ?>
+						<img src="app/assets/img/icon/heart-empty.png"></span>
 					<?php } ?>
 				</a>
 				<div class="level-item">
@@ -59,6 +61,7 @@
 			</div>
 		</article>
 		<!-- CARD ADD COMMENT -->
+		<?php if (isset($_SESSION['user]'])) {?>
 		<form>
 			<div class="comment-input media">
 				<div class="media-content">
@@ -73,5 +76,6 @@
 				</div>
 			</div>
 		</form>
+		<?php } ?>
 	</div>
 </div>

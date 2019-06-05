@@ -6,14 +6,12 @@
 
 	let video = null;
 	let canvas = null;
-	let photo = null;
 	let postBtn = null;
 
 	function StartStream()	{
 		video = document.getElementById("webcam");
 		canvas = document.getElementById("canvas");
-		photo = document.getElementById("photo");
-		postBtn = document.getElementById("post_btn");
+		postBtn = document.getElementById("post-btn");
 
 		// Get the webcam stream
 		navigator.mediaDevices.getUserMedia({ video: true, audio: false})
@@ -36,25 +34,16 @@
 				streaming = true;
 			}
 		}, false);
+
 		// Button trigger
 		postBtn.addEventListener("click", function(ev) {
-			stickerSelected = document.getElementById("sticker").firstChild;
-			if (stickerSelected.tagName == "IMG")
-				TakePicture();
+			stickerSelected = document.getElementById("sticker");
+			if (stickerSelected.firstChild)
+				CreatePost();
 			else
-				alert("Please choose a frame before taking a picture.");
+				DisplayNotif("montage-ui", "Please, select a sticker before taking a picture.");
 			ev.preventDefault();
 		}, false);
-		ClearPhoto();
-	}
-
-	// Clear temporary canvas
-	function ClearPhoto()	{
-		const context = canvas.getContext('2d');
-		context.fillStyle = "#AAA";
-		context.fillRect(0,0, canvas.width, canvas.height);
-		const data = canvas.toDataURL('image/png');
-		photo.setAttribute('src', data);
 	}
 
 	function SendPicture(pic, sticker)	{
@@ -66,7 +55,7 @@
 		xhr.onreadystatechange = function ()	{
 			if (xhr.readyState === 4)	{
 				if (xhr.status === 200)
-					DisplayPicture(xhr.responseText);
+					DisplayPost(xhr.responseText);
 				else
 					alert(xhr.responseText);
 			}
@@ -76,16 +65,20 @@
 		xhr.send(post);
 	}
 
-	function DisplayPicture(fileName)	{
-		const postView = document.getElementById("postView");
-		alert("../img/posts/" + fileName);
-		photo.setAttribute("src", "app/assets/img/posts/" + fileName);
-		const newView = document.createElement("img");
-		newView.setAttribute("src", "app/assets/img/posts/" + fileName);
+	function DisplayPost(JSONpost)	{
+		const post = JSON.parse(JSONpost)[0];
+		const postView = document.getElementById("post-view");
+		const newView = document.createElement("a");
+		newView.setAttribute("href", "index.php?page=post&post_id="+post.post_id);
+		newView.setAttribute("class", "image");
+		const newViewImg = document.createElement("img");
+		newViewImg.setAttribute("src", "app/assets/img/posts/" + post.path);
+		newView.appendChild(newViewImg);
+		postView.removeChild(postView.lastElementChild);
 		postView.prepend(newView);
 	}
 
-	function TakePicture()	{
+	function CreatePost()	{
 		const sticker = document.getElementById("sticker").firstChild.src;
 		const context = canvas.getContext('2d');
 		context.drawImage(video, 0, 0, width, height);
@@ -95,3 +88,21 @@
 
 	window.addEventListener('load', StartStream, false);
 })();
+
+function ClearNotif() {
+	const sections = document.getElementsByClassName("card-content");
+	for (let section of sections) {
+		let notif = section.getElementsByClassName("notification").item(0);
+		if (notif !== null)
+			section.removeChild(notif);
+	}
+}
+
+function DisplayNotif(targetID, message) {
+	ClearNotif();
+	const target = document.getElementById(targetID);
+	const box = document.createElement("div");
+	box.setAttribute("class", "notification is-warning");
+	box.innerHTML = "- "+message+"<br>";
+	target.prepend(box);
+}

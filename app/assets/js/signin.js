@@ -1,8 +1,8 @@
 document.addEventListener("click", function(e) {
-	if (event.target.matches("#signin_btn"))	{
+	if (event.target.matches("#signin-btn"))	{
 		e.preventDefault();
-		const login = document.getElementById("input_login").value;
-		const passwd = document.getElementById("input_passwd").value;
+		const login = document.getElementById("input-login").value;
+		const passwd = document.getElementById("input-passwd").value;
 		const post = "action=signIn"
 					+"&login="+login
 					+"&passwd="+passwd;
@@ -10,10 +10,9 @@ document.addEventListener("click", function(e) {
 		xhr.onreadystatechange = function()	{
 			if (xhr.readyState === 4)	{
 				if (xhr.status === 200)	{
-					alert(xhr.responseText);
 					window.location = "index.php";
 				} else {
-					alert(xhr.responseText);
+					DisplayErrorNotif("signin-input", xhr.responseText);
 				}
 			}
 		}
@@ -22,3 +21,35 @@ document.addEventListener("click", function(e) {
 		xhr.send(post);
 	}
 });
+
+// NOTIF FUNCTIONS
+
+function ClearNotif() {
+	const sections = document.getElementsByClassName("edit-section");
+	for (let section of sections) {
+		let notif = section.getElementsByClassName("notification").item(0);
+		if (notif !== null)
+			section.removeChild(notif);
+	}
+}
+
+function DisplayErrorNotif(targetID, errorLogs) {
+	ClearNotif();
+	errorLogs = JSON.parse(errorLogs);
+	const target = document.getElementById(targetID);
+	const box = document.createElement("div");
+	box.setAttribute("class", "notification is-danger");
+	for (let error in errorLogs) {
+		box.innerHTML = box.innerHTML+"- "+errorLogs[error]+"<br>";
+	}
+	target.prepend(box);
+}
+
+function DisplaySuccessNotif(targetID, message) {
+	ClearNotif();
+	const target = document.getElementById(targetID);
+	const box = document.createElement("div");
+	box.setAttribute("class", "notification is-success");
+	box.innerHTML = "- "+message+"<br>";
+	target.prepend(box);
+}

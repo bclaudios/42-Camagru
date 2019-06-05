@@ -144,6 +144,21 @@ class UserModel {
 		}
 	}
 
+	public static function db_UpdateNotif($newNotifState)	{
+		$db = Model::db_Connect();
+		try	{
+			$req = $db->prepare("UPDATE users SET 
+							`notif` = :newNotifState 
+							WHERE `login` = :login");
+		$req->execute([
+			"newNotifState" => $newNotifState,
+			"login" => $_SESSION['user']
+			]);
+		} catch (PDOExcpetion $e)	{
+			die ("Error in db_UpdateNotif(): " . $e->getMessage());
+		}
+	}
+
 	public static function db_UpdateProfilPic() {
 		$db = Model::db_Connect();
 		try	{

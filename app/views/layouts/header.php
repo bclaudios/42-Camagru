@@ -4,12 +4,15 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<!-- FONTS -->
+	<link href="https://fonts.googleapis.com/css?family=Kaushan+Script&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet"> 
+	<!-- CSS -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.css">
 	<link rel="stylesheet" href="app/assets/css/main.css">
 	<link rel="stylesheet" href="app/assets/css/card.css">
 	<link rel="stylesheet" href="app/assets/css/profilEdit.css">
-	<link href="https://fonts.googleapis.com/css?family=Kaushan+Script&display=swap" rel="stylesheet"> 
-	<link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet"> 
+	<link rel="stylesheet" href="app/assets/css/post.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title><?=$title?></title>
 </head>
@@ -22,14 +25,14 @@
 						<img src="app/assets/img/icon/logo-camagru.png" id="main_logo">
 						<h1 class="title">Camagru</h1>
 					</a>
-					<a class="navbar-burger burger">
+					<a class="navbar-burger burger" id="burger">
 						<span aria-hidden="true"></span>
 						<span aria-hidden="true"></span>
 						<span aria-hidden="true"></span>
 					</a>
 				</div>
 				<!-- IF USER IS LOG -->
-				<div class="navbar-menu">
+				<div class="navbar-menu" id="menu">
 					<div class="navbar-end">
 						<?php if (!empty($_SESSION['user'])) { ?>
 							<!-- NEW POST BUTTON -->
@@ -64,3 +67,4 @@
 			</nav>
 		</div>
 	</header>
+	<script src="app/assets/js/header.js"></script>

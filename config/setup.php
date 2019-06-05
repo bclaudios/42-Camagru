@@ -39,6 +39,7 @@ try	{
 				`email` VARCHAR(255) NOT NULL UNIQUE,
 				`passwd` VARCHAR(255) NOT NULL,
 				`profilPic` VARCHAR(255) NOT NULL UNIQUE,
+				`notif` BOOLEAN DEFAULT TRUE,
 				`valid` BOOLEAN DEFAULT FALSE)");
 	print("Users Table Created.\n");
 	//	CREATE POSTS TABLE

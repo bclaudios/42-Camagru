@@ -39,11 +39,12 @@ function view_WebcamPost()	{
 	$title = "New Post";
 	$stickers = ["frame1.png", "frame2.png", "frame3.png", "frame4.png", "frame5.png", "frame6.png", "frame7.png", "frame8.png", "frame9.png", "frame10.png"];
 	$user = GetCurrentUser();
-	$lastPosts = PostModel::db_GetNLastPostsFromUser($user['user_id'], 5);
+	$lastPosts = PostModel::db_GetNLastPostsFromUser($user['user_id'], 4);
 	require_once("app/views/pages/postWebcam.php");
 }
 
 function view_FilePost()	{
+	$user = GetCurrentUser();
 	$title = "New Post";
 	$stickers = ["frame1.png", "frame2.png", "frame3.png", "frame4.png", "frame5.png", "frame6.png", "frame7.png", "frame8.png", "frame9.png", "frame10.png"];
 	$tmpPath = "";
@@ -54,6 +55,7 @@ function view_FilePost()	{
 		$uploaded_img = $_FILES['uploaded_img']['tmp_name'];
 		$tmpPath = DownloadUserImage($uploaded_img);
 	}
+	$lastPosts = PostModel::db_GetNLastPostsFromUser($user['user_id'], 4);
 	require_once("app/views/pages/postFile.php");
 }
 
@@ -66,10 +68,11 @@ function view_Post() {
 	$post['liked'] = PostModel::db_UserLiked($user['user_id'], $post['post_id']);
 	require_once("app/views/pages/post.php");
 }
-/*********** ACTIONS ***********/
 
 ###### POST CREATION ######
+
 function CreatePost()	{
+	$user = GetCurrentUser();
 	if ($_POST['source'] === "webcam")
 		$img = DecodeMIME($_POST['img']);
 	else {
@@ -78,8 +81,10 @@ function CreatePost()	{
 	}
 	$sticker = imagecreatefrompng($_POST['sticker']);
 	imagecopy($img, $sticker, 0, 0, 0, 0, 800, 600);
-	$montage = CreateMontageFile($img);
-	echo $montage;
+	CreateMontageFile($img);
+	$post = PostModel::db_GetNLastPostsFromUser($user['user_id'], 1);
+	$post = json_encode($post);
+	echo $post;
 }
 
 function CreateMontageFile($img)	{
@@ -94,10 +99,10 @@ function CreateMontageFile($img)	{
 		die;
 	};
 	PostModel::db_CreatePost($fileName, $user['user_id']);
-	return $fileName;
 }
 
 ###### WEBCAM POST ######
+
 function DecodeMIME($data)	{
 	if (preg_match('/^data:image\/(\w+);base64,/', $data, $type))	{
 		$data = str_replace('data:image/png;base64,', '', $data);
@@ -123,6 +128,7 @@ function DecodeMIME($data)	{
 }
 
 ###### FILE POST ######
+
 function DownloadUserImage($img)	{
 	$user = $_SESSION['user'];
 	if (!file_exists(__DIR__."/../assets/img/posts/".$user))

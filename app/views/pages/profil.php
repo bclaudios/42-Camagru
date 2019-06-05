@@ -15,7 +15,7 @@
 							<div class="media-content">
 								<h2 class="title"><?=$user['login']?></h2>
 							</div>
-							<?php if ($_SESSION['user'] === $user['login']) {?>
+							<?php if (isset($_SESSION['user']) && $_SESSION['user'] === $user['login']) {?>
 								<div class="media-right">
 									<span class="icon is-large">
 										<a href="index.php?page=editProfil"><img src="app/assets/img/icon/settings.png" class="image" alt=""></a>

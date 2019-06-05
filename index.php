@@ -5,6 +5,7 @@ require_once("app/controllers/postController.php");
 ##### PAGES ROUTEUR #####
 if (isset($_GET['page']))	{
 	$page = $_GET['page'];
+
 	//	USER VIEWS
 	if ($page === "signUp")
 		view_SignUp();
@@ -14,6 +15,7 @@ if (isset($_GET['page']))	{
 		view_Profil();
 	if ($page === "editProfil")
 		view_EditProfil();
+
 	//	POST VIEWS
 	if ($page === "webcamPost")
 		view_WebcamPost();
@@ -21,11 +23,14 @@ if (isset($_GET['page']))	{
 		view_FilePost();
 	if ($page === "post")
 		view_Post();
+
 ##### ACTIONS ROUTEUR #####
 } elseif (isset($_GET['action'])) {
 	$action = $_GET['action'];
+
 	if ($action === "logOut")
 		LogOut();
+		
 } else {
 	view_Gallery();
 }

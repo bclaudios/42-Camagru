@@ -4,18 +4,19 @@ require_once __DIR__.'/../models/UserModel.php';
 require_once __DIR__.'/postController.php';
 
 ########## CONTROLLER ##########
+
 if (isset($_POST['action']))	{
 	$action = $_POST['action'];
 	if ($action === "signIn")
 		SignIn();
 	if ($action === "signUp")
 		SignUp();
-	if ($action === "editLogin")
-		UpdateLogin();
-	if ($action === "editEmail")
-		UpdateEmail();
-	if ($action === "editPasswd")
+	if ($action === "updateInfos")
+		UpdateInfos();
+	if ($action === "updatePasswd")
 		UpdatePasswd();
+	if ($action === "deleteAccount")
+		DeleteAccount();
 }
 
 ########## VIEWS ##########
@@ -44,28 +45,27 @@ function view_EditProfil()	{
 	require_once(__DIR__."/../views/pages/profilEdit.php");
 }
 
-########## ACTIONS ##########
+########## SIGN UP ##########
+
 function CheckSignUpInfos()	{
-	if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
-		$errorLogs[] = "Wrong email format.";
-	if ($_POST['email'] !== $_POST['emailConf'])
-		$errorLogs[] = "Email adresses not matching.";
+	if (CheckNewLogin($_POST['login']))
+		$errorLogs[] = CheckNewLogin($_POST['login']);
+	if (CheckNewEmail($_POST['email']))
+		$errorLogs[] = CheckNewEmail($_POST['email']);
 	if (!CheckPasswdSecurity($_POST['passwd']))
 		$errorLogs[] = "Password security is too low. Must contain at least 8 chars, 1 lowercase, 1 uppercase and 1 digit.";
 	if ($_POST['passwd'] !== $_POST['passwdConf'])
 		$errorLogs[] = "Passwords not matching.";
-	$userExist = UserModel::db_UserExist($_POST['login'], $_POST['email']);
-	if ($userExist)
-		$errorLogs[] = $userExist;
 	if (!isset($errorLogs))
 		return NULL;
-	return implode("\n", $errorLogs);
+	return $errorLogs;
 }
 
 function SignUp()	{
 	$errorLogs = CheckSignUpInfos();
-	if ($errorLogs)	{
-		http_response_code(400);
+	if (!empty($errorLogs))	{
+		http_response_code(403);
+		$errorLogs = json_encode($errorLogs);
 		echo $errorLogs;
 	} else {
 		$user = array(
@@ -80,12 +80,16 @@ function SignUp()	{
 }
 // E-mail verification missing
 
+###### SIGN IN | LOGOUT ######
+
 function SignIn()	{
 	$passwd = hash("sha256", $_POST['passwd']);
 	$user = UserModel::db_GetUser($_POST['login']);
 	if ($user === FALSE || $user['passwd'] !== $passwd)	{
 		http_response_code(400);
-		echo "Login or password incorrect.";
+		$errorLogs[] = "Login or password incorrect.";
+		$errorLogs = json_encode($errorLogs);
+		echo $errorLogs;
 	} else {
 		$_SESSION['user'] = $user['login'];
 		echo "You are now logged in.";
@@ -98,7 +102,7 @@ function LogOut()	{
 }
 
 
-#####	Profil updates
+###### INFOS UPDATE ######
 
 function UpdateInfos() {
 	$user = GetCurrentUser();
@@ -107,64 +111,71 @@ function UpdateInfos() {
 	$notif = $_POST['notif'];
 	if (!empty($newLogin) && $newLogin !== $user['login'])
 		$errorLogs[] = CheckNewLogin($newLogin);
-	if (!empty($newEmail) && $newEmail !== $ûser['email'])
+	if (!empty($newEmail) && $newEmail !== $user['email'])
 		$errorLogs[] = CheckNewEmail($newEmail);
-	
+	if (!isset($errorLogs[0])) {
+		if (!empty($newLogin) && $newLogin !== $user['login']) {
+			UserModel::db_UpdateLogin($newLogin);
+			$_SESSION['user'] = $newLogin;
+		}
+		if (!empty($newEmail) && $newEmail !== $user['email'])
+			UserModel::db_UpdateEmail($newEmail);
+		UserModel::db_UpdateNotif($notif);
+	} else {
+		http_response_code(403);
+		$errorLogs = json_encode($errorLogs);
+		echo $errorLogs;
+	}
 }
 
 function CheckNewLogin($newLogin)	{
-	if (UserModel::db_GetUser($newLogin))	{
+	if (UserModel::db_GetUser($newLogin))
 		return "This username is already used.";
+	return NULL;
 }
 
-function UpdateEmail()	{
-	$user = GetCurrentUser();
-	$newEmail = $_POST['newEmail'];
-	$newEmailConf = $_POST['newEmailConf'];
-	if ($user["email"] !== $newEmail)	{
-		if (!filter_var($newEmail, FILTER_VALIDATE_EMAIL))	{
-			http_response_code(400);
-			echo "Wrong email format.";
-		}
-		elseif ($newEmail !== $newEmailConf)	{
-			http_response_code(400);
-			echo "Email adresses not matching with each other.";
-		}
-		elseif (UserModel::db_CheckEmailExist($newEmail))	{
-			http_response_code(400);
-			echo "This email address is already used.";
-		} else {
-			UserModel::db_UpdateEmail($newEmail);
-			//ADD EMAIL VERIFICATION HERE
-			echo "Your email address has been set to : " . $newEmail . ".\nA new confirmation is required. Please check your inbox.";
-		}
-	} else {
-		http_response_code(400);
-		echo "Same email address.";
-	}
+function CheckNewEmail($newEmail)	{
+	if (!filter_var($newEmail, FILTER_VALIDATE_EMAIL))
+		$errors[] = "Wrong email format.";
+	elseif (UserModel::db_CheckEmailExist($newEmail))
+		$errors[] = "This email address is already used.";
+	if (!isset($errors))
+		return NULL;
+	return $errors;
 }
+
+###### PASSWORD UPDATE ######
 
 function UpdatePasswd()	{
 	$user = GetCurrentUser();
-	$currentPasswd = hash("sha256", $_POST['currentPasswd']);
+	$passwd = hash("sha256", $_POST['passwd']);
 	$newPasswd = hash("sha256", $_POST['newPasswd']);
 	$newPasswdConf = hash("sha256", $_POST['newPasswdConf']);
-	if ($currentPasswd !== $user['passwd'])	{
-		http_response_code(400);
-		echo "Wrong current password.";
-	} elseif ($newPasswd !== $newPasswdConf)	{
-		http_response_code(400);
-		echo "Passwords not matching.";
-	} elseif (!CheckPasswdSecurity($_POST['newPasswd'])) {
-		http_response_code(400);
-		echo "New password security too low.";
-	} else {
+	if ($passwd !== $user['passwd'])
+		$errorLogs[] = "Wrong current password.";
+	elseif ($newPasswd !== $newPasswdConf)
+		$errorLogs[] = "Passwords not matching.";
+	elseif (!CheckPasswdSecurity($_POST['newPasswd']))
+		$errorLogs[] = "New password security too low.";
+	if (!isset($errorLogs[0]))
 		UserModel::db_UpdatePasswd($newPasswd);
-		echo "You're password has been changed.";
+	else {
+		http_response_code(403);
+		$errorLogs = json_encode($errorLogs);
+		echo $errorLogs;
 	}
 }
 
-#####	Tools
+##### ACCOUNT SUPPRESSION ######
+
+function DeleteAccount() {
+	$user = GetCurrentUser();
+	UserModel::db_DeleteUser($user['login']);
+	unset($_SESSION['user']);
+}
+
+###### TOOLS ######
+
 function CheckPasswdSecurity($passwd)	{
 	if (!preg_match("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$^", $passwd))
 		return FALSE;
@@ -172,5 +183,7 @@ function CheckPasswdSecurity($passwd)	{
 }
 
 function GetCurrentUser()	{
-	return UserModel::db_GetUser($_SESSION['user']);
+	if (isset($_SESSION['user']))
+		return UserModel::db_GetUser($_SESSION['user']);
+	return NULL;
 }

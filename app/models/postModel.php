@@ -13,10 +13,11 @@ class PostModel	{
 							(user_id, date, time, path)
 							VALUES
 							(:user_id, NOW(), NOW(), :path)");
-			$req->execute([
+			$test = $req->execute([
 				"user_id" => $user_id,
 				"path" => $path
 			]);
+			return $test;
 		} catch(PDOException $ex) {
 			die("Error in db_CreatePost(): " . $ex->getMessage());
 		}

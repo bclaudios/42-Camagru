@@ -9,7 +9,7 @@ header {
 	top: 0;
 	left: 0;
 	width: 100%;
-	z-index: 10;
+	z-index: 1000000;
 }
 
 header + * {
@@ -22,11 +22,14 @@ header + * {
 	border-right:solid 1px black;
 }
 
-header .title {
+.title {
 	font-family: 'Kaushan Script', cursive;
 	font-size:1.75rem;
 }
 
+.card {
+	border-radius: 3px;
+}
 .media + .media {
     border-top: 1px solid rgba(219, 219, 219, 0.5);
     margin-top: 0rem;
@@ -45,4 +48,41 @@ header .title {
 
 .notification {
 	padding: 0.75em;
+}
+
+.sign-container {
+		background-color:white;
+		box-shadow:0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
+		max-width: 400px;
+		font-size:0.8em;
+		padding:0.75em;
+}
+
+.sign-container .content {
+	text-align: center;
+}
+
+.sign-container .content .title {
+	font-size: 2.5rem;
+}
+
+.sign-container .control .button {
+	width: 100%;
+}
+
+#signup-section	{
+	padding-bottom: 1rem;
+}
+
+#already-section {
+	padding-top: 0rem;
+}
+
+#already-section .container {
+	text-align: center;
+	padding: 1.25rem;
+}
+
+#signup-input {
+	margin-top: 0.5rem;
 }
