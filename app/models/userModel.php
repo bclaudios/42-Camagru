@@ -9,14 +9,15 @@ class UserModel {
 		$db = Model::db_Connect();
 		try	{
 			$req = $db->prepare("INSERT INTO users 
-							(login, email, passwd, profilPic) 
+							(login, email, passwd, profilPic, hash) 
 							VALUES 
-							(:login, :email, :passwd, :profilPic)");
+							(:login, :email, :passwd, :profilPic, :hash)");
 			$req->execute([
 				"login" => $user["login"],
 				"email" => $user["email"],
 				"passwd" => $user["passwd"],
-				"profilPic" => "placeholderPic.jpg"
+				"profilPic" => "placeholderPic.jpg",
+				"hash" => $user['hash']
 			]);
 		} catch (PDOException $ex)	{
 			die ("Error in db_CreateUser(): " . $ex->getMessage());
@@ -159,18 +160,74 @@ class UserModel {
 		}
 	}
 
-	public static function db_UpdateProfilPic() {
+	public static function db_UpdateProfilPic($user, $picture) {
 		$db = Model::db_Connect();
 		try	{
 			$req = $db->prepare("UPDATE users SET 
 							`profilPic` = :picPath 
 							WHERE `login` = :login");
 		$req->execute([
-			"path" => $_SESSION['user']."jpg",
-			"login" => $_SESSION['user']
+			"picPath" => $picture,
+			"login" => $user
 			]);
 		} catch (PDOExcpetion $e)	{
 			die ("Error in db_UpdateProfilPic(): " . $e->getMessage());
+		}
+	}
+
+	public static function db_CheckHash($hash) {
+		$db = Model::db_Connect();
+		try	{
+			$req = $db->prepare("SELECT * FROM users
+								WHERE `hash` = :hash");
+			$req->execute(["hash" => $hash]);
+			$user = $req->fetch();
+			if (empty($user))
+				return FALSE;
+			return TRUE;
+		} catch (PDOExcpetion $e)	{
+			die ("Error in db_CheckHash(): " . $e->getMessage());
+		}
+	}
+	public static function db_ConfirmEmail($hash) {
+		$db = Model::db_Connect();
+		try	{
+			$req = $db->prepare("UPDATE users SET
+								`valid` = TRUE
+								WHERE `hash` = :hash");
+			$req->execute(["hash" => $hash]);
+		} catch (PDOExcpetion $e)	{
+			die ("Error in db_ConfirmEmail(): " . $e->getMessage());
+		}
+	}
+
+	public static function db_AddResetHash($login, $hash) {
+		$db = Model::db_Connect();
+		try	{
+			$req = $db->prepare("UPDATE users SET
+								`resetHash` = :hash
+								WHERE `login` = :login");
+			$req->execute([
+				"hash" => $hash,
+				"login" => $login
+				]);
+		} catch (PDOExcpetion $e)	{
+			die ("Error in db_AddResetHash(): " . $e->getMessage());
+		}
+	}
+
+	public static function db_GetUserByResetHash($hash) {
+		$db = Model::db_Connect();
+		try	{
+			$req = $db->prepare("SELECT * FROM users
+								WHERE `resetHash` = :hash");
+			$req->execute(["hash" => $hash]);
+			$user = $req->fetch();
+			if (empty($user))
+				return NULL;
+			return $user;
+		} catch (PDOExcpetion $e)	{
+			die ("Error in db_GetUserByResetHash(): " . $e->getMessage());
 		}
 	}
 }

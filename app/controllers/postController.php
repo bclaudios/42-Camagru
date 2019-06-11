@@ -5,20 +5,17 @@ require_once __DIR__.'/../controllers/userController.php';
 
 
 ##### CONTROLLER #####
-if (isset($_POST['action']))	{
+if (isset($_POST['action']) && CheckToken())	{
 	$action = $_POST['action'];
-	if ($action === "createPost")
-		CreatePost();
-	if ($action === "addComment")
-		AddComment();
-	if($action === "getComments")
-		GetAllCommentsFromPost();
-	if ($action === "addLike")
-		AddLike();
-	if ($action === "removeLike")
-		RemoveLike();
-	if ($action === "delComment")
-		DeleteComment();
+	if ($action === "getComments") 		{ GetAllCommentsFromPost(); }
+	elseif (isset($_SESSION['user'])) {
+		if ($action === "createPost")	{ CreatePost(); }
+		if ($action === "addComment")	{ AddComment(); }
+		if ($action === "addLike")		{ AddLike(); }
+		if ($action === "removeLike")	{ RemoveLike(); }
+		if ($action === "delComment")	{ DeleteComment(); }
+		if ($action === "deletePost")	{ DeletePost(); }
+	}
 }
 
 ##### VIEWS #####
@@ -29,6 +26,7 @@ function view_Gallery()	{
 	$lastsPosts = PostModel::db_GetNLastPosts(10);
 	foreach ($lastsPosts as &$post) {
 		$post['comments'] = PostModel::db_GetAllCommentsFromPost($post['post_id']);
+		$post['user'] = UserModel::db_GetUser($post['login']);
 		if ($user)
 			$post['liked'] = PostModel::db_UserLiked($user['user_id'], $post['post_id']);
 	}
@@ -52,11 +50,13 @@ function view_FilePost()	{
 	if (isset($_FILES['uploaded_img']))	{
 		if ($_FILES['uploaded_img']['size'] > 1048576)
 			die ("Selecte file is too big");
+		else {
 		$uploaded_img = $_FILES['uploaded_img']['tmp_name'];
 		$tmpPath = DownloadUserImage($uploaded_img);
+		$lastPosts = PostModel::db_GetNLastPostsFromUser($user['user_id'], 4);
+		require_once("app/views/pages/postFile.php");
+		}
 	}
-	$lastPosts = PostModel::db_GetNLastPostsFromUser($user['user_id'], 4);
-	require_once("app/views/pages/postFile.php");
 }
 
 function view_Post() {
@@ -66,6 +66,7 @@ function view_Post() {
 	$post = PostModel::db_GetPost($post_id);
 	$post['comments'] = PostModel::db_GetAllCommentsFromPost($post['post_id']);
 	$post['liked'] = PostModel::db_UserLiked($user['user_id'], $post['post_id']);
+	$post['user'] = UserModel::db_GetUser($post['login']);
 	require_once("app/views/pages/post.php");
 }
 
@@ -75,16 +76,21 @@ function CreatePost()	{
 	$user = GetCurrentUser();
 	if ($_POST['source'] === "webcam")
 		$img = DecodeMIME($_POST['img']);
-	else {
+	else
 		$img = imagecreatefrompng($_POST['img']);
-		unlink(__DIR__."/../assets/img/posts/".$_SESSION['user']."/tmp.png");
-	}
 	$sticker = imagecreatefrompng($_POST['sticker']);
 	imagecopy($img, $sticker, 0, 0, 0, 0, 800, 600);
 	CreateMontageFile($img);
 	$post = PostModel::db_GetNLastPostsFromUser($user['user_id'], 1);
 	$post = json_encode($post);
 	echo $post;
+}
+
+function DeletePost() {
+	$post = PostModel::db_GetPost($_POST['postID']);
+	if ($_SESSION['user'] === $post['login']) {
+		PostModel::db_DeletePost($post['post_id']); 
+	}
 }
 
 function CreateMontageFile($img)	{

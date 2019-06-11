@@ -12,7 +12,15 @@ header {
 	z-index: 1000000;
 }
 
-header + * {
+a {
+	color:#00c4a7;
+}
+
+a:hover {
+	color:#01a088;
+}
+
+header + * + * {
 	margin-top:53px;
 }
 

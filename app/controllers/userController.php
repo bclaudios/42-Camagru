@@ -5,18 +5,17 @@ require_once __DIR__.'/postController.php';
 
 ########## CONTROLLER ##########
 
-if (isset($_POST['action']))	{
+if (isset($_POST['action']) && CheckToken())	{
 	$action = $_POST['action'];
-	if ($action === "signIn")
-		SignIn();
-	if ($action === "signUp")
-		SignUp();
-	if ($action === "updateInfos")
-		UpdateInfos();
-	if ($action === "updatePasswd")
-		UpdatePasswd();
-	if ($action === "deleteAccount")
-		DeleteAccount();
+	if ($action === "signIn") 				{ SignIn(); }
+	elseif ($action === "signUp")			{ SignUp(); }
+	elseif ($action === "sendResetPasswd") 	{ SendResetMail(); }
+	elseif ($action === "resetPasswd")		{ ResetPassword(); }
+	elseif (isset($_SESSION['user'])) {
+		if ($action === "updateInfos")		{ UpdateInfos(); }
+		if ($action === "updatePasswd")		{ UpdatePasswd(); }
+		if ($action === "deleteAccount")	{ DeleteAccount(); }
+	}
 }
 
 ########## VIEWS ##########
@@ -45,6 +44,21 @@ function view_EditProfil()	{
 	require_once(__DIR__."/../views/pages/profilEdit.php");
 }
 
+function view_Message($messageTitle, $message) {
+	$title = "Camagru";
+	require_once(__DIR__."/../views/pages/message.php");
+}
+
+function view_ResetPasswd()	{
+	$title = "Reset Password";
+	require_once(__DIR__."/../views/pages/resetPassword.php");
+}
+
+function view_ChangePasswd() {
+	$title = "Reset Password";
+	require_once(__DIR__."/../views/pages/changePassword.php");
+}
+
 ########## SIGN UP ##########
 
 function CheckSignUpInfos()	{
@@ -71,14 +85,24 @@ function SignUp()	{
 		$user = array(
 			"login" => $_POST['login'],
 			"email" => $_POST['email'],
-			"passwd" => hash('sha256', $_POST['passwd'])
+			"passwd" => hash('sha256', $_POST['passwd']),
+			"hash" => hash("sha256", $_POST['email'])
 		);
-		//ADD EMAIL VERIFICATION HERE
+		$mailLink = "http://localhost/index.php?action=confirm&h=".hash("sha256", $user['email']);
+		mail($_POST['email'], "Please, activate your account.", "Welcome to Camagru ! Please clic on the link bellow to confirm your e-mail address. ".$mailLink);
 		UserModel::db_CreateUser($user);
 		echo "Registration complete.\nPlease confirm your address by clicking on the link sent at the one you specified.";
 	}
 }
-// E-mail verification missing
+
+function ConfirmEmail() {
+	$hash = $_GET['h'];
+	if (UserModel::db_CheckHash($hash)) {
+		UserModel::db_ConfirmEmail($hash);
+		view_Message("E-mail adress confirmed !", "Your email adress has been confirmed. You can now login and share you pictures with your friend !");
+	} else
+		view_Message("No user found", "Seems like we found no user corresponding to your link. Sorry !");
+}
 
 ###### SIGN IN | LOGOUT ######
 
@@ -88,6 +112,11 @@ function SignIn()	{
 	if ($user === FALSE || $user['passwd'] !== $passwd)	{
 		http_response_code(400);
 		$errorLogs[] = "Login or password incorrect.";
+		$errorLogs = json_encode($errorLogs);
+		echo $errorLogs;
+	} elseif ($user['valid'] == FALSE) {
+		http_response_code(400);
+		$errorLogs[] = "You must have validate your email before login in.";
 		$errorLogs = json_encode($errorLogs);
 		echo $errorLogs;
 	} else {
@@ -166,6 +195,54 @@ function UpdatePasswd()	{
 	}
 }
 
+function SendResetMail() {
+	$user = UserModel::db_GetUser($_POST['login']);
+	if (empty($user)) {
+		http_response_code(400);
+		$errorLogs[] = "This user doesn't exist.";
+		$errorLogs = json_encode($errorLogs);
+		echo $errorLogs;
+	} else {
+		$hash = hash("sha256", RandomString());
+		$link = "http://localhost/index.php?action=resetPasswd&h=".$hash;
+		$subject = "Reset your password.";
+		$mail = "Click on the link to reset your password. ".$link;
+		mail($user['email'], $subject, $mail);
+		UserModel::db_AddResetHash($user['login'], $hash);
+		echo "An e-mail has been sent to ".$user['email'].".";
+	}
+}
+
+function ResetPasswd() {
+	$hash = $_GET['h'];
+	$user = UserModel::db_GetUserByResetHash($hash);
+	if (empty($user))
+		view_Gallery();
+	else {
+		$_SESSION['resetUser'] = $user;
+		view_ChangePasswd();
+	}
+}
+
+##### PROFIL PIC ######
+
+function UpdateProfilPic() {
+	if (isset($_FILES['uploaded_img']) && isset($_SESSION['user'])) {
+			if ($_FILES['uploaded_img']['size'] > 1048576)
+				die ("Selecte file is too big");
+			else {
+				$user = GetCurrentUser();
+				if (!file_exists(__DIR__."/../assets/img/profil"))
+					mkdir(__DIR__."/../assets/img/profil");
+				$uploaded_img = $_FILES['uploaded_img']['tmp_name'];
+				$path = __DIR__."/../assets/img/profil/".$user['login'].".jpg";
+				move_uploaded_file($_FILES['uploaded_img']['tmp_name'], $path);
+				UserModel::db_UpdateProfilPic($user['login'], $user['login'].".jpg");
+		}
+	}
+	view_EditProfil();
+}
+
 ##### ACCOUNT SUPPRESSION ######
 
 function DeleteAccount() {
@@ -186,4 +263,16 @@ function GetCurrentUser()	{
 	if (isset($_SESSION['user']))
 		return UserModel::db_GetUser($_SESSION['user']);
 	return NULL;
+}
+
+###### TOOLS ######
+
+function CheckToken() {
+	if (isset($_SESSION['token']) && isset($_POST['token']) && $_SESSION['token'] === $_POST['token'])
+		return true;
+	return false;
+}
+
+function RandomString($length = 10) {
+    return substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length);
 }

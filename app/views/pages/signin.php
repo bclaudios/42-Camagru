@@ -1,5 +1,7 @@
-<?php require_once(__DIR__."/../layouts/header.php"); ?>
-<body>
+<?php require_once(__DIR__."/../layouts/header.php"); 
+$token = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
+$_SESSION['token'] = $token;
+?>
 	<main class="section" id="signup-section">
         <div class="container sign-container">
                 <div class="media">
@@ -20,7 +22,7 @@
                         <div class="control">
                             <input type="password" class="input" placeholder="Password" id="input-passwd" required>
                         </div>
-                        <a href=""><p>Forgot your password ?</p></a>
+                        <a href="index.php?page=resetPasswd"><p>Forgot your password ?</p></a>
                     </div>
 			    	<div class="field">
                         <label for="" class="label blank"></label>
@@ -38,4 +40,5 @@
         </div>
     </div>
 </body>
+<input type="hidden" name="token" id="token" value="<?= $token; ?>" />
 <script src="app/assets/js/signin.js"></script>

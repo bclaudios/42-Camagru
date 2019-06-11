@@ -1,76 +1,78 @@
-.gallery-card	{
+.post-card	{
 	max-width: 600px;
 	line-height: 1;
 	margin: 0 auto 2.5em auto;
 	border-radius:2px;
 }
   
-.gallery-card .infos-container {
+.post-card .infos-container {
 	padding:0.5em 0.5em 0.25em 0.5em;
 	max-width: 600px;
 }
 
-.gallery-card .card-infos {
+.post-card .card-infos {
     padding: 0;
     margin-bottom: 0.5em;
 }
 
-.gallery-card article {
+.post-card article {
 	padding:0.5em 0 0 0;
 	font-size: 0.90em;
 	border-top:1px solid #e6e6e6;
 }
 
-.gallery-card .media:not(:last-child) {
+.post-card .media:not(:last-child) {
 	margin-bottom: 0.45rem;
 }
 
-.gallery-card .input {
+.post-card .input {
 	border:none;
 	box-shadow:none;
 	border-radius: 0;
 	padding: 0;
 }
 
-.gallery-card .comment-input {
+.post-card .comment-input {
 	border-top:1px solid #e6e6e6;
 }
 
-.gallery-card .comment-input .button {
+.post-card .comment-input .button {
 	border:none;
 	padding: 0;
 	font-weight: bold;
-	color: #a1a1a1;
+	color: rgb(156, 156, 156);
 }
 
 
-.show_comments, .hide_comments {
+.show_comments {
 	padding:0;
 	font-size: 0.80em;
 	border: none;
 	max-height: 1.5em;
-	font-weight: bold;
-	color: #a1a1a1;
 }
 
-.gallery-card .profil-pic {
+.show_comments > a {
+	color:grey;
+}
+
+.post-card .profil-pic {
 	height: 40px;
 	width: 40px;
-	border: 2px solid #6a6a6a;
+	border: 2px solid rgb(31, 31, 31);
 	padding:3px;
 }
 
-.gallery-card .card-header-title {
+.post-card .card-header-title {
 	padding:0.5rem;
 }
 
 .post-user-infos {
 	margin-top: 0.3em;
 }
-.gallery-card .card-login {
+.post-card .card-login {
 	text-decoration: none;
 }
-.gallery-card .card-date {
+.post-card .card-date {
 	font-weight: normal;
 	font-size: 0.75em;
 	font-style:italic;
@@ -98,4 +100,18 @@
 
 .profil-container {
 	max-width: 975px;
+}
+
+/* COMMENT DISPLAY */
+
+.comment .level {
+	margin-bottom: 0.2rem;
+}
+
+.comment-login {
+	margin-right: 0.2rem;
+}
+
+.comment-time {
+	color: grey;
 }

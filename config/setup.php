@@ -40,6 +40,8 @@ try	{
 				`passwd` VARCHAR(255) NOT NULL,
 				`profilPic` VARCHAR(255) NOT NULL UNIQUE,
 				`notif` BOOLEAN DEFAULT TRUE,
+				`hash` VARCHAR(255) UNIQUE,
+				`resetHash` VARCHAR(255) UNIQUE,
 				`valid` BOOLEAN DEFAULT FALSE)");
 	print("Users Table Created.\n");
 	//	CREATE POSTS TABLE
@@ -66,7 +68,7 @@ try	{
 				`post_id` INT NOT NULL,
 				`date` DATE NOT NULL,
 				`time` TIME NOT NULL,
-				`comment` VARCHAR(255) NOT NULL,
+				`comment` TEXT NOT NULL,
 				FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
 				FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE)");
 	print("Comments Table Created.\n");

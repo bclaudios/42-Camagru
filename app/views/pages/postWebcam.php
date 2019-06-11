@@ -1,4 +1,7 @@
-<?php require_once(__DIR__."/../layouts/header.php"); ?>
+<?php require_once(__DIR__."/../layouts/header.php"); 
+$token = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
+$_SESSION['token'] = $token;
+?>
 <body>
 	<main class="section webcam-section">
 		<div class="container webcam-container">
@@ -74,6 +77,7 @@
 			</div>
 		</div>
 	</main>
-	<script type="text/javascript" src="/app/assets/js/postWebcam.js"></script>
-	<script type="text/javascript" src="/app/assets/js/stickers.js"></script>
 </body>
+<input type="hidden" name="token" id="token" value="<?= $token; ?>" />
+<script type="text/javascript" src="/app/assets/js/postWebcam.js"></script>
+<script type="text/javascript" src="/app/assets/js/stickers.js"></script>

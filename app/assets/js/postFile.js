@@ -1,6 +1,12 @@
 document.addEventListener("click", function(e)	{
 	if (event.target.matches("#post-btn"))	{
-		const image = document.getElementById("uploaded_img").src;
+		e.preventDefault();
+		CreatePost();
+	}
+})
+
+function CreatePost() {
+	const image = document.getElementById("uploaded_img").src;
 		const sticker = document.getElementById("sticker").firstChild.src;
 		const post = "action=createPost"
 					+"&img="+image
@@ -15,8 +21,7 @@ document.addEventListener("click", function(e)	{
 		xhr.open("POST", "/app/controllers/postController.php");
 		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xhr.send(post);
-	}
-})
+}
 
 function DisplayPost(JSONpost)	{
 	const post = JSON.parse(JSONpost)[0];

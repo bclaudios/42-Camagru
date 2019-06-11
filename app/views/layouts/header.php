@@ -11,7 +11,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.css">
 	<link rel="stylesheet" href="app/assets/css/main.css">
 	<link rel="stylesheet" href="app/assets/css/card.css">
-	<link rel="stylesheet" href="app/assets/css/profilEdit.css">
+	<link rel="stylesheet" href="app/assets/css/profil.css">
 	<link rel="stylesheet" href="app/assets/css/post.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title><?=$title?></title>

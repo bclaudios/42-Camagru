@@ -24,7 +24,8 @@ function AddLike(target) {
 	const likesDisplay = card.getElementsByClassName("like-count").item(0);
 	const likesCount = parseInt(likesDisplay.innerHTML) > 0 ? likesDisplay.innerHTML : 0;
 	const post = "action=addLike"
-				+"&post_id="+post_id;
+				+"&post_id="+post_id
+				+"&token="+token;
 	const xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4) {
@@ -45,7 +46,8 @@ function RemoveLike(target) {
 	const likesDisplay = card.getElementsByClassName("like-count").item(0);
 	const likesCount = parseInt(likesDisplay.innerHTML) > 0 ? likesDisplay.innerHTML : 0;
 	const post = "action=removeLike"
-				+"&post_id="+post_id;
+				+"&post_id="+post_id
+				+"&token="+token;
 	const xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4) {
