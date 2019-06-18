@@ -1,5 +1,5 @@
 document.addEventListener("click", function(e) {
-    const token = document.getElementById("toekn").value;
+    const token = document.getElementById("token").value;
     if (event.target.matches(".delete-btn")) {
         e.preventDefault();
         DeletePostGallery(event.target);
@@ -23,6 +23,7 @@ document.addEventListener("click", function(e) {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
                         parent.removeChild(postCard);
+						document.location.href="/";
                     }
                 }
             }

@@ -31,8 +31,11 @@
 }
 
 .stickers {
-    height:100px;
-    width:100px;
+    height:8.15rem;
+    width:8.15rem;
+    border:1px solid lightgray;
+    background-color: #fafafa;
+    transition: all 100ms ease;
 }
 
 #nocam-card {
@@ -42,4 +45,19 @@
 #sticker {
     position:absolute;
     z-index:100;
+}
+
+.file-icon {
+    height: 1.25em;
+    width:1.25em;
+}
+
+#post-icon {
+    margin-left:0.35rem;
+}
+
+.stickers:hover {
+    transition: all 100ms ease;
+    transform: scale(1.25);
+    z-index: 289;
 }

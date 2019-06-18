@@ -10,7 +10,7 @@ $_SESSION['token'] = $token;
 
 				<!-- MONTAGE PART -->
 				<div class="column is-8" id="render">
-					<div class="card">
+					<div class="card" id="webcam-card" hidden>
 						<!-- WEBCAM PREVIEW -->
 						<div class="card-image">
 							<div id="overlay">
@@ -20,7 +20,9 @@ $_SESSION['token'] = $token;
 							</div>
 						</div>
 						<div class="card-content" id="montage-ui">
-								<button class="button is-primary" id="post-btn">Create your post !</button>
+								<button class="button is-primary" id="post-btn">Create your post !<span class="file-icon" id="post-icon">
+        											<img class="fas fa-upload" src="app/assets/img/	icon/	post.png" ></i>
+      											</span></button>
 								<!-- STICKER SELECTION -->
 								<?php
 									foreach ($stickers as $stick)	{ ?>
@@ -32,26 +34,37 @@ $_SESSION['token'] = $token;
 					<!-- FILE UPLOAD PART -->
 					<div class="card" id="nocam-card">
         				<div class="card-content">
-							<p>No webcam ? Upload a picture here :</p>
+						<?php if (isset($sizeError) && $sizeError == true) { ?>
+							<div class="notification is-warning">
+								<p>Selected file is too big. Maximum size : 1Mo</p>
+							</div>
+						<?php } ?>
+							<p>No webcam ? Upload a picture here ( .png | Max size: 1 Mo) :</p>
 							<form action="index.php?page=filePost" method="post" enctype="multipart/form-data">
 							<div class="level">
 								<div class="level-left">
 									<div class="file has-name is-primary">
 										<label class="file-label">
-    										<input class="file-input is-primary" type="file" name="uploaded_img" accept="<?=$ext?>">
+    										<input class="file-input is-primary" id="file-input" type="file" name="uploaded_img" accept="<?=$ext?>" required>
     										<span class="file-cta">
     											<span class="file-icon">
-        											<img class="fas fa-upload" src="app/assets/img/	icon/	upload.png"></i>
+        											<img class="fas fa-upload" src="app/assets/img/	icon/	picture.png"></i>
       											</span>
     											<span class="file-label">
-													Choose a picture (1 Mo max. | .png)
+													Choose a picture
 												</span>
 											</span>
+											<span class="file-name" id="file-name">
+												...
+    </span>
 										</label>
 									</div>
 								</div>
 								<div class="level-right">
-									<button class="button is-primary" id="post-btn">Upload Picture</button>
+									<button class="button is-primary">
+    											<span class="file-icon">
+        											<img class="fas fa-upload" src="app/assets/img/	icon/	upload.png"></i>
+      											</span>Upload Picture</button>
 								</div>
 							</form>
 							</div>
@@ -77,7 +90,7 @@ $_SESSION['token'] = $token;
 			</div>
 		</div>
 	</main>
-</body>
-<input type="hidden" name="token" id="token" value="<?= $token; ?>" />
+<?php require_once(__DIR__."/../layouts/footer.php");?>
+<input type="hidden" name="token" id="token" value="<?= $token; ?>"/>
 <script type="text/javascript" src="/app/assets/js/postWebcam.js"></script>
 <script type="text/javascript" src="/app/assets/js/stickers.js"></script>

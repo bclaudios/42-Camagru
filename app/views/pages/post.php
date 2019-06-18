@@ -6,7 +6,7 @@ $comCount = 9999
 	<main class="section">
 		<?php require_once("app/views/layouts/_card.php");?>
 	</main>
-</body>
+<?php require_once(__DIR__."/../layouts/footer.php");?>
 <input type="hidden" name="token" id="token" value="<?= $token; ?>" />
 <script src="app/assets/js/comment.js"></script>
 <script src="app/assets/js/like.js"></script>

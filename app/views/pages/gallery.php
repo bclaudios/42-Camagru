@@ -4,15 +4,16 @@ $_SESSION['token'] = $token;
 $comCount = 3;
 ?>
 	<div class="section">
-		<div class="container">
+		<div class="container" id="card-container">
 			<?php foreach ($lastsPosts as $post) {
 				require("app/views/layouts/_card.php");
 			} ?>
 			</div>
 		</div>
 	</div>
-</body>
+<?php require_once(__DIR__."/../layouts/footer.php");?>
 <input type="hidden" name="token" id="token" value="<?= $token; ?>" />
 <script src="app/assets/js/comment.js"></script>
 <script src="app/assets/js/like.js"></script>
 <script src="app/assets/js/deletePost.js"></script>
+<script src="app/assets/js/gallery.js"></script>

@@ -27,7 +27,7 @@ header + * + * {
 #main_logo {
 	padding-right:15px;
 	margin-right:12px;
-	border-right:solid 1px black;
+	border-right:solid 1px #00c4a7;
 }
 
 .title {
@@ -94,3 +94,17 @@ header + * + * {
 #signup-input {
 	margin-top: 0.5rem;
 }
+
+.notif {
+	background-color: whitesmoke;
+	border-radius: 4px;
+	padding: 1.25rem 2.5rem 1.25rem 1.5rem;
+	position: relative;
+	padding: 0.75em;
+	margin-bottom: 0.75rem;
+}
+
+.notification:not(:last-child) {
+	margin-bottom: 0.75rem;
+}
+

@@ -6,16 +6,21 @@ document.addEventListener("click", function(e)	{
 })
 
 function CreatePost() {
+	const token = document.getElementById("token").value;
 	const image = document.getElementById("uploaded_img").src;
 		const sticker = document.getElementById("sticker").firstChild.src;
 		const post = "action=createPost"
+					+"&token="+token
 					+"&img="+image
 					+"&sticker="+sticker+
 					"&source=file";
 		const xhr = new XMLHttpRequest();
 		xhr.onreadystatechange = function()	{
 			if (xhr.readyState === 4)	{
-				DisplayPost(xhr.responseText);
+				if (xhr.status === 200)
+					DisplayPost(xhr.responseText);
+				else
+					alert(xhr.responseText);
 			}
 		}
 		xhr.open("POST", "/app/controllers/postController.php");
@@ -35,3 +40,11 @@ function DisplayPost(JSONpost)	{
 	postView.removeChild(postView.lastElementChild);
 	postView.prepend(newView);
 }
+
+const input = document.getElementById( 'file-input' );
+const infoArea = document.getElementById( 'file-name' );
+input.addEventListener( 'change', function (e) { 
+  const input = event.srcElement;
+  const fileName = input.files[0].name;
+  infoArea.innerHTML = fileName;
+});

@@ -19,3 +19,4 @@ $_SESSION['token'] = $token;
         </div>
     </div>
 </main>
+<?php require_once(__DIR__."/../layouts/footer.php");?>

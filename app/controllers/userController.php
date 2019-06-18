@@ -34,8 +34,12 @@ function view_Profil()	{
 	$title = "Profil";
 	$login = $_GET['login'];
 	$user = UserModel::db_GetUser($login);
-	$posts = PostModel::db_GetPostsFromUser($user['user_id']);
-	require_once(__DIR__."/../views/pages/profil.php");
+	if ($user) {
+		$posts = PostModel::db_GetPostsFromUser($user['user_id']);
+		require_once(__DIR__."/../views/pages/profil.php");
+	} else {
+		view_Gallery();
+	}
 }
 
 function view_EditProfil()	{
@@ -62,20 +66,25 @@ function view_ChangePasswd() {
 ########## SIGN UP ##########
 
 function CheckSignUpInfos()	{
-	if (CheckNewLogin($_POST['login']))
+	if (empty($_POST['login']) || empty($_POST['email']) || empty($_POST['passwd']) || empty($_POST['passwdConf']))
+		$errorLogs[] = "Please, fill all the fields below.";
+	else {
+		if (CheckNewLogin($_POST['login']))
 		$errorLogs[] = CheckNewLogin($_POST['login']);
-	if (CheckNewEmail($_POST['email']))
+		if (CheckNewEmail($_POST['email']))
 		$errorLogs[] = CheckNewEmail($_POST['email']);
-	if (!CheckPasswdSecurity($_POST['passwd']))
-		$errorLogs[] = "Password security is too low. Must contain at least 8 chars, 1 lowercase, 1 uppercase and 1 digit.";
-	if ($_POST['passwd'] !== $_POST['passwdConf'])
+		if (!CheckPasswdSecurity($_POST['passwd']))
+		$errorLogs[] = "Password security is too low.";
+		if ($_POST['passwd'] !== $_POST['passwdConf'])
 		$errorLogs[] = "Passwords not matching.";
+	}
 	if (!isset($errorLogs))
 		return NULL;
 	return $errorLogs;
 }
 
 function SignUp()	{
+	$_POST['login'] = htmlspecialchars($_POST['login']);
 	$errorLogs = CheckSignUpInfos();
 	if (!empty($errorLogs))	{
 		http_response_code(403);
@@ -91,7 +100,6 @@ function SignUp()	{
 		$mailLink = "http://localhost/index.php?action=confirm&h=".hash("sha256", $user['email']);
 		mail($_POST['email'], "Please, activate your account.", "Welcome to Camagru ! Please clic on the link bellow to confirm your e-mail address. ".$mailLink);
 		UserModel::db_CreateUser($user);
-		echo "Registration complete.\nPlease confirm your address by clicking on the link sent at the one you specified.";
 	}
 }
 
@@ -99,7 +107,7 @@ function ConfirmEmail() {
 	$hash = $_GET['h'];
 	if (UserModel::db_CheckHash($hash)) {
 		UserModel::db_ConfirmEmail($hash);
-		view_Message("E-mail adress confirmed !", "Your email adress has been confirmed. You can now login and share you pictures with your friend !");
+		view_Message("E-mail adress confirmed !", "Your email adress has been confirmed. You can now login and share you pictures with your friends !");
 	} else
 		view_Message("No user found", "Seems like we found no user corresponding to your link. Sorry !");
 }
@@ -137,7 +145,7 @@ function UpdateInfos() {
 	$user = GetCurrentUser();
 	$newLogin = $_POST['login'];
 	$newEmail = $_POST['email'];
-	$notif = $_POST['notif'];
+	$notif = $_POST['notif'] === "true" ? "1" : "0";
 	if (!empty($newLogin) && $newLogin !== $user['login'])
 		$errorLogs[] = CheckNewLogin($newLogin);
 	if (!empty($newEmail) && $newEmail !== $user['email'])
@@ -147,8 +155,10 @@ function UpdateInfos() {
 			UserModel::db_UpdateLogin($newLogin);
 			$_SESSION['user'] = $newLogin;
 		}
-		if (!empty($newEmail) && $newEmail !== $user['email'])
+		if (!empty($newEmail) && $newEmail !== $user['email'])	{
 			UserModel::db_UpdateEmail($newEmail);
+			mail($_POST['email'], "Please, activate your account.", "Your email has been changed. Please clic on the link bellow to confirm your e-mail address. ".$mailLink);
+		}
 		UserModel::db_UpdateNotif($notif);
 	} else {
 		http_response_code(403);
@@ -158,6 +168,8 @@ function UpdateInfos() {
 }
 
 function CheckNewLogin($newLogin)	{
+	if (!preg_match("~[A-Za-z0-9áéíóú]+$~", $newLogin))
+		return "No special character autorized in username.";
 	if (UserModel::db_GetUser($newLogin))
 		return "This username is already used.";
 	return NULL;

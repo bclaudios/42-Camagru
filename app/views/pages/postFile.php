@@ -32,26 +32,29 @@ $_SESSION['token'] = $token;
 					<!-- FILE UPLOAD PART -->
 					<div class="card" id="nocam-card">
         				<div class="card-content">
-							<p>No webcam ? Upload a picture here :</p>
+							<p>Upload another picture here ( .png | Max size: 1 Mo) :</p>
 							<form action="index.php?page=filePost" method="post" enctype="multipart/form-data">
 							<div class="level">
 								<div class="level-left">
 									<div class="file has-name is-primary">
 										<label class="file-label">
-    										<input class="file-input is-primary" type="file" name="uploaded_img" accept="<?=$ext?>">
+    										<input class="file-input is-primary" id="file-input" type="file" name="uploaded_img" accept="<?=$ext?>">
     										<span class="file-cta">
     											<span class="file-icon">
         											<img class="fas fa-upload" src="app/assets/img/	icon/	upload.png"></i>
       											</span>
     											<span class="file-label">
-													Choose a picture (1 Mo max. | .png)
+													Choose a picture
 												</span>
 											</span>
+											<span class="file-name" id="file-name">
+												...
+    </span>
 										</label>
 									</div>
 								</div>
 								<div class="level-right">
-									<button class="button is-primary" id="post-btn">Upload Picture</button>
+									<button class="button is-primary">Upload Picture</button>
 								</div>
 							</form>
 							</div>
@@ -77,7 +80,7 @@ $_SESSION['token'] = $token;
 			</div>
 		</div>
 	</main>
-</body>
+<?php require_once(__DIR__."/../layouts/footer.php");?>
 <input type="hidden" name="token" id="token" value="<?= $token; ?>" />
 <script type="text/javascript" src="/app/assets/js/postFile.js"></script>
 <script type="text/javascript" src="/app/assets/js/stickers.js"></script>

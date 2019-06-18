@@ -58,17 +58,17 @@
 		<article class="media">
 			<div class="comment_list media-content">
 				<?php 
-				for ($i = 0; $i < $comCount; $i++) {
+				for ($i = 0; $i < 3; $i++) {
 					if ($i >= sizeof($post['comments']))
 						break;
 					$comment = $post['comments'][$i]; 
-					require("app/views/layouts/_comment.php"); 
+					require(__DIR__."/_comment.php"); 
 				}
 				?>
 			</div>
 		</article>
 		<!-- SHOW ALL COMMENTS BUTTON -->
-		<?php if ($comCount === 3 && isset($post['comments'][3])) { ?>
+		<?php if (isset($post['comments'][3])) { ?>
 			<button class="button show_comments"><a href="index.php?page=post&post_id=<?=$post['post_id']?>">Show all comments</a></button>
 		<?php } ?>
 

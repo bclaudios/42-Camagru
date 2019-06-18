@@ -1,26 +1,32 @@
 document.addEventListener("click", function(e) {
 	if (event.target.matches("#signin-btn"))	{
 		e.preventDefault();
-		const login = document.getElementById("input-login").value;
-		const passwd = document.getElementById("input-passwd").value;
-		const post = "action=signIn"
-					+"&login="+login
-					+"&passwd="+passwd;
-		const xhr = new XMLHttpRequest();
-		xhr.onreadystatechange = function()	{
-			if (xhr.readyState === 4)	{
-				if (xhr.status === 200)	{
-					window.location = "index.php";
-				} else {
-					DisplayErrorNotif("signin-input", xhr.responseText);
-				}
-			}
-		}
-		xhr.open('POST', 'app/controllers/userController.php', true);
-		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		xhr.send(post);
+		SignIn();
 	}
 });
+
+function SignIn() {
+	const token = document.getElementById("token").value;
+	const login = document.getElementById("input-login").value;
+	const passwd = document.getElementById("input-passwd").value;
+	const post = "action=signIn"
+				+"&token="+token
+				+"&login="+login
+				+"&passwd="+passwd;
+	const xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function()	{
+		if (xhr.readyState === 4)	{
+			if (xhr.status === 200)	{
+				window.location = "index.php";
+			} else {
+				DisplayErrorNotif("signin-input", xhr.responseText);
+			}
+		}
+	}
+	xhr.open('POST', 'app/controllers/userController.php', true);
+	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhr.send(post);
+}
 
 // NOTIF FUNCTIONS
 

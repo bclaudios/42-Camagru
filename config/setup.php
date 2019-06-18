@@ -38,7 +38,7 @@ try	{
 				`login` VARCHAR(40) NOT NULL UNIQUE,
 				`email` VARCHAR(255) NOT NULL UNIQUE,
 				`passwd` VARCHAR(255) NOT NULL,
-				`profilPic` VARCHAR(255) NOT NULL UNIQUE,
+				`profilPic` VARCHAR(255) NOT NULL,
 				`notif` BOOLEAN DEFAULT TRUE,
 				`hash` VARCHAR(255) UNIQUE,
 				`resetHash` VARCHAR(255) UNIQUE,

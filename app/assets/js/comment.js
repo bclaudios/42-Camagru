@@ -10,12 +10,14 @@ document.addEventListener("click", function(e) {
 	}
 
 	function AddComment(target) {
+		const token = document.getElementById("token").value;
 		const post_id = target.closest(".card").id;
 		const card = document.getElementById(post_id);
 		const comment = card.getElementsByClassName("input").item(0).value;
 		if (comment != "") {
 			const form = card.getElementsByTagName("form").item(0);
 			const post = "action=addComment"
+			+"&token="+token
 			+"&comment="+comment
 			+"&post_id="+post_id
 			+"&token="+token;
@@ -37,15 +39,16 @@ document.addEventListener("click", function(e) {
 	}
 	
 	function DeleteComment(target) {
+		const token = document.getElementById("token").value;	
 		const comment = event.target.closest(".comment");
 			const post = "action=delComment"
+						+"&token="+token
 						+"&commentID="+comment.id
 						+"&token="+token;
 			const xhr = new XMLHttpRequest();
 			xhr.onreadystatechange = function() {
 				if (xhr.readyState === 4) {
 					if (xhr.status === 200) {
-						alert(xhr.responseText);
 						DeleteCommentBox(comment);
 					} else {
 						alert(xhr.responseText);

@@ -3,6 +3,7 @@ if (!isset($_SESSION['user']))
     header("Location: http://localhost/index.php");
 $token = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
 $_SESSION['token'] = $token;
+$user['notif'] = $user['notif'] == 1 ? "checked='true'" : "";
 require_once(__DIR__."/../layouts/header.php");
 ?>
     <main class="section">
@@ -68,7 +69,7 @@ require_once(__DIR__."/../layouts/header.php");
                 <div class="field">
                     <label for="" class="label">Notification</label>
                     <div class="checkbox">
-                        <input type="checkbox" id="input-notif" checked="<?=$user['notif']?>">
+                        <input type="checkbox" id="input-notif" <?=$user['notif']?>>
                         <strong>
                             Receive notification by email
                         </strong>
@@ -101,6 +102,15 @@ require_once(__DIR__."/../layouts/header.php");
                         <input type="password" class="input" id="input-newPasswdConf">
                     </div>
                 </div>
+                <div class="notif">
+                            <p>
+                                Your password must contain at least : <br>
+                                - 8 characters <br>
+                                - 1 uppercase letter <br>
+                                - 1 lowercasse letter <br>
+                                - 1 digit
+                            </p>
+                        </div>
                 <div class="field">
                 <label for="" class="label blank"></label>
                     <div class="control">
@@ -119,6 +129,6 @@ require_once(__DIR__."/../layouts/header.php");
             </div>
         </div>
     </main>
-</body>
+<?php require_once(__DIR__."/../layouts/footer.php");?>
 <input type="hidden" name="token" id="token" value="<?= $token; ?>" />
 <script type="text/javascript" src="/app/assets/js/editProfil.js"></script>

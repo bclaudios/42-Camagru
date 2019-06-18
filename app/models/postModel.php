@@ -146,6 +146,26 @@ class PostModel	{
 		}
 	}
 
+	public static function db_GetNLastPostsOff($count, $offset)	{
+		$db = Model::db_Connect();
+		try	{
+			$req = $db->prepare("SELECT posts.post_id, users.login, posts.date, posts.time, posts.path, likesCount, 
+				(SELECT comment FROM comments WHERE comments.post_id = posts.post_id ORDER BY comment_id DESC LIMIT 1) AS lastComment 
+				FROM posts 
+				LEFT JOIN users ON posts.user_id = users.user_id
+				LEFT JOIN (SELECT post_id, COUNT(*) AS likesCount
+					FROM likes
+					GROUP BY post_id)
+				likesCount ON likesCount.post_id = posts.post_id
+				ORDER BY post_id DESC
+				LIMIT ".$count . " OFFSET " . $offset);
+			$req->execute();
+			$posts = $req->fetchAll();
+			return $posts;
+		} catch (PDOException $ex) {
+			die ("Error in db_GetNLastPosts(): " . $ex->getMessage());
+		}
+	}
 	//	LIKES
 	//	Get which user liked a post ???
 	public static function db_AddLike($user_id, $post_id)	{

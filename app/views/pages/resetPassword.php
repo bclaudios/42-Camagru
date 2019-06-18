@@ -29,6 +29,6 @@ $_SESSION['token'] = $token;
             </div>
 		</form>
     </div>
-</main>
+<?php require_once(__DIR__."/../layouts/footer.php");?>
 <input type="hidden" name="token" id="token" value="<?= $token; ?>" />
 <script type="text/javascript" src="/app/assets/js/resetPasswd.js"></script>

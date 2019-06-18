@@ -5,10 +5,11 @@ require_once __DIR__.'/../controllers/userController.php';
 
 
 ##### CONTROLLER #####
-if (isset($_POST['action']) && CheckToken())	{
+if (isset($_POST['action']))	{
 	$action = $_POST['action'];
 	if ($action === "getComments") 		{ GetAllCommentsFromPost(); }
-	elseif (isset($_SESSION['user'])) {
+	elseif ($action === "updateGallery") { UpdateGallery(); }
+	elseif (isset($_SESSION['user']) && CheckToken()) {
 		if ($action === "createPost")	{ CreatePost(); }
 		if ($action === "addComment")	{ AddComment(); }
 		if ($action === "addLike")		{ AddLike(); }
@@ -23,7 +24,7 @@ if (isset($_POST['action']) && CheckToken())	{
 function view_Gallery()	{
 	$title = "Gallery";
 	$user = GetCurrentUser();
-	$lastsPosts = PostModel::db_GetNLastPosts(10);
+	$lastsPosts = PostModel::db_GetNLastPosts(5);
 	foreach ($lastsPosts as &$post) {
 		$post['comments'] = PostModel::db_GetAllCommentsFromPost($post['post_id']);
 		$post['user'] = UserModel::db_GetUser($post['login']);
@@ -35,8 +36,17 @@ function view_Gallery()	{
 
 function view_WebcamPost()	{
 	$title = "New Post";
-	$stickers = ["frame1.png", "frame2.png", "frame3.png", "frame4.png", "frame5.png", "frame6.png", "frame7.png", "frame8.png", "frame9.png", "frame10.png"];
+	$stickers = ["guirlande.png",
+				"cat.png",
+				"chestb.png",
+				"dirty.png",
+				"guirlande2.png",
+				"nemo.png",
+				"party.png",
+				"spongebob.png",
+				"ufo.png"];
 	$user = GetCurrentUser();
+	$ext = "image/png";
 	$lastPosts = PostModel::db_GetNLastPostsFromUser($user['user_id'], 4);
 	require_once("app/views/pages/postWebcam.php");
 }
@@ -44,17 +54,28 @@ function view_WebcamPost()	{
 function view_FilePost()	{
 	$user = GetCurrentUser();
 	$title = "New Post";
-	$stickers = ["frame1.png", "frame2.png", "frame3.png", "frame4.png", "frame5.png", "frame6.png", "frame7.png", "frame8.png", "frame9.png", "frame10.png"];
+	$stickers = ["guirlande.png",
+				"cat.png",
+				"chestb.png",
+				"dirty.png",
+				"guirlande2.png",
+				"nemo.png",
+				"party.png",
+				"spongebob.png",
+				"ufo.png"];
 	$tmpPath = "";
-	$ext = ".png";
+	$ext = "image/.png";
 	if (isset($_FILES['uploaded_img']))	{
-		if ($_FILES['uploaded_img']['size'] > 1048576)
-			die ("Selecte file is too big");
-		else {
-		$uploaded_img = $_FILES['uploaded_img']['tmp_name'];
-		$tmpPath = DownloadUserImage($uploaded_img);
-		$lastPosts = PostModel::db_GetNLastPostsFromUser($user['user_id'], 4);
-		require_once("app/views/pages/postFile.php");
+		if ($_FILES['uploaded_img']['size'] > 1048576 || $_FILES['uploaded_img']['size'] <= 0)	{
+			$sizeError = true;
+			$user = GetCurrentUser();
+			$lastPosts = PostModel::db_GetNLastPostsFromUser($user['user_id'], 4);
+			require_once("app/views/pages/postWebcam.php");
+		} else {
+			$uploaded_img = $_FILES['uploaded_img']['tmp_name'];
+			$tmpPath = DownloadUserImage($uploaded_img);
+			$lastPosts = PostModel::db_GetNLastPostsFromUser($user['user_id'], 4);
+			require_once("app/views/pages/postFile.php");
 		}
 	}
 }
@@ -64,10 +85,14 @@ function view_Post() {
 	$user = GetCurrentUser();
 	$post_id = $_GET['post_id'];
 	$post = PostModel::db_GetPost($post_id);
-	$post['comments'] = PostModel::db_GetAllCommentsFromPost($post['post_id']);
-	$post['liked'] = PostModel::db_UserLiked($user['user_id'], $post['post_id']);
-	$post['user'] = UserModel::db_GetUser($post['login']);
-	require_once("app/views/pages/post.php");
+	if ($post)	{
+		$post['comments'] = PostModel::db_GetAllCommentsFromPost($post['post_id']);
+		$post['liked'] = PostModel::db_UserLiked($user['user_id'], $post['post_id']);
+		$post['user'] = UserModel::db_GetUser($post['login']);
+		require_once("app/views/pages/post.php");
+	} else {
+		view_Gallery();
+	}
 }
 
 ###### POST CREATION ######
@@ -161,10 +186,14 @@ function AddComment() {
 	$comment = [
 		"post_id" => $_POST['post_id'],
 		"login" => $user['login'],
-		"comment" => $_POST['comment'],
+		"comment" => htmlspecialchars($_POST['comment']),
 		"date" => date("Y-m-d"),
 		"time" => date("H:i:s")];
+	$post = PostModel::db_GetPost($comment['post_id']);
 	PostModel::db_AddComment($user['user_id'], $comment['post_id'], $comment['comment']);
+	$postUser = UserModel::db_GetUser($post["login"]);
+	if ($postUser['notif'])
+		mail($user['email'], $comment['login'] . " commented your post !", "Click here to see it.");
 	$comment = json_encode($comment);
 	echo $comment;
 }
@@ -202,4 +231,26 @@ function RemoveLike() {
 	$post_id = $_POST['post_id'];
 	PostModel::db_DeleteLike($user['user_id'], $post_id);
 	echo "Like removed";
+}
+
+###### PAGIONATION ######
+
+function requireToVar($file, $post){
+    ob_start();
+    require($file);
+    return ob_get_clean();
+}
+
+function UpdateGallery() {
+	$user = GetCurrentUser();
+	$lastsPosts = PostModel::db_GetNLastPostsOff(5, $_POST['offset']);
+	foreach ($lastsPosts as &$post) {
+		$post['comments'] = PostModel::db_GetAllCommentsFromPost($post['post_id']);
+		$post['user'] = UserModel::db_GetUser($post['login']);
+		if ($user)
+			$post['liked'] = PostModel::db_UserLiked($user['user_id'], $post['post_id']);
+		$post = requireToVar("../views/layouts/_card.php", $post);
+	}
+	$lastsPosts = json_encode($lastsPosts);
+	echo $lastsPosts;
 }

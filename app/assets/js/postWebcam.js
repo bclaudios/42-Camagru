@@ -12,20 +12,22 @@
 		video = document.getElementById("webcam");
 		canvas = document.getElementById("canvas");
 		postBtn = document.getElementById("post-btn");
-
+		webcamCard = document.getElementById("webcam-card");
+		
 		// Get the webcam stream
 		navigator.mediaDevices.getUserMedia({ video: true, audio: false})
-			.then(function(stream) {
-				video.srcObject = stream;
-				video.play();
-			})
-			.catch(function(err)	{
-				console.log("Error in getUserMedia(): " + err);
-			});
-
+		.then(function(stream) {
+			video.srcObject = stream;
+			video.play();
+		})
+		.catch(function(err)	{
+			console.log("Error in getUserMedia(): " + err);
+		});
+		
 		// Set the width/height when the stream is launched
 		video.addEventListener('canplay', function(ev)	{
 			if (!streaming)	{
+				webcamCard.hidden = false;
 				video.setAttribute('width', width);
 				video.setAttribute('height', height);
 				video.style.transform = 'scaleX(-1)';
@@ -34,20 +36,22 @@
 				streaming = true;
 			}
 		}, false);
-
+		
 		// Button trigger
 		postBtn.addEventListener("click", function(ev) {
 			stickerSelected = document.getElementById("sticker");
 			if (stickerSelected.firstChild)
-				CreatePost();
+			CreatePost();
 			else
-				DisplayNotif("montage-ui", "Please, select a sticker before taking a picture.");
+			DisplayNotif("montage-ui", "Please, select a sticker before taking a picture.");
 			ev.preventDefault();
 		}, false);
 	}
-
+	
 	function SendPicture(pic, sticker)	{
+		const token = document.getElementById("token").value;
 		const post = "action=createPost"
+					+"&token="+token
 					+"&img="+pic
 					+"&sticker="+sticker
 					+"&source=webcam";
@@ -106,3 +110,11 @@ function DisplayNotif(targetID, message) {
 	box.innerHTML = "- "+message+"<br>";
 	target.prepend(box);
 }
+
+const input = document.getElementById( 'file-input' );
+const infoArea = document.getElementById( 'file-name' );
+input.addEventListener( 'change', function (e) { 
+  const input = event.srcElement;
+  const fileName = input.files[0].name;
+  infoArea.innerHTML = fileName;
+});

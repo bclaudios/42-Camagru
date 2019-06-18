@@ -13,14 +13,16 @@ document.addEventListener("click", function(e)	{
 	}
 	
 	function UpdateInfos() {
+		const token = document.getElementById("token").value;
 		const login = document.getElementById("input-login");
 		const email = document.getElementById("input-email");
 		const notif = document.getElementById("input-notif");
 		const loginTitle = document.getElementById("title-login");
+		alert(notif.checked);
 		const post = "action=updateInfos"
 					+"&login="+login.value
 					+"&email="+email.value
-					+"&notif="+notif.value
+					+"&notif="+notif.checked
 					+"&token="+token;
 		const xhr = new XMLHttpRequest();
 		xhr.onreadystatechange = function() {
@@ -39,6 +41,7 @@ document.addEventListener("click", function(e)	{
 	}
 	
 	function UpdatePassword() {
+		const token = document.getElementById("token").value;
 		const passwd = document.getElementById("input-passwd").value;
 		const newPasswd = document.getElementById("input-newPasswd").value;
 		const newPasswdConf = document.getElementById("input-newPasswdConf").value;
@@ -62,6 +65,7 @@ document.addEventListener("click", function(e)	{
 	}
 	
 	function DeleteAccount() {
+		const token = document.getElementById("token").value;
 		const confirmation = confirm("You are about to delete your account. Are you sure you want to do this ? (This action can'tbe revoqued)");
 		if (confirmation) {
 			const post = "action=deleteAccount"

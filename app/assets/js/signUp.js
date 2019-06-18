@@ -1,39 +1,18 @@
 document.addEventListener("click", function(e) {
 	if (event.target.matches("#signup-btn"))	{
 		e.preventDefault();
-		const login = document.getElementById("input-login").value;
-		const email = document.getElementById("input-email").value;
-		const passwd = document.getElementById("input-passwd").value;
-		const passwdConf = document.getElementById("input-passwdConf").value;
-		const post = "action=signUp"
-					+"&login="+login
-					+"&email="+email
-					+"&passwd="+passwd
-					+"&passwdConf="+passwdConf;
-		const xhr = new XMLHttpRequest();
-		xhr.onreadystatechange = function()	{
-			if (xhr.readyState === 4)	{
-				if (xhr.status === 200)	{
-					alert(xhr.responseText);
-					window.location = "index.php";
-				} else {
-					DisplayErrorNotif("signup-input", xhr.responseText);
-				}
-			}
-		}
-		xhr.open("POST", "app/controllers/userController.php", true);
-		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		xhr.send(post);
+		SignUp();
 	}
 });
 
 function SignUp() {
-	e.preventDefault();
+	const token = document.getElementById("token").value;
 	const login = document.getElementById("input-login").value;
 	const email = document.getElementById("input-email").value;
 	const passwd = document.getElementById("input-passwd").value;
 	const passwdConf = document.getElementById("input-passwdConf").value;
 	const post = "action=signUp"
+				+"&token="+token
 				+"&login="+login
 				+"&email="+email
 				+"&passwd="+passwd
@@ -42,8 +21,7 @@ function SignUp() {
 	xhr.onreadystatechange = function()	{
 		if (xhr.readyState === 4)	{
 			if (xhr.status === 200)	{
-				alert(xhr.responseText);
-				window.location = "index.php";
+				window.location = "index.php?page=validSignUp";
 			} else {
 				DisplayErrorNotif("signup-input", xhr.responseText);
 			}
@@ -53,6 +31,7 @@ function SignUp() {
 	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhr.send(post);
 }
+
 // NOTIF FUNCTIONS
 
 function ClearNotif() {

@@ -8,6 +8,11 @@ if (isset($_GET['page']))	{
 	$page = $_GET['page'];
 
 	if ($page === "signUp") { view_SignUp(); }
+	elseif ($page === "validSignUp") { 
+		$msgTitle = "Welcome to Camagru !";
+		$msg = "We have sent you a confirmation e-mail at the specified address. Please, check your inbox and confirm your email.";
+		view_Message($msgTitle, $msg);
+	}
 	elseif ($page === "signIn") { view_SignIn(); }
 	elseif ($page === "resetPasswd") { view_ResetPasswd(); }
 	elseif ($page === "profil") { view_Profil(); }
@@ -20,15 +25,15 @@ if (isset($_GET['page']))	{
 	
 	##### ACTIONS ROUTEUR #####
 	
-} elseif (isset($_GET['action']) && CheckToken()) {
+} elseif (isset($_GET['action'])) {
 	$action = $_GET['action'];
 	
 	//	USER ACTION
 	//	[Connected]
 	if ($action === "confirm") { ConfirmEmail(); }
 	elseif ($action === "resetPasswd") { ResetPasswd(); }
+	elseif ($action === "logOut") 			{ LogOut(); }
 	if (isset($_SESSION['user'])) {
-		if ($action === "logOut") 			{ LogOut(); }
 		if ($action === "updatePic")		{ UpdateProfilPic(); }
 	}
 } else { view_Gallery(); }
