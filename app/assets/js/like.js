@@ -18,6 +18,7 @@ document.addEventListener("dblclick", function(e) {
 })
 
 function AddLike(target) {
+	const token = document.getElementById("token").value;	
 	const card = target.closest(".card");
 	const post_id = card.id;
 	const icon = card.getElementsByClassName("like-btn").item(0);
@@ -40,6 +41,7 @@ function AddLike(target) {
 }
 
 function RemoveLike(target) {
+	const token = document.getElementById("token").value;	
 	const card = target.closest(".card");
 	const post_id = card.id;
 	const icon = card.getElementsByClassName("unlike-btn").item(0);
