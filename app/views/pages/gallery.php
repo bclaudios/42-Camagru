@@ -5,7 +5,7 @@ $comCount = 3;
 ?>
 	<div class="section">
 		<div class="container" id="card-container">
-			<?php foreach ($lastsPosts as $post) {
+			<?php foreach ($lastsPosts as &$post) {
 				require("app/views/layouts/_card.php");
 			} ?>
 			</div>

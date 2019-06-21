@@ -21,7 +21,7 @@ $_SESSION['token'] = $token;
 							<div class="column is-1">
 							<?php if (isset($_SESSION['user']) && $_SESSION['user'] === $user['login']) {?>
 									<span class="icon is-medium">
-										<a href="index.php?page=editProfil"><img src="app/assets/img/icon/settings.png" class="image" alt=""></a>
+										<a href="index.php?page=editProfil"><img src="app/assets/img/icon/settings.svg" class="image" alt="" style="height:32px; width:32px;"></a>
 									</span>
 									<?php } ?>
 							</div>

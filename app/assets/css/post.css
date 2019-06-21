@@ -61,3 +61,7 @@
     transform: scale(1.25);
     z-index: 289;
 }
+
+.post-user-infos {
+	overflow: hidden;
+}

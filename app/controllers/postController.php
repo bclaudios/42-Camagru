@@ -26,11 +26,11 @@ function view_Gallery()	{
 	$user = GetCurrentUser();
 	$lastsPosts = PostModel::db_GetNLastPosts(5);
 	foreach ($lastsPosts as &$post) {
-		$post['comments'] = PostModel::db_GetAllCommentsFromPost($post['post_id']);
-		$post['user'] = UserModel::db_GetUser($post['login']);
-		if ($user)
-			$post['liked'] = PostModel::db_UserLiked($user['user_id'], $post['post_id']);
-	}
+			$post['comments'] = PostModel::db_GetAllCommentsFromPost($post['post_id']);
+			$post['user'] = UserModel::db_GetUser($post['login']);
+			if ($user)
+				$post['liked'] = PostModel::db_UserLiked($user['user_id'], $post['post_id']);
+		}
 	require_once(__DIR__."/../views/pages/gallery.php");
 }
 
@@ -68,6 +68,11 @@ function view_FilePost()	{
 	if (isset($_FILES['uploaded_img']))	{
 		if ($_FILES['uploaded_img']['size'] > 1048576 || $_FILES['uploaded_img']['size'] <= 0)	{
 			$sizeError = true;
+			$user = GetCurrentUser();
+			$lastPosts = PostModel::db_GetNLastPostsFromUser($user['user_id'], 4);
+			require_once("app/views/pages/postWebcam.php");
+		} elseif (mime_content_type($_FILES['uploaded_img']['tmp_name']) !== "image/png") {
+			$fileError = true;
 			$user = GetCurrentUser();
 			$lastPosts = PostModel::db_GetNLastPostsFromUser($user['user_id'], 4);
 			require_once("app/views/pages/postWebcam.php");

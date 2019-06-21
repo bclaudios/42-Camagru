@@ -1,3 +1,6 @@
+<?php
+$comLimit = !isset($title) || $title == "Gallery" ? 3 : 999;
+?>
 <!-- CARD -->
 <div class="card post-card" id="<?= $post['post_id']?>">
 
@@ -32,9 +35,9 @@
 	    		<a class=" level-item">
 	      			<span class="icon is-small">
 					<?php if (isset($_SESSION['user']) && $post['liked']) {?>
-						<img class="unlike-btn" src="app/assets/img/icon/heart-filled.png"></span>
+						<img class="unlike-btn" src="app/assets/img/icon/heart-filled.svg"></span>
 					<?php } elseif (isset($_SESSION['user']) && !$post['liked']) { ?>
-						<img class="like-btn" src="app/assets/img/icon/heart-empty.png"></span>
+						<img class="like-btn" src="app/assets/img/icon/heart-empty.svg"></span>
 					<?php } else { ?>
 						<img src="app/assets/img/icon/heart-empty.png"></span>
 					<?php } ?>
@@ -47,7 +50,7 @@
 			<div class="level-right">
 				<div class="level-item">
 					<span class="icon is-small">
-						<img src="app/assets/img/icon/waste-bin.png" class="delete-btn">						
+						<img src="app/assets/img/icon/garbage.svg" class="delete-btn">						
 					</span>
 				</div>
 			</div>
@@ -58,7 +61,7 @@
 		<article class="media">
 			<div class="comment_list media-content">
 				<?php 
-				for ($i = 0; $i < 3; $i++) {
+				for ($i = 0; $i < $comLimit; $i++) {
 					if ($i >= sizeof($post['comments']))
 						break;
 					$comment = $post['comments'][$i]; 
@@ -68,9 +71,11 @@
 			</div>
 		</article>
 		<!-- SHOW ALL COMMENTS BUTTON -->
-		<?php if (isset($post['comments'][3])) { ?>
+		<div>
+		<?php if ($comLimit == 3 && isset($post['comments'][3])) { ?>
 			<button class="button show_comments"><a href="index.php?page=post&post_id=<?=$post['post_id']?>">Show all comments</a></button>
 		<?php } ?>
+		</div>
 
 		<!-- CARD ADD COMMENT -->
 		<?php if (isset($_SESSION['user'])) { ?>

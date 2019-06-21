@@ -22,7 +22,7 @@
 			<nav class="navbar">
 				<div class="navbar-brand">
 					<a class="navbar-item" href="index.php">
-						<img src="app/assets/img/icon/logo-camagru.png" id="main_logo">
+						<img style="height: 64px;" src="app/assets/img/icon/instagram.svg" id="main_logo">
 						<h1 class="title">Camagru</h1>
 					</a>
 					<a class="navbar-burger burger" id="burger">
@@ -38,19 +38,19 @@
 							<!-- NEW POST BUTTON -->
 							<a href="/index.php?page=webcamPost" class="navbar-item">
 								<span class="icon is-large">
-									<img class="like-btn" src="app/assets/img/icon/add.png">
+									<img class="like-btn" src="app/assets/img/icon/camera.svg">
 								</span>
 							</a>
 							<!-- PROFIL BUTTON -->
 							<a href="/index.php?page=profil&login=<?=$_SESSION['user']?>" class="navbar-item">
 								<span class="icon is-large">
-									<img class="like-btn" src="app/assets/img/icon/profil.png">
+									<img class="like-btn" src="app/assets/img/icon/profil.svg">
 								</span>
 							</a>
 							<!-- LOGOUT BUTTON -->
 							<a href="/index.php?action=logOut" class="navbar-item">
 								<span class="icon is-large">
-									<img class="like-btn" src="app/assets/img/icon/logout.png">
+									<img class="like-btn" src="app/assets/img/icon/logout.svg">
 								</span>
 							</a>
 					<!-- IF USER IS NOT LOG -->

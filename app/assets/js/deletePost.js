@@ -27,7 +27,7 @@ document.addEventListener("click", function(e) {
                     }
                 }
             }
-            xhr.open("POST", "app/controllers/PostController.php");
+            xhr.open("POST", "app/controllers/postController.php");
             xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             xhr.send(post);
         }
@@ -49,7 +49,7 @@ document.addEventListener("click", function(e) {
                     }
                 }
             }
-            xhr.open("POST", "app/controllers/PostController.php");
+            xhr.open("POST", "app/controllers/postController.php");
             xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             xhr.send(post);
         }

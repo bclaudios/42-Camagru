@@ -38,7 +38,11 @@ $_SESSION['token'] = $token;
 							<div class="notification is-warning">
 								<p>Selected file is too big. Maximum size : 1Mo</p>
 							</div>
-						<?php } ?>
+						<?php } if (isset($fileError) && $fileError == true) { ?>
+							<div class="notification is-warning">
+								<p>Selected file is not a .png. Please, select another file to upload.</p>
+							</div>
+							<?php } ?>
 							<p>No webcam ? Upload a picture here ( .png | Max size: 1 Mo) :</p>
 							<form action="index.php?page=filePost" method="post" enctype="multipart/form-data">
 							<div class="level">
@@ -48,7 +52,7 @@ $_SESSION['token'] = $token;
     										<input class="file-input is-primary" id="file-input" type="file" name="uploaded_img" accept="<?=$ext?>" required>
     										<span class="file-cta">
     											<span class="file-icon">
-        											<img class="fas fa-upload" src="app/assets/img/	icon/	picture.png"></i>
+        											<img class="fas fa-upload" src="app/assets/img/	icon/download.svg"></i>
       											</span>
     											<span class="file-label">
 													Choose a picture
@@ -63,8 +67,9 @@ $_SESSION['token'] = $token;
 								<div class="level-right">
 									<button class="button is-primary">
     											<span class="file-icon">
-        											<img class="fas fa-upload" src="app/assets/img/	icon/	upload.png"></i>
-      											</span>Upload Picture</button>
+        											<img class="fas fa-upload" src="app/assets/img/	icon/upload.svg"></i>
+      											</span>
+												Upload Picture</button>
 								</div>
 							</form>
 							</div>

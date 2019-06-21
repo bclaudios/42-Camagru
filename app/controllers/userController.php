@@ -97,7 +97,7 @@ function SignUp()	{
 			"passwd" => hash('sha256', $_POST['passwd']),
 			"hash" => hash("sha256", $_POST['email'])
 		);
-		$mailLink = "http://localhost/index.php?action=confirm&h=".hash("sha256", $user['email']);
+		$mailLink = "http://localhost:8080/index.php?action=confirm&h=".hash("sha256", $user['email']);
 		mail($_POST['email'], "Please, activate your account.", "Welcome to Camagru ! Please clic on the link bellow to confirm your e-mail address. ".$mailLink);
 		UserModel::db_CreateUser($user);
 	}
@@ -216,7 +216,7 @@ function SendResetMail() {
 		echo $errorLogs;
 	} else {
 		$hash = hash("sha256", RandomString());
-		$link = "http://localhost/index.php?action=resetPasswd&h=".$hash;
+		$link = "http://localhost:8080/index.php?action=resetPasswd&h=".$hash;
 		$subject = "Reset your password.";
 		$mail = "Click on the link to reset your password. ".$link;
 		mail($user['email'], $subject, $mail);
