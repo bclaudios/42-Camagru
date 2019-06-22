@@ -36,6 +36,12 @@ function view_Profil()	{
 	$user = UserModel::db_GetUser($login);
 	if ($user) {
 		$posts = PostModel::db_GetPostsFromUser($user['user_id']);
+		$likeCount = 0;
+		$commentCount = 0;
+		foreach ($posts as &$post) {
+			$likeCount += $post["likesCount"];
+			$commentCount += sizeof(PostModel::db_GetAllCommentsFromPost($post['post_id']));
+		}
 		require_once(__DIR__."/../views/pages/profil.php");
 	} else {
 		view_Gallery();

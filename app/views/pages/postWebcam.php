@@ -21,7 +21,7 @@ $_SESSION['token'] = $token;
 						</div>
 						<div class="card-content" id="montage-ui">
 								<button class="button is-primary" id="post-btn">Create your post !<span class="file-icon" id="post-icon">
-        											<img class="fas fa-upload" src="app/assets/img/	icon/	post.png" ></i>
+        											<img class="fas fa-upload" src="app/assets/img/	icon/	instagram-white.svg" ></i>
       											</span></button>
 								<!-- STICKER SELECTION -->
 								<?php

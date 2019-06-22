@@ -9,16 +9,16 @@ require_once(__DIR__."/../layouts/header.php");
     <main class="section">
         <div class="container edit-container">
             <!-- PROFIL PIC EDIT -->
-            <div class="pic-edit">
+            <div class="pic-edit" style="margin: 1.25rem 0;">
                 <div class="media">
                     <figure class="media-left">
                         <p class="image is-64x64">
                             <img class="is-rounded" src="app/assets/img/profil/<?=$user ['profilPic']?>" alt="">
                         </p>
                     </figure>
-                    <div class="media-content">
+                    <div class="media-content has-text-centered" style="margin-top:1.25rem;">
                         <div class="content">
-                            <h2 class="title" id="title-login"><?=$user['login']?></h2>
+                            <h2 class="subtitle" id="title-login"><?=$user['login']?></h2>
                         </div>
                     </div>
                 </div>
@@ -35,7 +35,7 @@ require_once(__DIR__."/../layouts/header.php");
     		    					    <input class="file-input is-primary" type="file" name="uploaded_img" accept=".jpg">
     		    					    <span class="file-cta">
     		    					    	<span class="file-icon">
-        	    					    	    <img class="fas fa-upload" src="app/assets/img/icon/upload.png"></i>
+        	    					    	    <img class="fas fa-upload" src="app/assets/img/icon/upload.svg"></i>
       		    					    	</span>
     		    					    	<span class="file-label">
                                                 Select Profil Photo
@@ -45,7 +45,7 @@ require_once(__DIR__."/../layouts/header.php");
                                 </div>
 			    			</div>
 			    		    <div class="level-right">
-			            	    <button class="button is-primary" type="submit">Apply</button>
+			            	    <button class="button is-primary" type="submit">Update Photo</button>
 			    	        </div>
 			            </div>
 			    	</form>
@@ -78,7 +78,7 @@ require_once(__DIR__."/../layouts/header.php");
                 <div class="field">
                 <label for="" class="label blank"></label>
                     <div class="control">
-                        <button class="button is-primary" id="update-infos">Submit</button>
+                        <button class="button is-primary" id="update-infos">Update infos</button>
                     </div>
                 </div>
             </div>
@@ -97,7 +97,7 @@ require_once(__DIR__."/../layouts/header.php");
                     </div>
                 </div>
                 <div class="field">
-                    <label for="" class="label">New password confirmation</label>
+                    <label for="" class="label">Confirm password</label>
                     <div class="control">
                         <input type="password" class="input" id="input-newPasswdConf">
                     </div>
@@ -114,7 +114,7 @@ require_once(__DIR__."/../layouts/header.php");
                 <div class="field">
                 <label for="" class="label blank"></label>
                     <div class="control">
-                        <button class="button is-primary" id="update-passwd">Change password</button>
+                        <button class="button is-primary" id="update-passwd">Update password</button>
                     </div>
                 </div>
             </div>
