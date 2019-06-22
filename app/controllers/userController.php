@@ -51,7 +51,7 @@ function view_Profil()	{
 function view_EditProfil()	{
 	$title = "Edit Infos";
 	$user = GetCurrentUser();
-	require_once(__DIR__."/../views/pages/profilEdit.php");
+	require_once(__DIR__."/../views/pages/profil-edit.php");
 }
 
 function view_Message($messageTitle, $message) {

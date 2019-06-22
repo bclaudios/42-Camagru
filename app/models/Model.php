@@ -4,7 +4,7 @@ class Model	{
 
 	public static function db_Connect()	{
 		try {
-			$db = new PDO("mysql:host=localhost;dbname=camagru", "root", "", [
+			$db = new PDO("mysql:host=localhost;dbname=camagru", "root", "rqiden", [
 				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 				PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 			]);

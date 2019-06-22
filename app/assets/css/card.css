@@ -83,30 +83,6 @@
 	background-color:grey;
 }
 
-/* PROFIL CARD */
-
-.profil-card {
-	background:none;
-	border: none;
-	box-shadow: none;
-}
-
-.post-display	{
-	border-top:1px solid #e6e6e6;
-	padding: 2.5em 0;
-}
-.post-thumbnail {
-	min-width:200px;
-}
-
-.post-thumbnail:hover {
-	-webkit-filter: grayscale(70%);
-}
-
-.profil-container {
-	max-width: 975px;
-}
-
 /* COMMENT DISPLAY */
 
 .comment .level {

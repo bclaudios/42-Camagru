@@ -4,12 +4,13 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<!-- FONTS -->
-	<link href="https://fonts.googleapis.com/css?family=Kaushan+Script&display=swap" rel="stylesheet"> 
-	<link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet"> 
+	<!-- FONTS --> 
+	<link href="https://fonts.googleapis.com/css?family=Lobster&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css?family=Ubuntu&display=swap" rel="stylesheet"> 
 	<!-- CSS -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.css">
 	<link rel="stylesheet" href="app/assets/css/main.css">
+	<link rel="stylesheet" href="app/assets/css/header.css">
 	<link rel="stylesheet" href="app/assets/css/card.css">
 	<link rel="stylesheet" href="app/assets/css/profil.css">
 	<link rel="stylesheet" href="app/assets/css/post.css">
@@ -23,7 +24,7 @@
 				<div class="navbar-brand">
 					<a class="navbar-item" href="index.php">
 						<img style="height: 64px;" src="app/assets/img/icon/instagram.svg" id="main_logo">
-						<h1 class="title">Camagru</h1>
+						<h1 id="brand-name">Camagru</h1>
 					</a>
 					<a class="navbar-burger burger" id="burger">
 						<span aria-hidden="true"></span>

@@ -1,5 +1,6 @@
 html, body	{
 	background-color:#fafafa;
+	font-family: 'Ubuntu', sans-serif;
 }
 
 header {
@@ -31,7 +32,6 @@ header + * + * {
 }
 
 .title {
-	font-family: 'Kaushan Script', cursive;
 	font-size:1.75rem;
 }
 

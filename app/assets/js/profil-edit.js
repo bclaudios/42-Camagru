@@ -17,8 +17,7 @@ document.addEventListener("click", function(e)	{
 		const login = document.getElementById("input-login");
 		const email = document.getElementById("input-email");
 		const notif = document.getElementById("input-notif");
-		const loginTitle = document.getElementById("title-login");
-		alert(notif.checked);
+		const loginTitle = document.getElementById("header-login");
 		const post = "action=updateInfos"
 					+"&login="+login.value
 					+"&email="+email.value
@@ -28,10 +27,10 @@ document.addEventListener("click", function(e)	{
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState === 4) {
 				if (xhr.status === 200) {
-					DisplaySuccessNotif("general-edit", "Informations successfully changed.");
+					DisplaySuccessNotif("profil-edit-infos", "Informations successfully changed.");
 					loginTitle.innerHTML = login.value;
 				} else {
-					DisplayErrorNotif("general-edit", xhr.responseText);
+					DisplayErrorNotif("profil-edit-infos", xhr.responseText);
 				}
 			}
 		}
@@ -46,17 +45,17 @@ document.addEventListener("click", function(e)	{
 		const newPasswd = document.getElementById("input-newPasswd").value;
 		const newPasswdConf = document.getElementById("input-newPasswdConf").value;
 		const post = "action=updatePasswd"
-					+"&passwd="+passwd
-					+"&newPasswd="+newPasswd
-					+"&newPasswdConf="+newPasswdConf
-					+"&token="+token;
+		+"&passwd="+passwd
+		+"&newPasswd="+newPasswd
+		+"&newPasswdConf="+newPasswdConf
+		+"&token="+token;
 		const xhr = new XMLHttpRequest();
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState === 4) {
 				if (xhr.status === 200)
-					DisplaySuccessNotif("passwd-edit", "Password successfully updated.");
+					DisplaySuccessNotif("profil-edit-passwd", "Password successfully updated.");
 				else
-					DisplayErrorNotif("passwd-edit", xhr.responseText);
+					DisplayErrorNotif("profil-edit-passwd", xhr.responseText);
 			}
 		}
 		xhr.open("POST", "app/controllers/userController.php");
