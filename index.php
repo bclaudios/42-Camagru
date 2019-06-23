@@ -14,9 +14,10 @@ if (isset($_GET['page']))	{
 		view_Message($msgTitle, $msg);
 	}
 	elseif ($page === "signIn") { view_SignIn(); }
-	elseif ($page === "resetPasswd") { view_ResetPasswd(); }
+	elseif ($page === "forgotPasswd") { view_forgotPasswd(); }
 	elseif ($page === "profil") { view_Profil(); }
 	elseif ($page === "post") { view_Post(); }
+	elseif ($page === "resetPasswd") { view_ResetPasswd(); }
 	elseif (isset($_SESSION['user'])) {
 		if ($page === "editProfil") { view_EditProfil(); }
 		if ($page === "webcamPost") { view_WebcamPost(); }
@@ -31,7 +32,6 @@ if (isset($_GET['page']))	{
 	//	USER ACTION
 	//	[Connected]
 	if ($action === "confirm") { ConfirmEmail(); }
-	elseif ($action === "resetPasswd") { ResetPasswd(); }
 	elseif ($action === "logOut") 			{ LogOut(); }
 	if (isset($_SESSION['user'])) {
 		if ($action === "updatePic")		{ UpdateProfilPic(); }

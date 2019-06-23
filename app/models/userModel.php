@@ -130,7 +130,7 @@ class UserModel {
 		}
 	}
 	
-	public static function db_UpdatePasswd($newPasswd)	{
+	public static function db_UpdatePasswd($user, $newPasswd)	{
 		$db = Model::db_Connect();
 		try	{
 			$req = $db->prepare("UPDATE users SET 
@@ -138,7 +138,7 @@ class UserModel {
 							WHERE `login` = :login");
 		$req->execute([
 			"newPasswd" => $newPasswd,
-			"login" => $_SESSION['user']
+			"login" => $user
 			]);
 		} catch (PDOExcpetion $e)	{
 			die ("Error in db_UpdatePasswd(): " . $e->getMessage());

@@ -78,7 +78,8 @@
 		const newViewImg = document.createElement("img");
 		newViewImg.setAttribute("src", "app/assets/img/posts/" + post.path);
 		newView.appendChild(newViewImg);
-		postView.removeChild(postView.lastElementChild);
+		if (postView.childElementCount === 4)
+			postView.removeChild(postView.lastElementChild);
 		postView.prepend(newView);
 	}
 

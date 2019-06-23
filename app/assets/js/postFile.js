@@ -1,7 +1,10 @@
 document.addEventListener("click", function(e)	{
 	if (event.target.matches("#post-btn"))	{
-		e.preventDefault();
-		CreatePost();
+		stickerSelected = document.getElementById("sticker");
+		if (stickerSelected.firstChild !== null)
+			CreatePost();
+		else
+			DisplayNotif("montage-ui", "Please, select a sticker before taking a picture.");
 	}
 })
 
@@ -37,8 +40,27 @@ function DisplayPost(JSONpost)	{
 	const newViewImg = document.createElement("img");
 	newViewImg.setAttribute("src", "app/assets/img/posts/" + post.path);
 	newView.appendChild(newViewImg);
-	postView.removeChild(postView.lastElementChild);
+	if (postView.childElementCount === 4)
+		postView.removeChild(postView.lastElementChild);
 	postView.prepend(newView);
+}
+
+function ClearNotif() {
+	const sections = document.getElementsByClassName("card-content");
+	for (let section of sections) {
+		let notif = section.getElementsByClassName("notification").item(0);
+		if (notif !== null)
+			section.removeChild(notif);
+	}
+}
+
+function DisplayNotif(targetID, message) {
+	ClearNotif();
+	const target = document.getElementById(targetID);
+	const box = document.createElement("div");
+	box.setAttribute("class", "notification is-warning");
+	box.innerHTML = "- "+message+"<br>";
+	target.prepend(box);
 }
 
 const input = document.getElementById( 'file-input' );

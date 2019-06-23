@@ -32,16 +32,25 @@ $_SESSION['token'] = $token;
 					<!-- FILE UPLOAD PART -->
 					<div class="card" id="nocam-card">
         				<div class="card-content">
-							<p>Upload another picture here ( .png | Max size: 1 Mo) :</p>
+						<?php if (isset($sizeError) && $sizeError == true) { ?>
+							<div class="notification is-warning">
+								<p>Selected file is too big. Maximum size : 1Mo</p>
+							</div>
+						<?php } if (isset($fileError) && $fileError == true) { ?>
+							<div class="notification is-warning">
+								<p>Selected file is not a .png. Please, select another file to upload.</p>
+							</div>
+							<?php } ?>
+							<p>No webcam ? Upload a picture here ( .png | Max size: 1 Mo) :</p>
 							<form action="index.php?page=filePost" method="post" enctype="multipart/form-data">
 							<div class="level">
 								<div class="level-left">
 									<div class="file has-name is-primary">
 										<label class="file-label">
-    										<input class="file-input is-primary" id="file-input" type="file" name="uploaded_img" accept="<?=$ext?>">
+    										<input class="file-input is-primary" id="file-input" type="file" name="uploaded_img" accept="image/png" required>
     										<span class="file-cta">
     											<span class="file-icon">
-        											<img class="fas fa-upload" src="app/assets/img/	icon/	upload.png"></i>
+        											<img class="fas fa-upload" src="app/assets/img/	icon/download.svg"></i>
       											</span>
     											<span class="file-label">
 													Choose a picture
@@ -49,12 +58,16 @@ $_SESSION['token'] = $token;
 											</span>
 											<span class="file-name" id="file-name">
 												...
-    </span>
+   											</span>
 										</label>
 									</div>
 								</div>
 								<div class="level-right">
-									<button class="button is-primary">Upload Picture</button>
+									<button class="button is-primary">
+    											<span class="file-icon">
+        											<img class="fas fa-upload" src="app/assets/img/	icon/upload.svg"></i>
+      											</span>
+												Upload Picture</button>
 								</div>
 							</form>
 							</div>

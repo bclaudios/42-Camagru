@@ -60,7 +60,7 @@ $_SESSION['token'] = $token;
 											</span>
 											<span class="file-name" id="file-name">
 												...
-    </span>
+   											</span>
 										</label>
 									</div>
 								</div>

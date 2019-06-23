@@ -22,7 +22,7 @@ $_SESSION['token'] = $token;
                         <div class="control">
                             <input type="password" class="input" placeholder="Password" id="input-passwd" required>
                         </div>
-                        <a href="index.php?page=resetPasswd"><p>Forgot your password ?</p></a>
+                        <a href="index.php?page=forgotPasswd"><p>Forgot your password ?</p></a>
                     </div>
 			    	<div class="field">
                         <label for="" class="label blank"></label>

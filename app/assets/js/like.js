@@ -31,7 +31,7 @@ function AddLike(target) {
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4) {
 			likesDisplay.innerHTML = parseInt(likesCount) + 1;
-			icon.setAttribute("src", "app/assets/img/icon/heart-filled.png");
+			icon.setAttribute("src", "app/assets/img/icon/heart-filled.svg");
 			icon.setAttribute("class", "unlike-btn");
 		}
 	}
@@ -54,7 +54,7 @@ function RemoveLike(target) {
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4) {
 			likesDisplay.innerHTML = parseInt(likesCount) - 1;
-			icon.setAttribute("src", "app/assets/img/icon/heart-empty.png");
+			icon.setAttribute("src", "app/assets/img/icon/heart-empty.svg");
 			icon.setAttribute("class", "like-btn");
 		}
 	}

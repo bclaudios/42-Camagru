@@ -5,12 +5,12 @@ require_once __DIR__.'/postController.php';
 
 ########## CONTROLLER ##########
 
-if (isset($_POST['action']) && CheckToken())	{
+if (isset($_POST['action']))	{
 	$action = $_POST['action'];
 	if ($action === "signIn") 				{ SignIn(); }
 	elseif ($action === "signUp")			{ SignUp(); }
 	elseif ($action === "sendResetPasswd") 	{ SendResetMail(); }
-	elseif ($action === "resetPasswd")		{ ResetPassword(); }
+	elseif ($action === "resetPasswd")		{ ResetPasswd(); }
 	elseif (isset($_SESSION['user'])) {
 		if ($action === "updateInfos")		{ UpdateInfos(); }
 		if ($action === "updatePasswd")		{ UpdatePasswd(); }
@@ -59,9 +59,21 @@ function view_Message($messageTitle, $message) {
 	require_once(__DIR__."/../views/pages/message.php");
 }
 
+function view_ForgotPasswd()	{
+	$title = "Reset Password";
+	require_once(__DIR__."/../views/pages/passwd-forgot.php");
+}
+
 function view_ResetPasswd()	{
 	$title = "Reset Password";
-	require_once(__DIR__."/../views/pages/resetPassword.php");
+	$hash = $_GET['h'];
+	$user = UserModel::db_GetUserByResetHash($hash);
+	if (empty($user))
+		view_Gallery();
+	else {
+		$_SESSION['resetUser'] = $user;
+		require_once(__DIR__."/../views/pages/passwd-reset.php");
+	}
 }
 
 function view_ChangePasswd() {
@@ -205,7 +217,7 @@ function UpdatePasswd()	{
 	elseif (!CheckPasswdSecurity($_POST['newPasswd']))
 		$errorLogs[] = "New password security too low.";
 	if (!isset($errorLogs[0]))
-		UserModel::db_UpdatePasswd($newPasswd);
+		UserModel::db_UpdatePasswd($user['login'], $newPasswd);
 	else {
 		http_response_code(403);
 		$errorLogs = json_encode($errorLogs);
@@ -222,7 +234,7 @@ function SendResetMail() {
 		echo $errorLogs;
 	} else {
 		$hash = hash("sha256", RandomString());
-		$link = "http://localhost:8080/index.php?action=resetPasswd&h=".$hash;
+		$link = "http://localhost/index.php?page=resetPasswd&h=".$hash;
 		$subject = "Reset your password.";
 		$mail = "Click on the link to reset your password. ".$link;
 		mail($user['email'], $subject, $mail);
@@ -232,13 +244,21 @@ function SendResetMail() {
 }
 
 function ResetPasswd() {
-	$hash = $_GET['h'];
-	$user = UserModel::db_GetUserByResetHash($hash);
-	if (empty($user))
-		view_Gallery();
+	$newPasswd = hash("sha256", $_POST['passwd']);
+	$newPasswdConf = hash("sha256", $_POST['passwdConf']);
+	$user = $_SESSION['resetUser'];
+	if ($newPasswd !== $newPasswdConf)
+		$errorLogs[] = "Passwords not matching.";
+	elseif (!CheckPasswdSecurity($_POST['passwd']))
+		$errorLogs[] = "New password security too low.";
+	if (!isset($errorLogs[0])) {
+		UserModel::db_UpdatePasswd($user['login'], $newPasswd);
+		echo "Your password has been successfuly changed. You can now login.";
+	}
 	else {
-		$_SESSION['resetUser'] = $user;
-		view_ChangePasswd();
+		http_response_code(403);
+		$errorLogs = json_encode($errorLogs);
+		echo $errorLogs;
 	}
 }
 

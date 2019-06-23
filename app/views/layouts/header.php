@@ -22,9 +22,9 @@
 		<div class="container">
 			<nav class="navbar">
 				<div class="navbar-brand">
-					<a class="navbar-item" href="index.php">
+					<a class="navbar-item" href="index.php" id="brand-name">
 						<img style="height: 64px;" src="app/assets/img/icon/instagram.svg" id="main_logo">
-						<h1 id="brand-name">Camagru</h1>
+						<h1>Camagru</h1>
 					</a>
 					<a class="navbar-burger burger" id="burger">
 						<span aria-hidden="true"></span>
