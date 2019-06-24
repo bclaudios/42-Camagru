@@ -69,6 +69,7 @@ document.addEventListener("click", function(e) {
 		const commentList = document.getElementById(comment.post_id).getElementsByClassName("comment_list").item(0);
 		const newComment = document.createElement("div");
 		newComment.setAttribute("class", "comment content");
+		newComment.setAttribute("id", comment.comment_id);
 		newComment.innerHTML = '<div class="level"><div class="level-left"><a href="index.php?page=profil&login='+comment.login+'" class="comment-login"><strong>'+comment.login+'</strong></a><small><i class="comment-time">'+comment.date+' '+comment.time+'</i></small><br></div><div class="level-right"><a class="comment-delete">X</a></div></div>'+comment.comment;
 		commentList.appendChild(newComment);
 	}

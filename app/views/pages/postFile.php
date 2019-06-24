@@ -40,6 +40,10 @@ $_SESSION['token'] = $token;
 							<div class="notification is-warning">
 								<p>Selected file is not a .png. Please, select another file to upload.</p>
 							</div>
+							<?php } if (isset($_SESSION['error']) && !empty($_SESSION['error'])) { ?>
+							<div class="notification is-warning">
+								<?=$_SESSION['error']?>
+							</div>
 							<?php } ?>
 							<p>No webcam ? Upload a picture here ( .png | Max size: 1 Mo) :</p>
 							<form action="index.php?page=filePost" method="post" enctype="multipart/form-data">

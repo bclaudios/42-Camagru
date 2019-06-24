@@ -16,7 +16,7 @@ class UserModel {
 				"login" => $user["login"],
 				"email" => $user["email"],
 				"passwd" => $user["passwd"],
-				"profilPic" => "placeholderPic.jpg",
+				"profilPic" => "placeholderPic.png",
 				"hash" => $user['hash']
 			]);
 		} catch (PDOException $ex)	{

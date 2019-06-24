@@ -40,11 +40,23 @@ function view_WebcamPost()	{
 				"cat.png",
 				"chestb.png",
 				"dirty.png",
+				"guirlande.png",
 				"guirlande2.png",
 				"nemo.png",
 				"party.png",
 				"spongebob.png",
-				"ufo.png"];
+				"ufo.png",
+				"frame1.png",
+				"frame2.png",
+				"frame3.png",
+				"frame4.png",
+				"frame5.png",
+				"frame6.png",
+				"frame7.png",
+				"frame8.png",
+				"frame9.png",
+				"frame10.png",
+	];
 	$user = GetCurrentUser();
 	$ext = "image/png";
 	$lastPosts = PostModel::db_GetNLastPostsFromUser($user['user_id'], 4);
@@ -58,11 +70,23 @@ function view_FilePost()	{
 				"cat.png",
 				"chestb.png",
 				"dirty.png",
+				"guirlande.png",
 				"guirlande2.png",
 				"nemo.png",
 				"party.png",
 				"spongebob.png",
-				"ufo.png"];
+				"ufo.png",
+				"frame1.png",
+				"frame2.png",
+				"frame3.png",
+				"frame4.png",
+				"frame5.png",
+				"frame6.png",
+				"frame7.png",
+				"frame8.png",
+				"frame9.png",
+				"frame10.png",
+	];
 	$tmpPath = "";
 	$ext = "image/.png";
 	if (isset($_FILES['uploaded_img']))	{
@@ -82,44 +106,56 @@ function view_FilePost()	{
 			$lastPosts = PostModel::db_GetNLastPostsFromUser($user['user_id'], 4);
 			require_once("app/views/pages/postFile.php");
 		}
+	} else {
+		view_WebcamPost();
 	}
 }
 
 function view_Post() {
-	$title = "Post";
-	$user = GetCurrentUser();
-	$post_id = $_GET['post_id'];
-	$post = PostModel::db_GetPost($post_id);
-	if ($post)	{
-		$post['comments'] = PostModel::db_GetAllCommentsFromPost($post['post_id']);
-		$post['liked'] = PostModel::db_UserLiked($user['user_id'], $post['post_id']);
-		$post['user'] = UserModel::db_GetUser($post['login']);
-		require_once("app/views/pages/post.php");
-	} else {
-		view_Gallery();
+	if (isset($_GET['post_id'])) {
+		$title = "Post";
+		$user = GetCurrentUser();
+		$post_id = $_GET['post_id'];
+		$post = PostModel::db_GetPost($post_id);
+		if ($post)	{
+			$post['comments'] = PostModel::db_GetAllCommentsFromPost($post['post_id']);
+			$post['liked'] = PostModel::db_UserLiked($user['user_id'], $post['post_id']);
+			$post['user'] = UserModel::db_GetUser($post['login']);
+			require_once("app/views/pages/post.php");
+		} else {
+			view_Gallery();
+		}
 	}
 }
 
 ###### POST CREATION ######
 
 function CreatePost()	{
-	$user = GetCurrentUser();
-	if ($_POST['source'] === "webcam")
+	if (isset($_POST['img']) && isset($_POST['sticker']) && isset($_POST['source'])) {
+		$user = GetCurrentUser();
+		if ($_POST['source'] === "webcam")
 		$img = DecodeMIME($_POST['img']);
-	else
+		else
 		$img = imagecreatefrompng($_POST['img']);
-	$sticker = imagecreatefrompng($_POST['sticker']);
-	imagecopy($img, $sticker, 0, 0, 0, 0, 800, 600);
-	CreateMontageFile($img);
-	$post = PostModel::db_GetNLastPostsFromUser($user['user_id'], 1);
-	$post = json_encode($post);
-	echo $post;
+		$sticker = imagecreatefrompng($_POST['sticker']);
+		imagecopy($img, $sticker, 0, 0, 0, 0, 800, 600);
+		CreateMontageFile($img);
+		$post = PostModel::db_GetNLastPostsFromUser($user['user_id'], 1);
+		$post = json_encode($post);
+		echo $post;
+	}
 }
 
 function DeletePost() {
-	$post = PostModel::db_GetPost($_POST['postID']);
-	if ($_SESSION['user'] === $post['login']) {
-		PostModel::db_DeletePost($post['post_id']); 
+	if (isset($_POST['postID'])) {
+		$post = PostModel::db_GetPost($_POST['postID']);
+		if ($_SESSION['user'] === $post['login']) {
+			PostModel::db_DeletePost($post['post_id']);
+			unlink("../assets/img/posts/".$post['path']);
+		} else {
+			http_response_code(400);
+			echo "You're not the author of this post.";
+		}
 	}
 }
 
@@ -172,70 +208,86 @@ function DownloadUserImage($img)	{
 	$tmpPath = "/app/assets/img/posts/".$user."/tmp.png";	// Path for js script
 	$relPath = __DIR__."/../assets/img/posts/".$user."/tmp.png"; // Path for php script
 	move_uploaded_file($img, $relPath); // Create png file of the uploaded image
-	$imgSrc = imagecreatefrompng($relPath); // Create php image (?) from png file
-	$srcSize = getimagesize($relPath); // Get the size of the png file for resizing
-	$imgDst = imagecreatetruecolor(800, 600); // Generate resize destination image
-	imagesavealpha($imgDst, true); // Enable transparency on destination image
-	$color = imagecolorallocatealpha($imgDst, 0, 0, 0, 127); // Create alpha color id
-	imagefill($imgDst, 0, 0, $color); // Fill destination image with transparency 
-	imagecopyresampled($imgDst, $imgSrc, 0, 0, 0, 0, 800, 600, $srcSize[0], $srcSize[1]); // Resize and paste source image on destination image
-	imagepng($imgDst, $relPath); // Create png file with the result
-	return $tmpPath;
+	$imgSrc = @imagecreatefrompng($relPath); // Create php image (?) from png file
+	if (!$imgSrc) {
+		$_SESSION['error'] = "Your file seems to be corrupted. Please select another picture.";
+		view_WebcamPost();
+	} else {
+		$srcSize = getimagesize($relPath); // Get the size of the png file for resizing
+		$imgDst = imagecreatetruecolor(800, 600); // Generate resize destination image
+		imagesavealpha($imgDst, true); // Enable transparency on destination image
+		$color = imagecolorallocatealpha($imgDst, 0, 0, 0, 127); // Create alpha color id
+		imagefill($imgDst, 0, 0, $color); // Fill destination image with transparency 
+		imagecopyresampled($imgDst, $imgSrc, 0, 0, 0, 0, 800, 600, $srcSize[0], $srcSize[1]); // Resize and paste source image on destination image
+		imagepng($imgDst, $relPath); // Create png file with the result
+		return $tmpPath;
+	}
 }
 
 ###### COMMENTS ######
 
 function AddComment() {
-	$user = GetCurrentUser();
-	date_default_timezone_set("Europe/Paris");
-	$comment = [
-		"post_id" => $_POST['post_id'],
-		"login" => $user['login'],
-		"comment" => htmlspecialchars($_POST['comment']),
-		"date" => date("Y-m-d"),
-		"time" => date("H:i:s")];
-	$post = PostModel::db_GetPost($comment['post_id']);
-	PostModel::db_AddComment($user['user_id'], $comment['post_id'], $comment['comment']);
-	$postUser = UserModel::db_GetUser($post["login"]);
-	if ($postUser['notif'])
-		mail($user['email'], $comment['login'] . " commented your post !", "Click here to see it.");
-	$comment = json_encode($comment);
-	echo $comment;
+	if (isset($_POST['post_id']) && isset($_POST['comment'])) {
+		$user = GetCurrentUser();
+		date_default_timezone_set("Europe/Paris");
+		$comment = [
+			"post_id" => $_POST['post_id'],
+			"login" => $user['login'],
+			"comment" => htmlspecialchars($_POST['comment']),
+			"date" => date("Y-m-d"),
+			"time" => date("H:i:s")
+		];
+		$post = PostModel::db_GetPost($comment['post_id']);
+		$comment['comment_id'] = PostModel::db_AddComment($user['user_id'], $comment['post_id'],$comment['comment']);
+		$postUser = UserModel::db_GetUser($post["login"]);
+		if ($postUser['notif'])
+			mail($user['email'], $comment['login'] . " commented your post !", "Click here to see it. \nhttp://localhost:8080/index.php?page=post&post_id=".$comment['post_id']);
+		$comment = json_encode($comment);
+		echo $comment;
+	}
 }
 
 function GetAllCommentsFromPost() {
-	$post_id = $_POST['post_id'];
-	$comments = PostModel::db_GetAllCommentsFromPost($post_id);
-	$comments = json_encode($comments);
-	echo $comments;
+	if (isset($_POST['post_id'])) {
+		$post_id = $_POST['post_id'];
+		$comments = PostModel::db_GetAllCommentsFromPost($post_id);
+		$comments = json_encode($comments);
+		echo $comments;
+	}
 }
 
 function DeleteComment() {
-	$commentID = $_POST['commentID'];
-	$user = GetCurrentUser();
-	if (PostModel::db_CheckCommentAuthor($commentID, $user['user_id'])) {
-		PostModel::db_DeleteComment($commentID);
-		echo "Comment deleted.";
-	} else {
-		http_response_code(403);
-		echo "You're not the author of this comment.";
+	if (isset($_POST['commentID'])) {
+		$commentID = $_POST['commentID'];
+		$user = GetCurrentUser();
+		if (PostModel::db_CheckCommentAuthor($commentID, $user['user_id'])) {
+			PostModel::db_DeleteComment($commentID);
+			echo "Comment deleted.";
+		} else {
+			http_response_code(403);
+			echo "You're not the author of this comment.";
+		}
 	}
 }
 
 ###### LIKES #######
 
 function AddLike() {
-	$user = GetCurrentUser();
-	$post_id = $_POST['post_id'];
-	PostModel::db_AddLike($user['user_id'], $post_id);
-	echo "Like ajoute";
+	if (isset($_POST['post_id'])) {
+		$user = GetCurrentUser();
+		$post_id = $_POST['post_id'];
+		PostModel::db_AddLike($user['user_id'], $post_id);
+		echo "Like ajoute";
+	}
 }
 
 function RemoveLike() {
-	$user = GetCurrentUser();
-	$post_id = $_POST['post_id'];
-	PostModel::db_DeleteLike($user['user_id'], $post_id);
-	echo "Like removed";
+	if (isset($_POST['post_id'])) {
+		$user = GetCurrentUser();
+		$post_id = $_POST['post_id'];
+		PostModel::db_DeleteLike($user['user_id'], $post_id);
+		echo "Like removed";
+	}
 }
 
 ###### PAGIONATION ######
@@ -247,15 +299,17 @@ function requireToVar($file, $post){
 }
 
 function UpdateGallery() {
-	$user = GetCurrentUser();
-	$lastsPosts = PostModel::db_GetNLastPostsOff(5, $_POST['offset']);
-	foreach ($lastsPosts as &$post) {
-		$post['comments'] = PostModel::db_GetAllCommentsFromPost($post['post_id']);
-		$post['user'] = UserModel::db_GetUser($post['login']);
-		if ($user)
+	if (isset($_POST['offset'])) {
+		$user = GetCurrentUser();
+		$lastsPosts = PostModel::db_GetNLastPostsOff(5, $_POST['offset']);
+		foreach ($lastsPosts as &$post) {
+			$post['comments'] = PostModel::db_GetAllCommentsFromPost($post['post_id']);
+			$post['user'] = UserModel::db_GetUser($post['login']);
+			if ($user)
 			$post['liked'] = PostModel::db_UserLiked($user['user_id'], $post['post_id']);
-		$post = requireToVar("../views/layouts/_card.php", $post);
+			$post = requireToVar("../views/layouts/_card.php", $post);
+		}
+		$lastsPosts = json_encode($lastsPosts);
 	}
-	$lastsPosts = json_encode($lastsPosts);
-	echo $lastsPosts;
+		echo $lastsPosts;
 }

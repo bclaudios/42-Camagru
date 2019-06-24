@@ -24,7 +24,9 @@ document.addEventListener("click", function(e) {
                     if (xhr.status === 200) {
                         parent.removeChild(postCard);
 						document.location.href="/";
-                    }
+                    } else {
+						alert(xhr.responseText);
+					}
                 }
             }
             xhr.open("POST", "app/controllers/postController.php");
@@ -45,8 +47,10 @@ document.addEventListener("click", function(e) {
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
-                        document.location.href="index.php";
-                    }
+						document.location.href="/";
+                    } else {
+						alert(xhr.responseText);
+					}
                 }
             }
             xhr.open("POST", "app/controllers/postController.php");

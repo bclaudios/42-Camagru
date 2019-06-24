@@ -236,6 +236,7 @@ class PostModel	{
 				"post_id" => $post_id,
 				"comment" => $comment
 			]);
+			return $db->lastInsertId(); 
 		} catch (PDOException $ex) {
 			die("Error in db_AddComment(): " . $ex->getMessage());
 		}

@@ -84,11 +84,12 @@
 	}
 
 	function CreatePost()	{
-		const sticker = document.getElementById("sticker").firstChild.src;
+		const sticker = document.getElementById("sticker");
 		const context = canvas.getContext('2d');
 		context.drawImage(video, 0, 0, width, height);
 		const data = canvas.toDataURL('image/png');
-		SendPicture(data, sticker);
+		SendPicture(data, sticker.firstChild.src);
+		sticker.removeChild(sticker.firstChild);
 	}
 
 	window.addEventListener('load', StartStream, false);

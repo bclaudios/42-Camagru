@@ -1,8 +1,10 @@
 document.addEventListener("click", function(e)	{
 	if (event.target.matches("#post-btn"))	{
 		stickerSelected = document.getElementById("sticker");
-		if (stickerSelected.firstChild !== null)
+		if (stickerSelected.firstChild !== null) {
 			CreatePost();
+			stickerSelected.removeChild(stickerSelected.firstChild);
+		}
 		else
 			DisplayNotif("montage-ui", "Please, select a sticker before taking a picture.");
 	}

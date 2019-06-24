@@ -39,7 +39,7 @@ $comLimit = !isset($title) || $title == "Gallery" ? 3 : 999;
 					<?php } elseif (isset($_SESSION['user']) && !$post['liked']) { ?>
 						<img class="like-btn" src="app/assets/img/icon/heart-empty.svg"></span>
 					<?php } else { ?>
-						<img src="app/assets/img/icon/heart-empty.png"></span>
+						<img src="app/assets/img/icon/heart-empty.svg"></span>
 					<?php } ?>
 				</a>
 				<div class="level-item">

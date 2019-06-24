@@ -31,20 +31,22 @@ function view_SignIn()	{
 }
 
 function view_Profil()	{
-	$title = "Profil";
-	$login = $_GET['login'];
-	$user = UserModel::db_GetUser($login);
-	if ($user) {
-		$posts = PostModel::db_GetPostsFromUser($user['user_id']);
-		$likeCount = 0;
-		$commentCount = 0;
-		foreach ($posts as &$post) {
-			$likeCount += $post["likesCount"];
-			$commentCount += sizeof(PostModel::db_GetAllCommentsFromPost($post['post_id']));
+	if (isset($_GET['login'])) {
+		$title = "Profil";
+		$login = $_GET['login'];
+		$user = UserModel::db_GetUser($login);
+		if ($user) {
+			$posts = PostModel::db_GetPostsFromUser($user['user_id']);
+			$likeCount = 0;
+			$commentCount = 0;
+			foreach ($posts as &$post) {
+				$likeCount += $post["likesCount"];
+				$commentCount += sizeof(PostModel::db_GetAllCommentsFromPost($post['post_id']));
+			}
+			require_once(__DIR__."/../views/pages/profil.php");
+		} else {
+			view_Gallery();
 		}
-		require_once(__DIR__."/../views/pages/profil.php");
-	} else {
-		view_Gallery();
 	}
 }
 
@@ -65,14 +67,16 @@ function view_ForgotPasswd()	{
 }
 
 function view_ResetPasswd()	{
-	$title = "Reset Password";
-	$hash = $_GET['h'];
-	$user = UserModel::db_GetUserByResetHash($hash);
-	if (empty($user))
+	if (isset($_GET['h'])) {
+		$title = "Reset Password";
+		$hash = $_GET['h'];
+		$user = UserModel::db_GetUserByResetHash($hash);
+		if (empty($user))
 		view_Gallery();
-	else {
-		$_SESSION['resetUser'] = $user;
-		require_once(__DIR__."/../views/pages/passwd-reset.php");
+		else {
+			$_SESSION['resetUser'] = $user;
+			require_once(__DIR__."/../views/pages/passwd-reset.php");
+		}
 	}
 }
 
@@ -84,75 +88,84 @@ function view_ChangePasswd() {
 ########## SIGN UP ##########
 
 function CheckSignUpInfos()	{
-	if (empty($_POST['login']) || empty($_POST['email']) || empty($_POST['passwd']) || empty($_POST['passwdConf']))
+	if (isset($_POST['login']) && isset($_POST['email']) && isset($_POST['passwd']) && isset($_POST['passwdConf'])) {
+		if (empty($_POST['login']) || empty($_POST['email']) || empty($_POST['passwd']) || empty($_POST['passwdConf']))
 		$errorLogs[] = "Please, fill all the fields below.";
-	else {
-		if (CheckNewLogin($_POST['login']))
-		$errorLogs[] = CheckNewLogin($_POST['login']);
-		if (CheckNewEmail($_POST['email']))
-		$errorLogs[] = CheckNewEmail($_POST['email']);
-		if (!CheckPasswdSecurity($_POST['passwd']))
-		$errorLogs[] = "Password security is too low.";
-		if ($_POST['passwd'] !== $_POST['passwdConf'])
-		$errorLogs[] = "Passwords not matching.";
-	}
-	if (!isset($errorLogs))
+		else {
+			if (CheckNewLogin($_POST['login']))
+			$errorLogs[] = CheckNewLogin($_POST['login']);
+			if (CheckNewEmail($_POST['email']))
+			$errorLogs[] = CheckNewEmail($_POST['email']);
+			if (!CheckPasswdSecurity($_POST['passwd']))
+			$errorLogs[] = "Password security is too low.";
+			if ($_POST['passwd'] !== $_POST['passwdConf'])
+			$errorLogs[] = "Passwords not matching.";
+		}
+		if (!isset($errorLogs))
 		return NULL;
-	return $errorLogs;
+		return $errorLogs;
+	}
 }
 
 function SignUp()	{
-	$_POST['login'] = htmlspecialchars($_POST['login']);
-	$errorLogs = CheckSignUpInfos();
-	if (!empty($errorLogs))	{
-		http_response_code(403);
-		$errorLogs = json_encode($errorLogs);
-		echo $errorLogs;
-	} else {
-		$user = array(
-			"login" => $_POST['login'],
-			"email" => $_POST['email'],
-			"passwd" => hash('sha256', $_POST['passwd']),
-			"hash" => hash("sha256", $_POST['email'])
-		);
-		$mailLink = "http://localhost:8080/index.php?action=confirm&h=".hash("sha256", $user['email']);
-		mail($_POST['email'], "Please, activate your account.", "Welcome to Camagru ! Please clic on the link bellow to confirm your e-mail address. ".$mailLink);
-		UserModel::db_CreateUser($user);
+	if (isset($_POST['login']) && isset($_POST['email']) && isset($_POST['passwd'])) {
+		$_POST['login'] = htmlspecialchars($_POST['login']);
+		$errorLogs = CheckSignUpInfos();
+		if (!empty($errorLogs))	{
+			http_response_code(403);
+			$errorLogs = json_encode($errorLogs);
+			echo $errorLogs;
+		} else {
+			$user = array(
+				"login" => $_POST['login'],
+				"email" => $_POST['email'],
+				"passwd" => hash('sha256', $_POST['passwd']),
+				"hash" => hash("sha256", $_POST['email'])
+			);
+			$mailLink = "http://localhost:8080/index.php?action=confirm&h=".hash("sha256", $user['email']);
+			mail($_POST['email'], "Please, activate your account.", "Welcome to Camagru ! Please clic on the link bellow to confirm your e-mail address. ".$mailLink);
+			UserModel::db_CreateUser($user);
+		}
 	}
 }
 
 function ConfirmEmail() {
-	$hash = $_GET['h'];
-	if (UserModel::db_CheckHash($hash)) {
-		UserModel::db_ConfirmEmail($hash);
-		view_Message("E-mail adress confirmed !", "Your email adress has been confirmed. You can now login and share you pictures with your friends !");
-	} else
+	if (isset($_GET['h'])) {
+		$hash = $_GET['h'];
+		if (UserModel::db_CheckHash($hash)) {
+			UserModel::db_ConfirmEmail($hash);
+			view_Message("E-mail adress confirmed !", "Your email adress has been confirmed. You can now login and share you pictures with your friends !");
+		} else
 		view_Message("No user found", "Seems like we found no user corresponding to your link. Sorry !");
+	}
 }
 
 ###### SIGN IN | LOGOUT ######
 
 function SignIn()	{
-	$passwd = hash("sha256", $_POST['passwd']);
-	$user = UserModel::db_GetUser($_POST['login']);
-	if ($user === FALSE || $user['passwd'] !== $passwd)	{
-		http_response_code(400);
-		$errorLogs[] = "Login or password incorrect.";
-		$errorLogs = json_encode($errorLogs);
-		echo $errorLogs;
-	} elseif ($user['valid'] == FALSE) {
-		http_response_code(400);
-		$errorLogs[] = "You must have validate your email before login in.";
-		$errorLogs = json_encode($errorLogs);
-		echo $errorLogs;
-	} else {
-		$_SESSION['user'] = $user['login'];
-		echo "You are now logged in.";
+	if (isset($_POST['login']) && isset($_POST['passwd'])) {
+		$passwd = hash("sha256", $_POST['passwd']);
+		$user = UserModel::db_GetUser($_POST['login']);
+		if ($user === FALSE || $user['passwd'] !== $passwd)	{
+			http_response_code(400);
+			$errorLogs[] = "Login or password incorrect.";
+			$errorLogs = json_encode($errorLogs);
+			echo $errorLogs;
+		} elseif ($user['valid'] == FALSE) {
+			http_response_code(400);
+			$errorLogs[] = "You must have validate your email before login in.";
+			$errorLogs = json_encode($errorLogs);
+			echo $errorLogs;
+		} else {
+			$_SESSION['user'] = $user['login'];
+			echo "You are now logged in.";
+		}
 	}
 }
 
 function LogOut()	{
-	unset($_SESSION['user']);
+	if (isset($_SESSION['user']))
+		unset($_SESSION['user']);
 	header("Location: index.php");
 }
 
@@ -160,28 +173,30 @@ function LogOut()	{
 ###### INFOS UPDATE ######
 
 function UpdateInfos() {
-	$user = GetCurrentUser();
-	$newLogin = $_POST['login'];
-	$newEmail = $_POST['email'];
-	$notif = $_POST['notif'] === "true" ? "1" : "0";
-	if (!empty($newLogin) && $newLogin !== $user['login'])
+	if (isset($_POST['login']) && isset($_POST['email']) && isset($_POST['notif'])) {		
+		$user = GetCurrentUser();
+		$newLogin = $_POST['login'];
+		$newEmail = $_POST['email'];
+		$notif = $_POST['notif'] === "true" ? "1" : "0";
+		if (!empty($newLogin) && $newLogin !== $user['login'])
 		$errorLogs[] = CheckNewLogin($newLogin);
-	if (!empty($newEmail) && $newEmail !== $user['email'])
+		if (!empty($newEmail) && $newEmail !== $user['email'])
 		$errorLogs[] = CheckNewEmail($newEmail);
-	if (!isset($errorLogs[0])) {
-		if (!empty($newLogin) && $newLogin !== $user['login']) {
-			UserModel::db_UpdateLogin($newLogin);
-			$_SESSION['user'] = $newLogin;
+		if (!isset($errorLogs[0])) {
+			if (!empty($newLogin) && $newLogin !== $user['login']) {
+				UserModel::db_UpdateLogin($newLogin);
+				$_SESSION['user'] = $newLogin;
+			}
+			if (!empty($newEmail) && $newEmail !== $user['email'])	{
+				UserModel::db_UpdateEmail($newEmail);
+				mail($_POST['email'], "Please, activate your account.", "Your email has been changed. Please clic on the link bellow to confirm your e-mail address. ".$mailLink);
+			}
+			UserModel::db_UpdateNotif($notif);
+		} else {
+			http_response_code(403);
+			$errorLogs = json_encode($errorLogs);
+			echo $errorLogs;
 		}
-		if (!empty($newEmail) && $newEmail !== $user['email'])	{
-			UserModel::db_UpdateEmail($newEmail);
-			mail($_POST['email'], "Please, activate your account.", "Your email has been changed. Please clic on the link bellow to confirm your e-mail address. ".$mailLink);
-		}
-		UserModel::db_UpdateNotif($notif);
-	} else {
-		http_response_code(403);
-		$errorLogs = json_encode($errorLogs);
-		echo $errorLogs;
 	}
 }
 
@@ -206,59 +221,65 @@ function CheckNewEmail($newEmail)	{
 ###### PASSWORD UPDATE ######
 
 function UpdatePasswd()	{
-	$user = GetCurrentUser();
-	$passwd = hash("sha256", $_POST['passwd']);
-	$newPasswd = hash("sha256", $_POST['newPasswd']);
-	$newPasswdConf = hash("sha256", $_POST['newPasswdConf']);
-	if ($passwd !== $user['passwd'])
+	if (isset($_POST['passwd']) && isset($_POST['newPasswd']) && isset($_POST['newPasswdConf'])) {
+		$user = GetCurrentUser();
+		$passwd = hash("sha256", $_POST['passwd']);
+		$newPasswd = hash("sha256", $_POST['newPasswd']);
+		$newPasswdConf = hash("sha256", $_POST['newPasswdConf']);
+		if ($passwd !== $user['passwd'])
 		$errorLogs[] = "Wrong current password.";
-	elseif ($newPasswd !== $newPasswdConf)
+		elseif ($newPasswd !== $newPasswdConf)
 		$errorLogs[] = "Passwords not matching.";
-	elseif (!CheckPasswdSecurity($_POST['newPasswd']))
+		elseif (!CheckPasswdSecurity($_POST['newPasswd']))
 		$errorLogs[] = "New password security too low.";
-	if (!isset($errorLogs[0]))
+		if (!isset($errorLogs[0]))
 		UserModel::db_UpdatePasswd($user['login'], $newPasswd);
-	else {
-		http_response_code(403);
-		$errorLogs = json_encode($errorLogs);
-		echo $errorLogs;
+		else {
+			http_response_code(403);
+			$errorLogs = json_encode($errorLogs);
+			echo $errorLogs;
+		}
 	}
 }
 
 function SendResetMail() {
-	$user = UserModel::db_GetUser($_POST['login']);
-	if (empty($user)) {
-		http_response_code(400);
-		$errorLogs[] = "This user doesn't exist.";
-		$errorLogs = json_encode($errorLogs);
-		echo $errorLogs;
-	} else {
-		$hash = hash("sha256", RandomString());
-		$link = "http://localhost/index.php?page=resetPasswd&h=".$hash;
-		$subject = "Reset your password.";
-		$mail = "Click on the link to reset your password. ".$link;
-		mail($user['email'], $subject, $mail);
-		UserModel::db_AddResetHash($user['login'], $hash);
-		echo "An e-mail has been sent to ".$user['email'].".";
+	if (isset($_POST['login'])) {
+		$user = UserModel::db_GetUser($_POST['login']);
+		if (empty($user)) {
+			http_response_code(400);
+			$errorLogs[] = "This user doesn't exist.";
+			$errorLogs = json_encode($errorLogs);
+			echo $errorLogs;
+		} else {
+			$hash = hash("sha256", RandomString());
+			$link = "http://localhost:8080/index.php?page=resetPasswd&h=".$hash;
+			$subject = "Reset your password.";
+			$mail = "Click on the link to reset your password. ".$link;
+			mail($user['email'], $subject, $mail);
+			UserModel::db_AddResetHash($user['login'], $hash);
+			echo "An e-mail has been sent to ".$user['email'].".";
+		}
 	}
 }
 
 function ResetPasswd() {
-	$newPasswd = hash("sha256", $_POST['passwd']);
-	$newPasswdConf = hash("sha256", $_POST['passwdConf']);
-	$user = $_SESSION['resetUser'];
-	if ($newPasswd !== $newPasswdConf)
+	if (isset($_POST['passwd']) && isset($_POST['passwdConf']) && isset($_SESSION['resetUser'])) {
+		$newPasswd = hash("sha256", $_POST['passwd']);
+		$newPasswdConf = hash("sha256", $_POST['passwdConf']);
+		$user = $_SESSION['resetUser'];
+		if ($newPasswd !== $newPasswdConf)
 		$errorLogs[] = "Passwords not matching.";
-	elseif (!CheckPasswdSecurity($_POST['passwd']))
+		elseif (!CheckPasswdSecurity($_POST['passwd']))
 		$errorLogs[] = "New password security too low.";
-	if (!isset($errorLogs[0])) {
-		UserModel::db_UpdatePasswd($user['login'], $newPasswd);
-		echo "Your password has been successfuly changed. You can now login.";
-	}
-	else {
-		http_response_code(403);
-		$errorLogs = json_encode($errorLogs);
-		echo $errorLogs;
+		if (!isset($errorLogs[0])) {
+			UserModel::db_UpdatePasswd($user['login'], $newPasswd);
+			echo "Your password has been successfuly changed. You can now login.";
+		}
+		else {
+			http_response_code(403);
+			$errorLogs = json_encode($errorLogs);
+			echo $errorLogs;
+		}
 	}
 }
 
