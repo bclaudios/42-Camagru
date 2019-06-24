@@ -8,15 +8,6 @@ document.addEventListener("click", function(e) {
 	}
 })
 
-document.addEventListener("dblclick", function(e) {
-	if (event.target.matches(".card-image")) {
-		if (event.target.closest(".card").getElementsByClassName("like-btn").item(0))
-			AddLike(event.target);
-		else
-			RemoveLike(event.target);
-	}
-})
-
 function AddLike(target) {
 	const token = document.getElementById("token").value;	
 	const card = target.closest(".card");
