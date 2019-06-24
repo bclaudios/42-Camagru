@@ -26,7 +26,7 @@ try	{
 	foreach ($users as $user)	{
 		$req->execute([
 			"login" => $user,
-			"email" => $user."@monzbi.com",
+			"email" => $user."@email.com",
 			"passwd" => $password,
 			"profilPic" => $user.".JPG"
 		]);
